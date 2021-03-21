@@ -1,0 +1,4 @@
+    <Route path="/" exact component={ListUserComponent}/>
+                     <Route path="/users" component={ListUserComponent}/>
+                     <Route path="/add_user" component={CreateUserComponent}/>
+                     <Route path="/update_user/:id" component={UpdateUserComponent}/>
