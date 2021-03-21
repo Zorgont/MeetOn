@@ -12,28 +12,28 @@ import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
-@RequestMapping(path = "api/v1")
+@RequestMapping(path = "api/v1/users")
 public class UserApiController {
     @Autowired
     private UserRepository userRepository;
 
-    @GetMapping("/users")
+    @GetMapping
     public Iterable<User> getUsers() {
         return userRepository.findAll();
     }
 
-    @PostMapping("/users")
+    @PostMapping
     public User createUser(@RequestBody User user) {
         return userRepository.save(user);
     }
 
-    @GetMapping("/users/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User no exist!"));
         return ResponseEntity.ok(user);
     }
 
-    @PutMapping("/users/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User newUser) {
         User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User no exist!"));
         user.setFirstName(newUser.getFirstName());
@@ -42,7 +42,7 @@ public class UserApiController {
         return ResponseEntity.ok(updatedUser);
     }
 
-    @DeleteMapping("/users/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Map<String, Boolean>> deleteUser(@PathVariable Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User no exist!"));
 

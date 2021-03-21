@@ -1,6 +1,7 @@
 package com.example.meetontest.api.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -17,6 +18,7 @@ public class User {
     private Long id;
     private String username;
     private String about;
+    @JsonIgnore
     private String password;
     private String email;
     private String firstName;

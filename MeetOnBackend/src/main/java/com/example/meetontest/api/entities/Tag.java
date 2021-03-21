@@ -1,20 +1,18 @@
 package com.example.meetontest.api.entities;
 
 import lombok.*;
-
 import javax.persistence.*;
 
 @Entity
-@Table(name = "roles")
+@Table(name = "tags")
 @Getter @Setter @NoArgsConstructor @RequiredArgsConstructor
-public class Role {
+public class Tag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
     private Integer id;
 
-    @Enumerated(EnumType.STRING)
     @Column(length = 20)
     @NonNull
-    private ERole name;
+    private String name;
 }
