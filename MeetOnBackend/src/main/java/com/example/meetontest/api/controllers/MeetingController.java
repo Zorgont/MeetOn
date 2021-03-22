@@ -12,9 +12,11 @@ import com.example.meetontest.api.repositories.TagRepository;
 import com.example.meetontest.api.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -33,8 +35,21 @@ public class MeetingController {
     private TagRepository tagRepository;
 
     @GetMapping
-    public Iterable<MeetingResponse> getMeetings() {
-        return meetingRepository.findAll().stream().map(MeetingResponse::new).collect(Collectors.toList());
+    public Iterable<MeetingResponse> getMeetings(@RequestParam @Nullable List<String> tags) {
+        if (tags == null || tags.isEmpty())
+            return meetingRepository.findAll().stream().map(MeetingResponse::new).collect(Collectors.toList());
+
+        Set<Tag> tagsSet = tagRepository.findAll().stream()
+                .filter(tag -> tags.contains(tag.getName()))
+                .collect(Collectors.toSet());
+        Tag first=tagsSet.iterator().next();
+        List<Meeting> filteredMeetings=meetingRepository.findByTags(first);
+        tagsSet.remove(first);
+        for(Tag item:tagsSet){
+            filteredMeetings.retainAll(meetingRepository.findByTags(item));
+        }
+
+        return filteredMeetings.stream().map(MeetingResponse::new).collect(Collectors.toList());
     }
 
     @PostMapping
