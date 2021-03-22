@@ -5,7 +5,6 @@ import 'font-awesome/css/font-awesome.min.css';
 export default class CreateMeeting extends Component{
     constructor(props) {
         super(props);
-        this.removeTag=this.removeTag.bind(this);
         this.state = {
             currentUser: AuthService.getCurrentUser(),
             name: "",
@@ -79,12 +78,8 @@ export default class CreateMeeting extends Component{
 
         this.setState({tags: this.state.tags.concat(newValue)});
     }
-    removeTag(event) {
-        // todo: испрвить этот лютый костыль!!!
-        let removeValue = event.target.parentNode.innerHTML.split("<i ")[0].trim();
-        let index = this.state.tags.indexOf(removeValue);
-
-        this.state.tags.splice(index, 1);
+    removeTag(removeValue, event) {
+        this.state.tags.splice(this.state.tags.indexOf(removeValue), 1);
         this.setState({tags: this.state.tags});
     }
     render() {
@@ -131,7 +126,7 @@ export default class CreateMeeting extends Component{
                                     {
                                         this.state.tags.map(
                                             tag => 
-                                                <div style={{marginRight: "10px", background: "#ddd", padding: 3, borderRadius: "10px"}}> {tag} <i className="fa fa-times" placeholder={tag} onClick={this.removeTag}></i></div>
+                                                <div style={{marginRight: "10px", background: "#ddd", padding: 3, borderRadius: "10px"}}> {tag} <i className="fa fa-times" value={tag} onClick={this.removeTag.bind(this, tag)}></i></div>
                                         )
                                     }
                                     </div>
