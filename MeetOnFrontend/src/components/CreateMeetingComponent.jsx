@@ -26,6 +26,7 @@ export default class CreateMeeting extends Component{
             about: this.state.about,
             date: this.state.date,
             isParticipantAmountRestricted : this.state.isParticipantAmountRestricted ? 1 : 0,
+
             participantAmount: this.state.participantAmount,
             isPrivate: this.state.isPrivate ? 1 : 0,
             details: this.state.details,
