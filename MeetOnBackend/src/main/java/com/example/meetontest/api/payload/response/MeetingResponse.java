@@ -23,8 +23,8 @@ public class MeetingResponse extends CreateMeetingRequest {
         super.setAbout(about);
         super.setDetails(details);
         super.setManagerUsername(managerUsername);
-        super.setPrivate(isPrivate);
-        super.setParticipantAmountRestricted(isParticipantAmountRestricted);
+        super.setIsPrivate(isPrivate ? 1 : 0);
+        super.setIsParticipantAmountRestricted(isParticipantAmountRestricted ? 1 : 0);
         super.setParticipantAmount(participantAmount);
         super.setTags(tags);
     }
@@ -37,8 +37,8 @@ public class MeetingResponse extends CreateMeetingRequest {
              meetingRequest.getDetails(),
              managerId,
              meetingRequest.getManagerUsername(),
-             meetingRequest.isPrivate(),
-             meetingRequest.isParticipantAmountRestricted(),
+             meetingRequest.getIsPrivate() == 1,
+             meetingRequest.getIsParticipantAmountRestricted() == 1,
              meetingRequest.getParticipantAmount(),
              meetingRequest.getTags());
     }

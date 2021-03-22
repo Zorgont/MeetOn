@@ -15,8 +15,8 @@ public class CreateMeetingRequest {
     private String about;
     private String details;
     private String managerUsername;
-    private boolean isPrivate;
-    private boolean isParticipantAmountRestricted;
+    private int isPrivate;
+    private int isParticipantAmountRestricted;
     private int participantAmount;
     private Set<String> tags;
 }
