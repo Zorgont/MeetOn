@@ -17,6 +17,8 @@ export default class Profile extends Component {
     render() {
         const { currentUser } = this.state;
 
+        console.log(this.state.currentUser);
+
         return (
             <div className="container">
                 <header className="jumbotron">
@@ -26,8 +28,7 @@ export default class Profile extends Component {
                 </header>
                 <p>
                     <strong>Token:</strong>{" "}
-                    {currentUser.token.substring(0, 20)} ...{" "}
-                    {currentUser.token.substr(currentUser.token.length - 20)}
+                    {currentUser.token}{" "}
                 </p>
                 <p>
                     <strong>Id:</strong>{" "}

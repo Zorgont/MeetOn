@@ -1,94 +1,148 @@
 import React, { Component } from "react";
 import AuthService from "../services/AuthService";
 import MeetingService from "../services/MeetingService";
-export default class  CreateMeeting extends Component{
+import 'font-awesome/css/font-awesome.min.css';
+export default class CreateMeeting extends Component{
     constructor(props) {
         super(props);
-
+        this.removeTag=this.removeTag.bind(this);
         this.state = {
             currentUser: AuthService.getCurrentUser(),
-            name:"",
-            about:"",
-            date:"",
-            participant_amount:"0",
-            is_private:"",
-            details:""
+            name: "",
+            about: "",
+            date: "",
+            isParticipantAmountRestricted: false,
+            participantAmount: 0,
+            isPrivate: false,
+            details: "",
+            tags: []
         };
+        
     }
     saveMeeting = (event) => {
         event.preventDefault();
         let meeting = {
-            manager: this.state.currentUser,
+            managerUsername: this.state.currentUser.username,
             name: this.state.name,
-            about: this.state.about ,
+            about: this.state.about,
             date: this.state.date,
-            participantAmount:this.state.participant_amount,
-            isPrivate: this.state.is_private,
-            details: this.state.details};
-            MeetingService.createMeeting(meeting).then(res => {
-            this.props.history.push('/profile');
+            isParticipantAmountRestricted : this.state.isParticipantAmountRestricted ? 1 : 0,
+            participantAmount: this.state.participantAmount,
+            isPrivate: this.state.isPrivate ? 1 : 0,
+            details: this.state.details,
+            tags: this.state.tags
+        };
+        console.log(meeting);
+        MeetingService.createMeeting(meeting).then(res => {
+        this.props.history.push('/profile');
         });
     }
 
     changeNameHandler = (event) => {
         this.setState({name: event.target.value});
+        console.log(event.target.value);
     }
 
     changeAboutHandler = (event) => {
         this.setState({about: event.target.value});
+        console.log(event.target.value);
     }
     changeDateHandler = (event) => {
         this.setState({date: event.target.value});
+        console.log(event.target.value);
     }
     changeParticipantAmountHandler = (event) => {
-        this.setState({participant_amount: event.target.value});
+        this.setState({participantAmount: event.target.value});
+        console.log(event.target.value);
+    }
+    changeIsParticipantAmountRestrictedHandler = (event) => {
+        this.setState({isParticipantAmountRestricted: event.target.checked});
+        console.log(event.target.checked);
     }
     changePrivateHandler = (event) => {
-        this.setState({is_private: event.target.value});
+        this.setState({isPrivate: event.target.checked});
+        console.log(event.target.checked);
     }
     changeDetailsHandler = (event) => {
         this.setState({details: event.target.value});
+        console.log(event.target.value);
     }
     cancel() {
         this.props.history.push('/users');
     }
+    addTag(event) {
+        let newValue = document.getElementById('newTagName').value;
+        document.getElementById('newTagName').value='';
 
+        if (!newValue ||this.state.tags.includes(newValue))
+            return;
+
+        this.setState({tags: this.state.tags.concat(newValue)});
+    }
+    removeTag(event) {
+        // todo: испрвить этот лютый костыль!!!
+        let removeValue = event.target.parentNode.innerHTML.split("<i ")[0].trim();
+        let index = this.state.tags.indexOf(removeValue);
+
+        this.state.tags.splice(index, 1);
+        this.setState({tags: this.state.tags});
+    }
     render() {
         return (
-            <div>
+            <div>   
                 <div className="container">
                     <div className="row">
                         <div className="card col-md-6 offset-md-3 offset-md-3">
                             <h3 className="text-center">Add User</h3>
                             <div className="card-body">
                                 <form>
-                                    <div className="form-group">
+                                    <div className="form-group row">
                                         <label for="name"> Meeting name: </label>
                                         <input type="text" name="name" className="form-control" value={this.state.name} onChange={this.changeNameHandler.bind(this)} required />
                                     </div>
-                                    <div className="form-group">
+                                    <div className="form-group row">
                                         <label for="about"> About: </label>
                                         <input type="text"  name="about" className="form-control" value={this.state.about} onChange={this.changeAboutHandler.bind(this)} required />
                                     </div>
-                                    <div className="form-group">
+                                    <div className="form-group row">
                                         <label htmlFor="date"> Date: </label>
-                                        <input type="date" name="date" className="form-control" value={this.state.date} onChange={this.changeDateHandler.bind(this)} required/>
+                                        <input type="datetime-local" name="date" className="form-control" value={this.state.date} onChange={this.changeDateHandler.bind(this)} required/>
                                     </div>
-                                    <div className="form-group">
+                                    <div className="form-group row">
                                         <label htmlFor="participant_amount"> ParticipantAmount: </label>
-                                        <input type="number" name="participant_amount" className="form-control" value={this.state.participant_amount} onChange={this.changeParticipantAmountHandler.bind(this)} required/>
+                                        <input type="number" name="participant_amount" className="form-control" value={this.state.participantAmount} onChange={this.changeParticipantAmountHandler.bind(this)} required/>
                                     </div>
-                                    <div className="form-group">
-                                        <label htmlFor="is_private"> Is_private?: </label>
-                                        <input type="checkbox" name="is_private" className="form-control" value={this.state.is_private} onChange={this.changePrivateHandler.bind(this)} required/>
+                                    <div className="form-group row">
+                                        <label htmlFor="is_participant_amount_restricted"> Participant amount restricted? </label>
+                                        <input type="checkbox" name="is_participant_amount_restricted" className="form-control" value={this.state.isParticipantAmountRestricted} onChange={this.changeIsParticipantAmountRestrictedHandler.bind(this)} required/>
                                     </div>
-                                    <div className="form-group">
+                                    <div className="form-group row">
+                                        <label htmlFor="isPrivate"> Is private?: </label>
+                                        <input type="checkbox" name="isPrivate" className="form-control" value={this.state.isPrivate} onChange={this.changePrivateHandler.bind(this)}/>
+                                    </div>
+                                    <div className="form-group row">
                                         <label htmlFor="details"> Details: </label>
-                                        <input type="text"  name="details" className="form-control" value={this.state.details} onChange={this.changeDetailsHandler.bind(this)} required/>
+                                        <input type="text" name="details" className="form-control" value={this.state.details} onChange={this.changeDetailsHandler.bind(this)} required/>
                                     </div>
-
-                                    <button className="btn btn-success" onClick={this.saveMeeting.bind(this)}>Save</button>
-                                    <button className="btn btn-danger" onClick={this.cancel.bind(this)} style={{marginLeft: "10px"}}>Cancel</button>
+                                    <div className="form-group row">
+                                        <label htmlFor="tags"> Tags </label>                        
+                                    </div>
+                                    <div className="row" style={{background: "white", borderRadius: "5px", padding: 5, marginBottom: 15, borderColor: "black", border: "2px solid #d5d5d5"}}>
+                                    {
+                                        this.state.tags.map(
+                                            tag => 
+                                                <div style={{marginRight: "10px", background: "#ddd", padding: 3, borderRadius: "10px"}}> {tag} <i className="fa fa-times" placeholder={tag} onClick={this.removeTag}></i></div>
+                                        )
+                                    }
+                                    </div>
+                                    <div className="row">
+                                        <input id="newTagName" type="text" name="addTag" className="form-control col-9"/>
+                                        <input type="button" className="btn btn-secondary col-3" onClick={this.addTag.bind(this)} value="Add"/>
+                                    </div>
+                                    <div className="row">
+                                        <button className="btn btn-success" onClick={this.saveMeeting.bind(this)}>Save</button>
+                                        <button className="btn btn-danger" onClick={this.cancel.bind(this)} style={{marginLeft: "10px"}}>Cancel</button>
+                                    </div>
                                 </form>
                             </div>
                         </div>
@@ -98,5 +152,4 @@ export default class  CreateMeeting extends Component{
             </div>
         );
     }
-
 }

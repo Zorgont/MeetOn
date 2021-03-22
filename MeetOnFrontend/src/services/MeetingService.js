@@ -8,10 +8,11 @@ class MeetingService {
     }
 
     createMeeting(meeting) {
-        return axios.post(MEETING_API_BASE_URL ,meeting, { headers: authHeader() });
+        return axios.post(MEETING_API_BASE_URL, meeting, { headers: authHeader() });
     }
 
     getMeetingById(meetingId) {
+        console.log(MEETING_API_BASE_URL+ '/' + meetingId);
         return axios.get(MEETING_API_BASE_URL+ '/' + meetingId, { headers: authHeader() });
     }
 

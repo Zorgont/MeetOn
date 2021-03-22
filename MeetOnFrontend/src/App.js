@@ -13,6 +13,8 @@ import BoardUser from "./components/BoardUserComponent";
 import BoardModerator from "./components/BoardUserComponent";
 import BoardAdmin from "./components/BoardUserComponent";
 import CreateMeeting from "./components/CreateMeetingComponent";
+import MeetingList from "./components/MeetingListComponent";
+import MeetingPage from "./components/MeetingPageComponent"
 
 class App extends Component {
     constructor(props) {
@@ -55,6 +57,11 @@ class App extends Component {
                         <li className="nav-item">
                             <Link to={"/home"} className="nav-link">
                                 Home
+                            </Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link to={"/meetings"} className="nav-link">
+                                Meetings
                             </Link>
                         </li>
 
@@ -119,10 +126,12 @@ class App extends Component {
                         <Route exact path="/login" component={Login} />
                         <Route exact path="/register" component={Register} />
                         <Route exact path="/profile" component={Profile} />
-                        <Route path="/user" component={BoardUser} />
-                        <Route path="/mod" component={BoardModerator} />
-                        <Route path="/admin" component={BoardAdmin} />
-                        <Route path="/add_meeting" component={CreateMeeting} />
+                        <Route exact path="/user" component={BoardUser} />
+                        <Route exact path="/mod" component={BoardModerator} />
+                        <Route exact path="/admin" component={BoardAdmin} />
+                        <Route exact path="/add_meeting" component={CreateMeeting} />
+                        <Route exact path="/meetings" component={MeetingList} />
+                        <Route path="/meetings/:id" component={MeetingPage} />
                     </Switch>
                 </div>
             </div>
