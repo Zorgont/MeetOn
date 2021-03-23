@@ -3,6 +3,7 @@ package com.example.meetontest.api.controllers;
 
 import com.example.meetontest.api.entities.Tag;
 import com.example.meetontest.api.repositories.TagRepository;
+import com.example.meetontest.api.security.services.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,10 +18,10 @@ import java.util.stream.Collectors;
 @RequestMapping(path = "api/v1/tags")
 public class TagController {
     @Autowired
-    TagRepository tagRepository;
+    TagService tagService;
 
     @GetMapping
     List<String> getTags(){
-        return tagRepository.findAll().stream().map(tag -> tag.getName()).collect(Collectors.toList());
+        return tagService.getTags();
     }
 }

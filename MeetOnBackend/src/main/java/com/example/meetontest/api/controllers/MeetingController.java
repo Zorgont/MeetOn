@@ -10,6 +10,7 @@ import com.example.meetontest.api.repositories.MeetingRepository;
 import com.example.meetontest.api.exceptions.ResourceNotFoundException;
 import com.example.meetontest.api.repositories.TagRepository;
 import com.example.meetontest.api.repositories.UserRepository;
+import com.example.meetontest.api.security.services.MeetingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
@@ -26,77 +27,24 @@ import java.util.stream.Collectors;
 @RequestMapping(path = "api/v1/meetings")
 public class MeetingController {
     @Autowired
-    private MeetingRepository meetingRepository;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private TagRepository tagRepository;
-
+    MeetingService meetingService;
     @GetMapping
     public Iterable<MeetingResponse> getMeetings(@RequestParam @Nullable List<String> tags) {
-        if (tags == null || tags.isEmpty())
-            return meetingRepository.findAll().stream().map(MeetingResponse::new).collect(Collectors.toList());
-
-        Set<Tag> tagsSet = tagRepository.findAll().stream()
-                .filter(tag -> tags.contains(tag.getName()))
-                .collect(Collectors.toSet());
-        Tag first=tagsSet.iterator().next();
-        List<Meeting> filteredMeetings=meetingRepository.findByTags(first);
-        tagsSet.remove(first);
-        for(Tag item:tagsSet){
-            filteredMeetings.retainAll(meetingRepository.findByTags(item));
-        }
-
-        return filteredMeetings.stream().map(MeetingResponse::new).collect(Collectors.toList());
+        return meetingService.getMeetingsByTags(tags);
     }
 
     @PostMapping
     public ResponseEntity<?> createMeeting(@RequestBody CreateMeetingRequest meetingRequest) {
-        // Валидация менеджера - проверка на его существование как пользователя в БД:
-        Optional<User> manager = userRepository.findByUsername(meetingRequest.getManagerUsername());
-        if (!manager.isPresent())
-            return ResponseEntity
-                    .badRequest().body(new MessageResponse("Error: Wrong meeting manager username!"));
-
-        // Валидация даты - проверка на то, что указанная дата в будущем:
-        // todo: Добавить проверку after, чтобы нельзя было запланировать собрание через 100 лет:
-        if (meetingRequest.getDate().before(new Date()))
-            return ResponseEntity
-                    .badRequest().body(new MessageResponse("Error: Wrong date of the meeting!"));
-
-        // Валидация тегов - они существуют в БД и их количество не ноль:
-        Set<Tag> tags = tagRepository.findAll().stream()
-                .filter(tag -> meetingRequest.getTags().contains(tag.getName()))
-                .collect(Collectors.toSet());
-        if (tags.isEmpty())
-            return ResponseEntity
-                    .badRequest().body(new MessageResponse("Error: Meeting must have at least 1 tag!"));
-
-        Meeting meeting = new Meeting(
-                meetingRequest.getName(),
-                meetingRequest.getDate(),
-                meetingRequest.getAbout(),
-                meetingRequest.getIsParticipantAmountRestricted() == 1,
-                meetingRequest.getParticipantAmount(),
-                meetingRequest.getIsPrivate() == 1,
-                meetingRequest.getDetails(),
-                "Planning",
-                manager.get(),
-                tags);
-        meetingRepository.save(meeting);
-
-        return ResponseEntity.ok(new MeetingResponse(meeting));
+       return  meetingService.createMeeting(meetingRequest);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<MeetingResponse> getMeetingById(@PathVariable Long id) {
-        Meeting meeting = meetingRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Meeting no exist!"));
-        return ResponseEntity.ok(new MeetingResponse(meeting));
+        return meetingService.getMeetingById(id);
     }
 
     /*@PutMapping("/{id}")
+    //todo:Реализовать методы изменения и удаления митингов на фронте
     public ResponseEntity<Meeting> updateMeeting(@PathVariable Long id, @RequestBody Meeting newMeeting) {
         Meeting meeting = meetingRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Meeting no exist!"));
         meeting.setName(newMeeting.getFirstName());
