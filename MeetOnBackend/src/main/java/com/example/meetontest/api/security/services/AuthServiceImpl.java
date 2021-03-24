@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 @Service
-public class AuthService {
+public class AuthServiceImpl implements  AuthService{
     @Autowired
     AuthenticationManager authenticationManager;
 

@@ -1,26 +1,14 @@
 package com.example.meetontest.api.controllers;
 
-import com.example.meetontest.api.entities.Meeting;
-import com.example.meetontest.api.entities.Tag;
-import com.example.meetontest.api.entities.User;
 import com.example.meetontest.api.payload.request.CreateMeetingRequest;
 import com.example.meetontest.api.payload.response.MeetingResponse;
-import com.example.meetontest.api.payload.response.MessageResponse;
-import com.example.meetontest.api.repositories.MeetingRepository;
-import com.example.meetontest.api.exceptions.ResourceNotFoundException;
-import com.example.meetontest.api.repositories.TagRepository;
-import com.example.meetontest.api.repositories.UserRepository;
 import com.example.meetontest.api.security.services.MeetingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController

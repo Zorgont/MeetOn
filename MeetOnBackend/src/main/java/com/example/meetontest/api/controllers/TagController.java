@@ -1,8 +1,6 @@
 package com.example.meetontest.api.controllers;
 
 
-import com.example.meetontest.api.entities.Tag;
-import com.example.meetontest.api.repositories.TagRepository;
 import com.example.meetontest.api.security.services.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -11,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController

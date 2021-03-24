@@ -1,14 +1,11 @@
 package com.example.meetontest.api.controllers;
 
-import com.example.meetontest.api.repositories.UserRepository;
 import com.example.meetontest.api.entities.User;
-import com.example.meetontest.api.exceptions.ResourceNotFoundException;
 import com.example.meetontest.api.security.services.UserAPIService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:3000")

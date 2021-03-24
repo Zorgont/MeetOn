@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-public class UserAPIService {
+public class UserAPIServiceImpl implements UserAPIService{
     @Autowired
     private UserRepository userRepository;
 
