@@ -15,7 +15,7 @@ import BoardAdmin from "./components/BoardUserComponent";
 import CreateMeeting from "./components/CreateMeetingComponent";
 import MeetingList from "./components/MeetingListComponent";
 import MeetingPage from "./components/MeetingPageComponent"
-
+import UpdateMeeting from "./components/UpdateMeetingComponent"
 class App extends Component {
     constructor(props) {
         super(props);
@@ -132,6 +132,7 @@ class App extends Component {
                         <Route exact path="/add_meeting" component={CreateMeeting} />
                         <Route exact path="/meetings" component={MeetingList} />
                         <Route path="/meetings/:id" component={MeetingPage} />
+                        <Route path="/update/:id" component={UpdateMeeting} />
                     </Switch>
                 </div>
             </div>

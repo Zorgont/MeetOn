@@ -5,20 +5,21 @@ import 'font-awesome/css/font-awesome.min.css';
 export default class CreateMeeting extends Component{
     constructor(props) {
         super(props);
+
         this.state = {
             currentUser: AuthService.getCurrentUser(),
             name: "",
             about: "",
             date: "",
-            isParticipantAmountRestricted: false,
+            isParticipantAmountRestricted: '',
             participantAmount: 0,
-            isPrivate: false,
+            isPrivate: '',
             details: "",
             tags: []
         };
-        
+
     }
-    saveMeeting = (event) => {
+    updateMeeting = (event) => {
         event.preventDefault();
         let meeting = {
             managerUsername: this.state.currentUser.username,
@@ -26,15 +27,14 @@ export default class CreateMeeting extends Component{
             about: this.state.about,
             date: this.state.date,
             isParticipantAmountRestricted : this.state.isParticipantAmountRestricted ? 1 : 0,
-
             participantAmount: this.state.participantAmount,
             isPrivate: this.state.isPrivate ? 1 : 0,
             details: this.state.details,
             tags: this.state.tags
         };
         console.log(meeting);
-        MeetingService.createMeeting(meeting).then(res => {
-        this.props.history.push('/profile');
+        MeetingService.updateMeeting(meeting,this.props.match.params.id).then(res => {
+            this.props.history.push('/meetings');
         });
     }
 
@@ -68,7 +68,7 @@ export default class CreateMeeting extends Component{
         console.log(event.target.value);
     }
     cancel() {
-        this.props.history.push('/users');
+        this.props.history.push('/profile');
     }
     addTag(event) {
         let newValue = document.getElementById('newTagName').value;
@@ -83,13 +83,31 @@ export default class CreateMeeting extends Component{
         this.state.tags.splice(this.state.tags.indexOf(removeValue), 1);
         this.setState({tags: this.state.tags});
     }
+    componentDidMount() {
+        MeetingService.getMeetingById(this.props.match.params.id).then(res => {
+            let meeting = res.data;
+            this.setState(
+                {
+                    name: meeting.name,
+                    about: meeting.about,
+                    date: meeting.date.substring(0,16),
+                    isParticipantAmountRestricted : meeting.isParticipantAmountRestricted === 1,
+                    participantAmount: parseInt(meeting.participantAmount),
+                    isPrivate: meeting.isPrivate === 1,
+                    details: meeting.details,
+                    tags: meeting.tags
+                });
+            console.log(this.state);
+        })
+    }
+
     render() {
         return (
-            <div>   
+            <div>
                 <div className="container">
                     <div className="row">
                         <div className="card col-md-6 offset-md-3 offset-md-3">
-                            <h3 className="text-center">Create meeting</h3>
+                            <h3 className="text-center">Update meeting</h3>
                             <div className="card-body">
                                 <form>
                                     <div className="form-group row">
@@ -114,29 +132,29 @@ export default class CreateMeeting extends Component{
                                     </div>
                                     <div className="form-group row">
                                         <label htmlFor="isPrivate"> Is private?: </label>
-                                        <input type="checkbox" name="isPrivate" className="form-control" checke={this.state.isPrivate} onChange={this.changePrivateHandler.bind(this)}/>
+                                        <input type="checkbox" name="isPrivate" className="form-control" checked={this.state.isPrivate} onChange={this.changePrivateHandler.bind(this)}/>
                                     </div>
                                     <div className="form-group row">
                                         <label htmlFor="details"> Details: </label>
                                         <input type="text" name="details" className="form-control" value={this.state.details} onChange={this.changeDetailsHandler.bind(this)} required/>
                                     </div>
                                     <div className="form-group row">
-                                        <label htmlFor="tags"> Tags </label>                        
+                                        <label htmlFor="tags"> Tags </label>
                                     </div>
                                     <div className="row" style={{background: "white", borderRadius: "5px", padding: 5, marginBottom: 15, borderColor: "black", border: "2px solid #d5d5d5"}}>
-                                    {
-                                        this.state.tags.map(
-                                            tag => 
-                                                <div style={{marginRight: "10px", background: "#ddd", padding: 3, borderRadius: "10px"}}> {tag} <i className="fa fa-times" value={tag} onClick={this.removeTag.bind(this, tag)}></i></div>
-                                        )
-                                    }
+                                        {
+                                            this.state.tags.map(
+                                                tag =>
+                                                    <div style={{marginRight: "10px", background: "#ddd", padding: 3, borderRadius: "10px"}}> {tag} <i className="fa fa-times" value={tag} onClick={this.removeTag.bind(this, tag)}></i></div>
+                                            )
+                                        }
                                     </div>
                                     <div className="row">
                                         <input id="newTagName" type="text" name="addTag" className="form-control col-9"/>
                                         <input type="button" className="btn btn-secondary col-3" onClick={this.addTag.bind(this)} value="Add"/>
                                     </div>
                                     <div className="row">
-                                        <button className="btn btn-success" onClick={this.saveMeeting.bind(this)}>Save</button>
+                                        <button className="btn btn-success" onClick={this.updateMeeting.bind(this)}>Save</button>
                                         <button className="btn btn-danger" onClick={this.cancel.bind(this)} style={{marginLeft: "10px"}}>Cancel</button>
                                     </div>
                                 </form>

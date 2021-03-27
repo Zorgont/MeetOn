@@ -12,12 +12,16 @@ class MeetingService {
     }
 
     getMeetingById(meetingId) {
-        console.log(MEETING_API_BASE_URL+ '/' + meetingId);
-        return axios.get(MEETING_API_BASE_URL+ '/' + meetingId, { headers: authHeader() });
+        console.log(MEETING_API_BASE_URL + '/' + meetingId);
+        return axios.get(MEETING_API_BASE_URL + '/' + meetingId, { headers: authHeader() });
+    }
+    getMeetingsByManager(manager) {
+        console.log(MEETING_API_BASE_URL);
+        return axios.get(MEETING_API_BASE_URL + '/byManager/' + manager, { headers: authHeader() });
     }
 
     updateMeeting(meeting, meetingId) {
-        return axios.put(MEETING_API_BASE_URL+ '/' + meetingId, meeting, { headers: authHeader() });
+        return axios.put(MEETING_API_BASE_URL + '/' + meetingId, meeting, { headers: authHeader() });
     }
 
     deleteMeeting(meetingId) {

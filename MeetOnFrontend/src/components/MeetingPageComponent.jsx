@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import MeetingService from "../services/MeetingService";
 import 'font-awesome/css/font-awesome.min.css';
+import AuthService from "../services/AuthService";
+import { Link } from 'react-router-dom';
 export default class MeetingPage extends Component{
     constructor(props) {
         console.log("constructor");
@@ -19,7 +21,28 @@ export default class MeetingPage extends Component{
             console.log(this.state.meeting);
         });
     }
-    
+    deleteMeeting() {
+        MeetingService.deleteMeeting(this.props.match.params.id).then((res) => {
+            this.props.history.push('/meetings');
+        });
+    }
+    buttonDelete() {
+        console.log(AuthService.getCurrentUser())
+        if (this.state.meeting.managerId === AuthService.getCurrentUser().id)
+            return <div>     
+                <button className="btn btn-danger" style={{marginLeft:"5px"}} onClick={this.deleteMeeting.bind(this)}>Delete</button>
+                </div>
+    }
+    buttonUpdate() {
+        console.log(AuthService.getCurrentUser())
+        if (this.state.meeting.managerId === AuthService.getCurrentUser().id)
+            return <div>
+                    <Link to={`/update/${this.props.match.params.id}`}>
+                        <button className="btn btn-primary">Update</button>
+                    </Link>
+                </div>
+    }
+
     render() {
         console.log(this.props.match.params.id);
         return (
@@ -56,9 +79,13 @@ export default class MeetingPage extends Component{
                                 {
                                     this.state.meeting?.tags?.map(
                                         tag => 
-                                            <div style={{marginRight: "10px", background: "#ddd", padding: 3, borderRadius: "10px"}}> {tag} </div>
+                                            <div style={{marginRight: "10px", marginBottom: "10px",background: "#ddd", padding: 3, borderRadius: "10px"}}> {tag} </div>
                                     )
                                 }                     
+                                </div>
+                                <div className="row"> 
+                                    {this.buttonUpdate()}
+                                    {this.buttonDelete()}
                                 </div>
                             </div>
                         </div>
