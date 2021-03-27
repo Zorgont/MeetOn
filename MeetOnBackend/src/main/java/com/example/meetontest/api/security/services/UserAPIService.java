@@ -11,4 +11,5 @@ public interface UserAPIService {
     public ResponseEntity<User> getUserById(Long id);
     public ResponseEntity<User> updateUser(Long id, User newUser);
     public ResponseEntity<Map<String, Boolean>> deleteUser(Long id);
+    public User getUserByName(String name);
 }

@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.example.meetontest.api.payload.request.CreateMeetingRequest;
 import lombok.*;
 
 @Entity
@@ -45,5 +46,17 @@ public class Meeting {
         this.status = status;
         this.manager = manager;
         this.tags = tags;
+    }
+    public Meeting(CreateMeetingRequest meetingRequest,Set<Tag> tags,User manager){
+       this(meetingRequest.getName(),
+               meetingRequest.getDate(),
+               meetingRequest.getAbout(),
+               meetingRequest.getIsParticipantAmountRestricted() == 1,
+               meetingRequest.getParticipantAmount(),
+               meetingRequest.getIsPrivate() == 1,
+               meetingRequest.getDetails(),
+               "Planning",
+               manager,
+               tags);
     }
 }

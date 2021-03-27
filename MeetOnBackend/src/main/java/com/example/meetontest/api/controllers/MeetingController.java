@@ -1,8 +1,11 @@
 package com.example.meetontest.api.controllers;
 
+import com.example.meetontest.api.entities.Meeting;
 import com.example.meetontest.api.payload.request.CreateMeetingRequest;
 import com.example.meetontest.api.payload.response.MeetingResponse;
 import com.example.meetontest.api.security.services.MeetingService;
+import com.example.meetontest.api.security.services.MeetingServiceImpl;
+import com.example.meetontest.api.security.services.UserAPIService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,11 +21,15 @@ import java.util.List;
 public class MeetingController {
 
     private final MeetingService meetingService;
+    private final UserAPIService userAPIService;
     @GetMapping
     public Iterable<MeetingResponse> getMeetings(@RequestParam @Nullable List<String> tags) {
         return meetingService.getMeetingsByTags(tags);
     }
-
+    @GetMapping("/byManager/{name}")
+    public Iterable<MeetingResponse> getMeetingsByManager(@PathVariable String name) {
+        return meetingService.getMeetingsByManager(userAPIService.getUserByName(name));
+    }
     @PostMapping
     public ResponseEntity<?> createMeeting(@RequestBody CreateMeetingRequest meetingRequest) {
        return  meetingService.createMeeting(meetingRequest);
@@ -32,25 +39,15 @@ public class MeetingController {
     public ResponseEntity<MeetingResponse> getMeetingById(@PathVariable Long id) {
         return meetingService.getMeetingById(id);
     }
-
-    /*@PutMapping("/{id}")
-    //todo:Реализовать методы изменения и удаления митингов на фронте
-    public ResponseEntity<Meeting> updateMeeting(@PathVariable Long id, @RequestBody Meeting newMeeting) {
-        Meeting meeting = meetingRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Meeting no exist!"));
-        meeting.setName(newMeeting.getFirstName());
-        user.setAbout(newUser.getAbout());
-        User updatedUser = userRepository.save(user);
-        return ResponseEntity.ok(updatedUser);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteMeeting(@PathVariable Long id) {
+        return meetingService.deleteMeeting(id);
     }
 
-    @DeleteMapping("/users/{id}")
-    public ResponseEntity<Map<String, Boolean>> deleteUser(@PathVariable Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User no exist!"));
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateMeeting (@PathVariable Long id, @RequestBody CreateMeetingRequest meetingRequest) {
+        return meetingService.updateMeeting(id,meetingRequest);
+    }
 
-        userRepository.delete(user);
-        Map<String, Boolean> response = new HashMap<>();
-        response.put("deleted", true);
-        return ResponseEntity.ok(response);
-    }*/
 
 }

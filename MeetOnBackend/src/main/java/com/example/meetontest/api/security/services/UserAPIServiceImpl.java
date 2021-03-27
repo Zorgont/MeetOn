@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -51,4 +52,10 @@ public class UserAPIServiceImpl implements UserAPIService{
         response.put("deleted", true);
         return ResponseEntity.ok(response);
     }
+
+    @Override
+    public User getUserByName(String name) {
+        return userRepository.findByUsername(name).orElseThrow(() -> new ResourceNotFoundException("User no exist!"));
+    }
+
 }
