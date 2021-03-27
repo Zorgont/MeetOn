@@ -10,6 +10,7 @@ import com.example.meetontest.api.payload.response.MessageResponse;
 import com.example.meetontest.api.repositories.RoleRepository;
 import com.example.meetontest.api.repositories.UserRepository;
 import com.example.meetontest.api.security.jwt.JwtUtils;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,21 +28,22 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 @Service
+@RequiredArgsConstructor
 public class AuthServiceImpl implements  AuthService{
-    @Autowired
-    AuthenticationManager authenticationManager;
 
-    @Autowired
-    UserRepository userRepository;
+    final private AuthenticationManager authenticationManager;
 
-    @Autowired
-    RoleRepository roleRepository;
 
-    @Autowired
-    PasswordEncoder encoder;
+    final private UserRepository userRepository;
 
-    @Autowired
-    JwtUtils jwtUtils;
+
+    final private RoleRepository roleRepository;
+
+
+    final private PasswordEncoder encoder;
+
+
+    final private JwtUtils jwtUtils;
 
 
     public ResponseEntity<?> authenticateUser(LoginRequest loginRequest) {

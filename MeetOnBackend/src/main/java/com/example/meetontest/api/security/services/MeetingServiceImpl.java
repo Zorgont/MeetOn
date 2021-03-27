@@ -11,6 +11,7 @@ import com.example.meetontest.api.repositories.MeetingRepository;
 import com.example.meetontest.api.repositories.TagRepository;
 import com.example.meetontest.api.repositories.UserRepository;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -21,16 +22,19 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 @Service
+@RequiredArgsConstructor
 public class MeetingServiceImpl implements MeetingService{
-    @Autowired
-    private MeetingRepository meetingRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final MeetingRepository meetingRepository;
 
-    @Autowired
-    private TagRepository tagRepository;
 
+    private final UserRepository userRepository;
+
+
+    private final TagRepository tagRepository;
+
+
+    private final MeetingValidator meetingValidator;
 
     public List<MeetingResponse> getMeetingsByTags(List<String> tags) {
         if (tags == null || tags.isEmpty())
@@ -53,23 +57,14 @@ public class MeetingServiceImpl implements MeetingService{
     public ResponseEntity<?> createMeeting(CreateMeetingRequest meetingRequest) {
         // Валидация менеджера - проверка на его существование как пользователя в БД:
         Optional<User> manager = userRepository.findByUsername(meetingRequest.getManagerUsername());
-        if (!manager.isPresent())
-            return ResponseEntity
-                    .badRequest().body(new MessageResponse("Error: Wrong meeting manager username!"));
-
-        // Валидация даты - проверка на то, что указанная дата в будущем:
-        // todo: Добавить проверку after, чтобы нельзя было запланировать собрание через 100 лет:
-        if (meetingRequest.getDate().before(new Date()))
-            return ResponseEntity
-                    .badRequest().body(new MessageResponse("Error: Wrong date of the meeting!"));
-
-        // Валидация тегов - они существуют в БД и их количество не ноль:
         Set<Tag> tags = tagRepository.findAll().stream()
                 .filter(tag -> meetingRequest.getTags().contains(tag.getName()))
                 .collect(Collectors.toSet());
-        if (tags.isEmpty())
-            return ResponseEntity
-                    .badRequest().body(new MessageResponse("Error: Meeting must have at least 1 tag!"));
+
+        ResponseEntity<?> validationResponse=meetingValidator.validate(meetingRequest,tags,manager);
+        if (validationResponse!=null){
+            return validationResponse;
+        }
 
         Meeting meeting = new Meeting(
                 meetingRequest.getName(),

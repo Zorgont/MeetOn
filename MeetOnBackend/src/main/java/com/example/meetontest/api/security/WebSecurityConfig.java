@@ -8,6 +8,7 @@ import com.example.meetontest.api.repositories.UserRepository;
 import com.example.meetontest.api.security.jwt.AuthEntryPointJwt;
 import com.example.meetontest.api.security.jwt.AuthTokenFilter;
 import com.example.meetontest.api.security.services.UserDetailsServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,26 +33,24 @@ import java.util.HashSet;
         // securedEnabled = true,
         // jsr250Enabled = true,
         prePostEnabled = true)
+@RequiredArgsConstructor
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    @Autowired
-    UserDetailsService userDetailsService;
 
-    @Autowired
-    private AuthEntryPointJwt unauthorizedHandler;
+    private final UserDetailsService userDetailsService;
 
-    @Autowired
-    UserRepository userRepository;
-    @Autowired
-    MeetingRepository meetingRepository;
-    @Autowired
-    RoleRepository roleRepository;
-    @Autowired
-    TagRepository tagRepository;
 
-    @Bean
-    public AuthTokenFilter authenticationJwtTokenFilter() {
-        return new AuthTokenFilter();
-    }
+    private final AuthEntryPointJwt unauthorizedHandler;
+
+
+    private final UserRepository userRepository;
+
+    private final MeetingRepository meetingRepository;
+
+    private final RoleRepository roleRepository;
+
+    private final TagRepository tagRepository;
+
+    private final AuthTokenFilter authTokenFilter;
 
     @Override
     public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
@@ -122,6 +121,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/v1/meetings/**").authenticated()
                 .anyRequest().authenticated();
 
-        http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }

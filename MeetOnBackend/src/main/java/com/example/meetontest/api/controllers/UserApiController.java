@@ -2,6 +2,7 @@ package com.example.meetontest.api.controllers;
 
 import com.example.meetontest.api.entities.User;
 import com.example.meetontest.api.security.services.UserAPIService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,9 +12,10 @@ import java.util.Map;
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping(path = "api/v1/users")
+@RequiredArgsConstructor
 public class UserApiController {
-    @Autowired
-    UserAPIService userAPIService;
+
+    private final UserAPIService userAPIService;
     @GetMapping
     public Iterable<User> getUsers() {
         return  userAPIService.getUsers();

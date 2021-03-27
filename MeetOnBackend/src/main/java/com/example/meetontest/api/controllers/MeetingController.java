@@ -3,6 +3,7 @@ package com.example.meetontest.api.controllers;
 import com.example.meetontest.api.payload.request.CreateMeetingRequest;
 import com.example.meetontest.api.payload.response.MeetingResponse;
 import com.example.meetontest.api.security.services.MeetingService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
@@ -13,9 +14,10 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping(path = "api/v1/meetings")
+@RequiredArgsConstructor
 public class MeetingController {
-    @Autowired
-    MeetingService meetingService;
+
+    private final MeetingService meetingService;
     @GetMapping
     public Iterable<MeetingResponse> getMeetings(@RequestParam @Nullable List<String> tags) {
         return meetingService.getMeetingsByTags(tags);
