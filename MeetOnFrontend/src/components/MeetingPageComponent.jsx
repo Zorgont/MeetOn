@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import MeetingService from "../services/MeetingService";
 import 'font-awesome/css/font-awesome.min.css';
 import AuthService from "../services/AuthService";
+import RequestService from "../services/RequestService";
 import { Link } from 'react-router-dom';
 export default class MeetingPage extends Component{
     constructor(props) {
@@ -9,7 +10,9 @@ export default class MeetingPage extends Component{
         super(props);
         
         this.state = {
-            meeting: {}
+            meeting: {},
+            requestExistence: true,
+            currentUser: AuthService.getCurrentUser()
         };
         
     }
@@ -17,8 +20,15 @@ export default class MeetingPage extends Component{
     componentDidMount() {
         console.log("here");
         MeetingService.getMeetingById(this.props.match.params.id).then((res) => {
-            this.setState({meeting: res.data});
-            console.log(this.state.meeting);
+            this.setState({ meeting: res.data});
+            console.log("LOOOK HEEEREEEEE");
+            console.log(this.state);
+            console.log(this.state.meeting.meetingId);
+            console.log(this.state.currentUser.id);
+            
+            RequestService.checkRequestExistence(this.state.meeting.meetingId, this.state.currentUser.id).then((res) => {
+                this.setState({ requestExistence: res.data});
+            });
         });
     }
     deleteMeeting() {
@@ -45,11 +55,15 @@ export default class MeetingPage extends Component{
     }
     buttonEnroll() {
         console.log(AuthService.getCurrentUser())
-            return <div>     
-                <button className="btn btn-danger" style={{marginLeft:"5px"}} onClick={this.deleteMeeting.bind(this)}>Delete</button>
-                </div>
+        // todo: писать, что вы уже зарегистрированы
+        if ((this.state.meeting.managerId !== AuthService.getCurrentUser().id)&&(!this.state.requestExistence))
+            return  <div>     
+                        <Link to={`/enroll/${this.props.match.params.id}`}>
+                            <button className="btn btn-primary" style={{marginLeft:"5px"}}>Enroll</button>
+                        </Link>
+                    </div>
     }
-
+    
     render() {
         console.log(this.props.match.params.id);
         return (
@@ -93,6 +107,7 @@ export default class MeetingPage extends Component{
                                 <div className="row"> 
                                     {this.buttonUpdate()}
                                     {this.buttonDelete()}
+                                    {this.buttonEnroll()}
                                 </div>
                             </div>
                         </div>

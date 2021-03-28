@@ -97,7 +97,7 @@ export default class Register extends Component {
                 this.state.email,
                 this.state.password
             ).then(
-                response => {
+                response => { 
                     this.setState({
                         message: response.data.message,
                         successful: true

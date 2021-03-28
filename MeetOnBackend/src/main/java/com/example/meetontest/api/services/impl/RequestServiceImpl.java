@@ -5,7 +5,9 @@ import com.example.meetontest.api.entities.Request;
 import com.example.meetontest.api.entities.RequestStatus;
 import com.example.meetontest.api.entities.User;
 import com.example.meetontest.api.repositories.RequestRepository;
+import com.example.meetontest.api.services.MeetingService;
 import com.example.meetontest.api.services.RequestService;
+import com.example.meetontest.api.services.UserAPIService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class RequestServiceImpl implements RequestService {
     private final RequestRepository requestRepository;
+    private final MeetingService meetingService;
+    private final UserAPIService userAPIService;
 
     @Override
     public Request create(Request request) {
@@ -46,5 +50,10 @@ public class RequestServiceImpl implements RequestService {
     public void changeStatus(Request request, RequestStatus status) {
         request.setStatus(status);
         requestRepository.save(request);
+    }
+
+    @Override
+    public boolean existsByMeetingIdUserId(Long meetingId, Long userId) {
+        return requestRepository.existsByMeetingAndUser(meetingService.getMeetingById(meetingId),userAPIService.getUserById(userId));
     }
 }

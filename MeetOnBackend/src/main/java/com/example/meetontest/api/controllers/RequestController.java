@@ -47,7 +47,7 @@ public class RequestController {
         return requestService.getByMeeting(meetingService.getMeetingById(id));
     }
 
-    @GetMapping("/changeStatus/{id}")
+    @PutMapping("/changeStatus/{id}")
     public ResponseEntity<?> updateRequestStatus(@PathVariable Long id, @RequestParam String status) {
         try {
             requestService.changeStatus(requestService.getById(id).get(), RequestStatus.valueOf(status.toUpperCase()));
@@ -56,5 +56,9 @@ public class RequestController {
         catch (Exception e) {
             return ResponseEntity.badRequest().body(new MessageResponse("Failed updating status!"));
         }
+    }
+    @GetMapping("/check")
+    public boolean checkRequestExistence(@RequestParam Long meetingId, @RequestParam Long userId){
+        return requestService.existsByMeetingIdUserId(meetingId,userId);
     }
 }

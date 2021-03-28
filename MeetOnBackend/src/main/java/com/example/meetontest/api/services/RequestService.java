@@ -14,4 +14,5 @@ public interface RequestService {
     List<Request> getByUser(User user);
     List<Request> getByMeeting(Meeting meeting);
     void changeStatus(Request request, RequestStatus status);
+    boolean existsByMeetingIdUserId(Long meetingId,Long userId);
 }

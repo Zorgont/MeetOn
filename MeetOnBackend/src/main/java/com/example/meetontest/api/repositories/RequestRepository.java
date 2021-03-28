@@ -10,4 +10,5 @@ import java.util.List;
 public interface RequestRepository extends JpaRepository<Request, Long> {
     List<Request> findByUser(User user);
     List<Request> findByMeeting(Meeting meeting);
+    boolean existsByMeetingAndUser(Meeting meeting,User user);
 }
