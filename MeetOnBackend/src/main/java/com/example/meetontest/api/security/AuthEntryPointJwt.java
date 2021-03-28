@@ -1,4 +1,4 @@
-package com.example.meetontest.api.security.jwt;
+package com.example.meetontest.api.security;
 
 import java.io.IOException;
 

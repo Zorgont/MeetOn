@@ -1,6 +1,6 @@
-package com.example.meetontest.api.security.jwt;
+package com.example.meetontest.api.security;
 
-import com.example.meetontest.api.services.UserDetailsServiceImpl;
+import com.example.meetontest.api.services.impl.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

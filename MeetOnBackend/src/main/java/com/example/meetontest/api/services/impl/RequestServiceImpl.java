@@ -1,10 +1,11 @@
-package com.example.meetontest.api.services;
+package com.example.meetontest.api.services.impl;
 
 
 import com.example.meetontest.api.entities.Meeting;
 import com.example.meetontest.api.entities.Request;
 import com.example.meetontest.api.entities.User;
 import com.example.meetontest.api.repositories.RequestRepository;
+import com.example.meetontest.api.services.RequestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +14,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class RequestServiceImpl implements RequestService{
+public class RequestServiceImpl implements RequestService {
     private final RequestRepository requestRepository;
 
 

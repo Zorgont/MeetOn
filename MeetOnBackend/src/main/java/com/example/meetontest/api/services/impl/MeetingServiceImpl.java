@@ -1,4 +1,4 @@
-package com.example.meetontest.api.services;
+package com.example.meetontest.api.services.impl;
 
 import com.example.meetontest.api.entities.Meeting;
 import com.example.meetontest.api.entities.Tag;
@@ -6,13 +6,16 @@ import com.example.meetontest.api.entities.User;
 import com.example.meetontest.api.exceptions.ResourceNotFoundException;
 import com.example.meetontest.api.exceptions.ValidatorException;
 import com.example.meetontest.api.repositories.MeetingRepository;
+import com.example.meetontest.api.services.MeetingService;
+import com.example.meetontest.api.services.MeetingValidator;
+import com.example.meetontest.api.services.TagService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.*;
 
 @Service
 @RequiredArgsConstructor
-public class MeetingServiceImpl implements MeetingService{
+public class MeetingServiceImpl implements MeetingService {
     private final MeetingRepository meetingRepository;
     private final TagService tagService;
     private final MeetingValidator meetingValidator;

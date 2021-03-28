@@ -3,7 +3,7 @@ package com.example.meetontest.api.controllers;
 import com.example.meetontest.api.exceptions.ValidatorException;
 import com.example.meetontest.api.dto.MeetingDTO;
 import com.example.meetontest.api.dto.MessageResponse;
-import com.example.meetontest.api.services.MeetingConverter;
+import com.example.meetontest.api.converters.MeetingConverter;
 import com.example.meetontest.api.services.MeetingService;
 import com.example.meetontest.api.services.UserAPIService;
 import lombok.RequiredArgsConstructor;

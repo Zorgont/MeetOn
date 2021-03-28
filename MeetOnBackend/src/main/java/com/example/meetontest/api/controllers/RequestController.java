@@ -4,7 +4,7 @@ import com.example.meetontest.api.dto.RequestDTO;
 import com.example.meetontest.api.entities.Request;
 import com.example.meetontest.api.dto.MessageResponse;
 import com.example.meetontest.api.services.MeetingService;
-import com.example.meetontest.api.services.RequestConverter;
+import com.example.meetontest.api.converters.RequestConverter;
 import com.example.meetontest.api.services.RequestService;
 import com.example.meetontest.api.services.UserAPIService;
 import lombok.RequiredArgsConstructor;
@@ -37,13 +37,12 @@ public class RequestController {
     }
 
     @GetMapping("/byUser/{id}")
-    public List<Request> getRequestsByUserId(@PathVariable Long userId) {
-        return requestService.getByUser(userAPIService.getUserById(userId));
+    public List<Request> getRequestsByUserId(@PathVariable Long id) {
+        return requestService.getByUser(userAPIService.getUserById(id));
     }
 
     @GetMapping("/byMeeting/{id}")
-    public List<Request> getRequestsByMeetingId(@PathVariable Long meetingId){
-        return null;
-//        requestService.getByMeeting(meetingService.getMeetingById(meetingId).getBody());
+    public List<Request> getRequestsByMeetingId(@PathVariable Long id){
+        return requestService.getByMeeting(meetingService.getMeetingById(id));
     }
 }

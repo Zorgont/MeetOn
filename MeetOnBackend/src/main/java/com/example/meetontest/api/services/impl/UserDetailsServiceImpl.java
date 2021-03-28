@@ -1,5 +1,6 @@
-package com.example.meetontest.api.services;
+package com.example.meetontest.api.services.impl;
 
+import com.example.meetontest.api.services.UserAPIService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -1,4 +1,4 @@
-package com.example.meetontest.api.services;
+package com.example.meetontest.api.services.impl;
 
 import java.util.Collection;
 import java.util.List;

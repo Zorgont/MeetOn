@@ -1,8 +1,8 @@
-package com.example.meetontest.api.security.jwt;
+package com.example.meetontest.api.security;
 
 import java.util.Date;
 
-import com.example.meetontest.api.services.UserDetailsImpl;
+import com.example.meetontest.api.services.impl.UserDetailsImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;

@@ -1,7 +1,8 @@
-package com.example.meetontest.api.services;
+package com.example.meetontest.api.services.impl;
 
 import com.example.meetontest.api.entities.Tag;
 import com.example.meetontest.api.repositories.TagRepository;
+import com.example.meetontest.api.services.TagService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -10,7 +11,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
-public class TagServiceImpl implements TagService{
+public class TagServiceImpl implements TagService {
 
     private final TagRepository tagRepository;
 

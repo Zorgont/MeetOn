@@ -1,13 +1,14 @@
-package com.example.meetontest.api.services;
+package com.example.meetontest.api.services.impl;
 
 import com.example.meetontest.api.entities.Meeting;
 import com.example.meetontest.api.exceptions.ValidatorException;
+import com.example.meetontest.api.services.MeetingValidator;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
 @Component
-public class MeetingValidatorImpl implements MeetingValidator{
+public class MeetingValidatorImpl implements MeetingValidator {
 
 
     @Override

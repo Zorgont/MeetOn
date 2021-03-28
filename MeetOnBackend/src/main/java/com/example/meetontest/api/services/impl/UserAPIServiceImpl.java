@@ -1,14 +1,15 @@
-package com.example.meetontest.api.services;
+package com.example.meetontest.api.services.impl;
 
 import com.example.meetontest.api.entities.User;
 import com.example.meetontest.api.exceptions.ResourceNotFoundException;
 import com.example.meetontest.api.repositories.UserRepository;
+import com.example.meetontest.api.services.UserAPIService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class UserAPIServiceImpl implements UserAPIService{
+public class UserAPIServiceImpl implements UserAPIService {
 
     private final UserRepository userRepository;
 

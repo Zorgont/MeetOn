@@ -1,4 +1,4 @@
-package com.example.meetontest.api.services;
+package com.example.meetontest.api.services.impl;
 
 import com.example.meetontest.api.entities.ERole;
 import com.example.meetontest.api.entities.Role;
@@ -9,7 +9,8 @@ import com.example.meetontest.api.dto.SignupRequest;
 import com.example.meetontest.api.dto.JwtResponse;
 import com.example.meetontest.api.repositories.RoleRepository;
 import com.example.meetontest.api.repositories.UserRepository;
-import com.example.meetontest.api.security.jwt.JwtUtils;
+import com.example.meetontest.api.security.JwtUtils;
+import com.example.meetontest.api.services.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,7 +27,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class AuthServiceImpl implements  AuthService{
+public class AuthServiceImpl implements AuthService {
 
     final private AuthenticationManager authenticationManager;
 

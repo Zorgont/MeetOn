@@ -5,8 +5,8 @@ import com.example.meetontest.api.repositories.MeetingRepository;
 import com.example.meetontest.api.repositories.RoleRepository;
 import com.example.meetontest.api.repositories.TagRepository;
 import com.example.meetontest.api.repositories.UserRepository;
-import com.example.meetontest.api.security.jwt.AuthEntryPointJwt;
-import com.example.meetontest.api.security.jwt.AuthTokenFilter;
+import com.example.meetontest.api.security.AuthEntryPointJwt;
+import com.example.meetontest.api.security.AuthTokenFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -101,6 +101,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             meetingByVladlen.setDate(new Date());
             meetingByVladlen.setParticipantAmount(100);
             meetingByVladlen.setIsPrivate(false);
+            meetingByVladlen.setIsParticipantAmountRestricted(false);
             meetingByVladlen.setStatus("Planning");
             meetingByVladlen.setDetails("Secret Zoom link: ....");
             meetingByVladlen.setManager(userRepository.findByUsername("Zorgont").get());
