@@ -3,6 +3,7 @@ package com.example.meetontest.api.controllers;
 import com.example.meetontest.api.dto.RequestDTO;
 import com.example.meetontest.api.entities.Request;
 import com.example.meetontest.api.dto.MessageResponse;
+import com.example.meetontest.api.entities.RequestStatus;
 import com.example.meetontest.api.services.MeetingService;
 import com.example.meetontest.api.converters.RequestConverter;
 import com.example.meetontest.api.services.RequestService;
@@ -44,5 +45,16 @@ public class RequestController {
     @GetMapping("/byMeeting/{id}")
     public List<Request> getRequestsByMeetingId(@PathVariable Long id){
         return requestService.getByMeeting(meetingService.getMeetingById(id));
+    }
+
+    @GetMapping("/changeStatus/{id}")
+    public ResponseEntity<?> updateRequestStatus(@PathVariable Long id, @RequestParam String status) {
+        try {
+            requestService.changeStatus(requestService.getById(id).get(), RequestStatus.valueOf(status.toUpperCase()));
+            return ResponseEntity.ok("Success");
+        }
+        catch (Exception e) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Failed updating status!"));
+        }
     }
 }
