@@ -22,6 +22,7 @@ export default class MeetingPage extends Component{
         });
     }
     deleteMeeting() {
+
         MeetingService.deleteMeeting(this.props.match.params.id).then((res) => {
             this.props.history.push('/meetings');
         });
@@ -40,6 +41,12 @@ export default class MeetingPage extends Component{
                     <Link to={`/update/${this.props.match.params.id}`}>
                         <button className="btn btn-primary">Update</button>
                     </Link>
+                </div>
+    }
+    buttonEnroll() {
+        console.log(AuthService.getCurrentUser())
+            return <div>     
+                <button className="btn btn-danger" style={{marginLeft:"5px"}} onClick={this.deleteMeeting.bind(this)}>Delete</button>
                 </div>
     }
 
@@ -66,10 +73,10 @@ export default class MeetingPage extends Component{
                                     <p> Participant amount: {this.state.meeting.participantAmount}</p>
                                 </div>
                                 <div className="row">
-                                    <p> Participant amount restricted? {this.state.meeting.isParticipantAmountRestricted}</p>
+                                    <p> Participant amount restricted? {this.state.meeting.isParticipantAmountRestricted? "true" : "false"}</p>
                                 </div>
                                 <div className="row">
-                                    <p> Is private?: {this.state.meeting.isPrivate} </p>
+                                    <p> Is private?: {this.state.meeting.isPrivate? "true" : "false"} </p>
                                 </div>
                                 <div className="row">
                                     <p> Details: </p>

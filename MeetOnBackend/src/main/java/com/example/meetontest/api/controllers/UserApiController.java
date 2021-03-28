@@ -1,9 +1,9 @@
 package com.example.meetontest.api.controllers;
 
 import com.example.meetontest.api.entities.User;
+import com.example.meetontest.api.payload.response.MessageResponse;
 import com.example.meetontest.api.security.services.UserAPIService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,17 +27,28 @@ public class UserApiController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
-        return userAPIService.getUserById(id);
+    public ResponseEntity<?> getUserById(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(userAPIService.getUserById(id));
+        }
+        catch (Exception e){
+             return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
+        }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User newUser) {
-        return userAPIService.updateUser(id,newUser);
+    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User newUser) {
+        try {
+            return ResponseEntity.ok(userAPIService.updateUser(id,newUser));
+        }
+        catch (Exception e){
+            return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
+        }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Map<String, Boolean>> deleteUser(@PathVariable Long id) {
-        return userAPIService.deleteUser(id);
+    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
+        userAPIService.deleteUser(id);
+        return ResponseEntity.ok("User deleted!");
     }
 }

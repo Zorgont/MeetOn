@@ -3,6 +3,7 @@ package com.example.meetontest.api.security.services;
 import com.example.meetontest.api.entities.ERole;
 import com.example.meetontest.api.entities.Role;
 import com.example.meetontest.api.entities.User;
+import com.example.meetontest.api.exceptions.ValidatorException;
 import com.example.meetontest.api.payload.request.LoginRequest;
 import com.example.meetontest.api.payload.request.SignupRequest;
 import com.example.meetontest.api.payload.response.JwtResponse;
@@ -11,22 +12,20 @@ import com.example.meetontest.api.repositories.RoleRepository;
 import com.example.meetontest.api.repositories.UserRepository;
 import com.example.meetontest.api.security.jwt.JwtUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-
-import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements  AuthService{
@@ -46,7 +45,7 @@ public class AuthServiceImpl implements  AuthService{
     final private JwtUtils jwtUtils;
 
 
-    public ResponseEntity<?> authenticateUser(LoginRequest loginRequest) {
+    public JwtResponse authenticateUser(LoginRequest loginRequest) {
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
@@ -56,27 +55,22 @@ public class AuthServiceImpl implements  AuthService{
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         List<String> roles = userDetails.getAuthorities().stream()
-                .map(item -> item.getAuthority())
+                .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
 
-        return ResponseEntity.ok(
-                new JwtResponse(
-                        userDetails.getId(),
-                        jwt, userDetails.getUsername(),
-                        userDetails.getEmail(), roles));
+        return new JwtResponse(
+                userDetails.getId(),
+                jwt, userDetails.getUsername(),
+                userDetails.getEmail(), roles);
     }
 
-    public ResponseEntity<?> registerUser(SignupRequest signUpRequest) {
+    public void registerUser(SignupRequest signUpRequest) throws ValidatorException {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Username is already taken!"));
+            throw new ValidatorException("Error: Username is already taken!");
         }
 
         if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Email is already in use!"));
+            throw new ValidatorException ("Error: Email is already in use!");
         }
 
         // Create new user's account
@@ -89,26 +83,26 @@ public class AuthServiceImpl implements  AuthService{
 
         if (strRoles == null) {
             Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                    .orElseThrow(() -> new ValidatorException("Error: Role is not found."));
             roles.add(userRole);
         } else {
             strRoles.forEach(role -> {
                 switch (role) {
                     case "admin":
                         Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                                .orElseThrow(() -> new ValidatorException("Error: Role is not found."));
                         roles.add(adminRole);
 
                         break;
                     case "mod":
                         Role modRole = roleRepository.findByName(ERole.ROLE_MODERATOR)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                                .orElseThrow(() -> new ValidatorException("Error: Role is not found."));
                         roles.add(modRole);
 
                         break;
                     default:
                         Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                                .orElseThrow(() -> new ValidatorException("Error: Role is not found."));
                         roles.add(userRole);
                 }
             });
@@ -117,6 +111,5 @@ public class AuthServiceImpl implements  AuthService{
         user.setRoles(roles);
         userRepository.save(user);
 
-        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
 }

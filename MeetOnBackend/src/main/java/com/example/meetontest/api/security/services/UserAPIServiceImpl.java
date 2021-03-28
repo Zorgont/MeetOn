@@ -29,28 +29,22 @@ public class UserAPIServiceImpl implements UserAPIService{
     }
 
 
-    public ResponseEntity<User> getUserById(Long id) {
+    public User getUserById(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User no exist!"));
-        return ResponseEntity.ok(user);
+        return user;
     }
 
 
-    public ResponseEntity<User> updateUser(Long id, User newUser) {
+    public User updateUser(Long id, User newUser) {
         User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User no exist!"));
         user.setFirstName(newUser.getFirstName());
         user.setAbout(newUser.getAbout());
-        User updatedUser = userRepository.save(user);
-        return ResponseEntity.ok(updatedUser);
+        return userRepository.save(user);
     }
 
 
-    public ResponseEntity<Map<String, Boolean>> deleteUser(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User no exist!"));
-
-        userRepository.delete(user);
-        Map<String, Boolean> response = new HashMap<>();
-        response.put("deleted", true);
-        return ResponseEntity.ok(response);
+    public void deleteUser(Long id) {
+        userRepository.delete(userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User no exist!")));
     }
 
     @Override

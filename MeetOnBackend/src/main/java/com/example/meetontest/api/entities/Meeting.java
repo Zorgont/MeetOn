@@ -3,9 +3,10 @@ package com.example.meetontest.api.entities;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-import com.example.meetontest.api.payload.request.CreateMeetingRequest;
+import com.example.meetontest.api.payload.response.MeetingDTO;
 import lombok.*;
 
 @Entity
@@ -19,9 +20,9 @@ public class Meeting {
     private String name;
     private Date date;
     private String about;
-    private boolean isParticipantAmountRestricted;
+    private Boolean isParticipantAmountRestricted;
     private int participantAmount;
-    private boolean isPrivate;
+    private Boolean isPrivate;
     private String details;
     private String status;
 
@@ -35,6 +36,10 @@ public class Meeting {
             inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private Set<Tag> tags = new HashSet<>();
 
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name="request_id")
+    private List<Request> requests;
+
     public Meeting(String name, Date date, String about, boolean isParticipantAmountRestricted, int participantAmount, boolean isPrivate, String details, String status, User manager, Set<Tag> tags) {
         this.name = name;
         this.date = date;
@@ -46,17 +51,5 @@ public class Meeting {
         this.status = status;
         this.manager = manager;
         this.tags = tags;
-    }
-    public Meeting(CreateMeetingRequest meetingRequest,Set<Tag> tags,User manager){
-       this(meetingRequest.getName(),
-               meetingRequest.getDate(),
-               meetingRequest.getAbout(),
-               meetingRequest.getIsParticipantAmountRestricted() == 1,
-               meetingRequest.getParticipantAmount(),
-               meetingRequest.getIsPrivate() == 1,
-               meetingRequest.getDetails(),
-               "Planning",
-               manager,
-               tags);
     }
 }

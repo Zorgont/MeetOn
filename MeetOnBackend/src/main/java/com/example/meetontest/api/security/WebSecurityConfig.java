@@ -102,7 +102,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             meetingByVladlen.setAbout("Joins this wonderful meeting!");
             meetingByVladlen.setDate(new Date());
             meetingByVladlen.setParticipantAmount(100);
-            meetingByVladlen.setPrivate(false);
+            meetingByVladlen.setIsPrivate(false);
             meetingByVladlen.setStatus("Planning");
             meetingByVladlen.setDetails("Secret Zoom link: ....");
             meetingByVladlen.setManager(userRepository.findByUsername("Zorgont").get());
