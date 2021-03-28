@@ -1,11 +1,11 @@
 package com.example.meetontest.api.controllers;
 
 import com.example.meetontest.api.exceptions.ValidatorException;
-import com.example.meetontest.api.payload.response.MeetingDTO;
-import com.example.meetontest.api.payload.response.MessageResponse;
-import com.example.meetontest.api.security.services.MeetingConverter;
-import com.example.meetontest.api.security.services.MeetingService;
-import com.example.meetontest.api.security.services.UserAPIService;
+import com.example.meetontest.api.dto.MeetingDTO;
+import com.example.meetontest.api.dto.MessageResponse;
+import com.example.meetontest.api.services.MeetingConverter;
+import com.example.meetontest.api.services.MeetingService;
+import com.example.meetontest.api.services.UserAPIService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;

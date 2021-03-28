@@ -1,4 +1,4 @@
-package com.example.meetontest.api.payload.response;
+package com.example.meetontest.api.dto;
 
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;

@@ -1,9 +1,7 @@
-package com.example.meetontest.api.security.services;
+package com.example.meetontest.api.services;
 
 import com.example.meetontest.api.dto.RequestDTO;
-import com.example.meetontest.api.entities.Meeting;
 import com.example.meetontest.api.entities.Request;
-import com.example.meetontest.api.entities.User;
 import com.example.meetontest.api.repositories.MeetingRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

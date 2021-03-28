@@ -2,11 +2,11 @@ package com.example.meetontest.api.controllers;
 
 import com.example.meetontest.api.dto.RequestDTO;
 import com.example.meetontest.api.entities.Request;
-import com.example.meetontest.api.payload.response.MessageResponse;
-import com.example.meetontest.api.security.services.MeetingService;
-import com.example.meetontest.api.security.services.RequestConverter;
-import com.example.meetontest.api.security.services.RequestService;
-import com.example.meetontest.api.security.services.UserAPIService;
+import com.example.meetontest.api.dto.MessageResponse;
+import com.example.meetontest.api.services.MeetingService;
+import com.example.meetontest.api.services.RequestConverter;
+import com.example.meetontest.api.services.RequestService;
+import com.example.meetontest.api.services.UserAPIService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -1,10 +1,10 @@
 package com.example.meetontest.api.controllers;
 
 import com.example.meetontest.api.exceptions.ValidatorException;
-import com.example.meetontest.api.payload.request.LoginRequest;
-import com.example.meetontest.api.payload.request.SignupRequest;
-import com.example.meetontest.api.payload.response.MessageResponse;
-import com.example.meetontest.api.security.services.AuthService;
+import com.example.meetontest.api.dto.LoginRequest;
+import com.example.meetontest.api.dto.SignupRequest;
+import com.example.meetontest.api.dto.MessageResponse;
+import com.example.meetontest.api.services.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;

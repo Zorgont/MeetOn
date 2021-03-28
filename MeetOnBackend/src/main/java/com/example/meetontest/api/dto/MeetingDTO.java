@@ -1,4 +1,4 @@
-package com.example.meetontest.api.payload.response;
+package com.example.meetontest.api.dto;
 
 import com.example.meetontest.api.entities.Meeting;
 import lombok.Getter;

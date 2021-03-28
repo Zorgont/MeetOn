@@ -1,9 +1,6 @@
-package com.example.meetontest.api.security.services;
+package com.example.meetontest.api.services;
 
 import com.example.meetontest.api.entities.User;
-import org.springframework.http.ResponseEntity;
-
-import java.util.Map;
 
 public interface UserAPIService {
     Iterable<User> getUsers();

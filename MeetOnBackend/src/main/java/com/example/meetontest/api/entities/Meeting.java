@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.example.meetontest.api.payload.response.MeetingDTO;
 import lombok.*;
 
 @Entity

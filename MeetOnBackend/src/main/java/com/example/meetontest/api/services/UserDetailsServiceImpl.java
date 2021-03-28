@@ -1,9 +1,6 @@
-package com.example.meetontest.api.security.services;
+package com.example.meetontest.api.services;
 
-import com.example.meetontest.api.entities.User;
-import com.example.meetontest.api.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

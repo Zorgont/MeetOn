@@ -1,4 +1,4 @@
-package com.example.meetontest.api.security.services;
+package com.example.meetontest.api.services;
 
 
 import com.example.meetontest.api.entities.Meeting;

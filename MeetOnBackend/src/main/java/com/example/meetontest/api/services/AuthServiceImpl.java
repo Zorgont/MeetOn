@@ -1,18 +1,16 @@
-package com.example.meetontest.api.security.services;
+package com.example.meetontest.api.services;
 
 import com.example.meetontest.api.entities.ERole;
 import com.example.meetontest.api.entities.Role;
 import com.example.meetontest.api.entities.User;
 import com.example.meetontest.api.exceptions.ValidatorException;
-import com.example.meetontest.api.payload.request.LoginRequest;
-import com.example.meetontest.api.payload.request.SignupRequest;
-import com.example.meetontest.api.payload.response.JwtResponse;
-import com.example.meetontest.api.payload.response.MessageResponse;
+import com.example.meetontest.api.dto.LoginRequest;
+import com.example.meetontest.api.dto.SignupRequest;
+import com.example.meetontest.api.dto.JwtResponse;
 import com.example.meetontest.api.repositories.RoleRepository;
 import com.example.meetontest.api.repositories.UserRepository;
 import com.example.meetontest.api.security.jwt.JwtUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

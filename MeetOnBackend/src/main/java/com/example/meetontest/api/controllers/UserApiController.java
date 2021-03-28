@@ -1,13 +1,11 @@
 package com.example.meetontest.api.controllers;
 
 import com.example.meetontest.api.entities.User;
-import com.example.meetontest.api.payload.response.MessageResponse;
-import com.example.meetontest.api.security.services.UserAPIService;
+import com.example.meetontest.api.dto.MessageResponse;
+import com.example.meetontest.api.services.UserAPIService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController

@@ -1,4 +1,4 @@
-package com.example.meetontest.api.security;
+package com.example.meetontest.api;
 
 import com.example.meetontest.api.entities.*;
 import com.example.meetontest.api.repositories.MeetingRepository;
@@ -7,9 +7,7 @@ import com.example.meetontest.api.repositories.TagRepository;
 import com.example.meetontest.api.repositories.UserRepository;
 import com.example.meetontest.api.security.jwt.AuthEntryPointJwt;
 import com.example.meetontest.api.security.jwt.AuthTokenFilter;
-import com.example.meetontest.api.security.services.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -116,7 +114,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests().antMatchers("/api/v1/auth/**").permitAll()
                 .antMatchers("/api/v1/users/**").permitAll()
                 .antMatchers("/api/v1/tags/**").permitAll()
-                .antMatchers("/api/v1/test/**").authenticated()
                 .antMatchers("/api/v1/meetings").permitAll()
                 .antMatchers("/api/v1/meetings/**").authenticated()
                 .anyRequest().authenticated();

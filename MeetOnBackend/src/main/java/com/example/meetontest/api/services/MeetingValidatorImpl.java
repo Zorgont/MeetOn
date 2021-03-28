@@ -1,16 +1,10 @@
-package com.example.meetontest.api.security.services;
+package com.example.meetontest.api.services;
 
 import com.example.meetontest.api.entities.Meeting;
-import com.example.meetontest.api.entities.Tag;
-import com.example.meetontest.api.entities.User;
 import com.example.meetontest.api.exceptions.ValidatorException;
-import com.example.meetontest.api.payload.response.MessageResponse;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
-import java.util.Optional;
-import java.util.Set;
 
 @Component
 public class MeetingValidatorImpl implements MeetingValidator{
