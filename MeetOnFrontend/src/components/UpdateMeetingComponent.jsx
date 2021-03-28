@@ -26,9 +26,9 @@ export default class CreateMeeting extends Component{
             name: this.state.name,
             about: this.state.about,
             date: this.state.date,
-            isParticipantAmountRestricted : this.state.isParticipantAmountRestricted ? 1 : 0,
+            isParticipantAmountRestricted : this.state.isParticipantAmountRestricted ,
             participantAmount: this.state.participantAmount,
-            isPrivate: this.state.isPrivate ? 1 : 0,
+            isPrivate: this.state.isPrivate,
             details: this.state.details,
             tags: this.state.tags
         };
@@ -91,9 +91,9 @@ export default class CreateMeeting extends Component{
                     name: meeting.name,
                     about: meeting.about,
                     date: meeting.date.substring(0,16),
-                    isParticipantAmountRestricted : meeting.isParticipantAmountRestricted === 1,
+                    isParticipantAmountRestricted : meeting.isParticipantAmountRestricted ,
                     participantAmount: parseInt(meeting.participantAmount),
-                    isPrivate: meeting.isPrivate === 1,
+                    isPrivate: meeting.isPrivate ,
                     details: meeting.details,
                     tags: meeting.tags
                 });

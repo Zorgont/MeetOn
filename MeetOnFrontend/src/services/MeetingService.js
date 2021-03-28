@@ -8,6 +8,10 @@ class MeetingService {
     }
 
     createMeeting(meeting) {
+        console.log("meeting before sending:");
+        console.log(meeting);
+        console.log("header:");
+        console.log(authHeader());
         return axios.post(MEETING_API_BASE_URL, meeting, { headers: authHeader() });
     }
 
