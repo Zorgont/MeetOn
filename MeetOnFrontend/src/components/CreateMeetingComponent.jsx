@@ -10,6 +10,7 @@ export default class CreateMeeting extends Component{
             name: "",
             about: "",
             date: "",
+            endDate:"",
             isParticipantAmountRestricted: false,
             participantAmount: 0,
             isPrivate: false,
@@ -25,8 +26,8 @@ export default class CreateMeeting extends Component{
             name: this.state.name,
             about: this.state.about,
             date: this.state.date,
+            endDate:this.state.endDate,
             isParticipantAmountRestricted : this.state.isParticipantAmountRestricted,
-
             participantAmount: this.state.participantAmount,
             isPrivate: this.state.isPrivate,
             details: this.state.details,
@@ -49,6 +50,10 @@ export default class CreateMeeting extends Component{
     }
     changeDateHandler = (event) => {
         this.setState({date: event.target.value});
+        console.log(event.target.value);
+    }
+    changeEndDateHandler = (event) => {
+        this.setState({endDate: event.target.value});
         console.log(event.target.value);
     }
     changeParticipantAmountHandler = (event) => {
@@ -101,8 +106,12 @@ export default class CreateMeeting extends Component{
                                         <input type="text"  name="about" className="form-control" value={this.state.about} onChange={this.changeAboutHandler.bind(this)} required />
                                     </div>
                                     <div className="form-group row">
-                                        <label htmlFor="date"> Date: </label>
+                                        <label htmlFor="date">Beginning Date: </label>
                                         <input type="datetime-local" name="date" className="form-control" value={this.state.date} onChange={this.changeDateHandler.bind(this)} required/>
+                                    </div>
+                                    <div className="form-group row">
+                                        <label htmlFor="endDate">End Date: </label>
+                                        <input type="datetime-local" name="endDate" className="form-control" value={this.state.endDate} onChange={this.changeEndDateHandler.bind(this)} required/>
                                     </div>
                                     <div className="form-group row">
                                         <label htmlFor="participant_amount"> ParticipantAmount: </label>

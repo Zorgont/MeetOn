@@ -59,9 +59,10 @@ export default class MeetingPage extends Component{
                             <p>You have already enrolled to the meeting!</p>
                             <p>Status: {this.state.request.status}</p>
                         </div>
-            if(this.state.requestsAmount >= this.state.meeting.participantAmount) 
+            if(this.state.meeting.isParticipantAmountRestricted)
+            if(this.state.requestsAmount >= this.state.meeting.participantAmount)
                 return <div><p>No available places!</p></div>
-            
+
             return  <div>
                         <Link to={`/enroll/${this.props.match.params.id}`}>
                             <button className="btn btn-primary" style={{marginLeft:"5px"}}>Enroll</button>
@@ -69,11 +70,11 @@ export default class MeetingPage extends Component{
                     </div>
         }
     }
-    
+
     render() {
         console.log(this.props.match.params.id);
         return (
-            <div>   
+            <div>
                 <div className="container">
                     <div className="row">
                         <div className="card col-md-8 offset-md-2 offset-md-2">
@@ -86,8 +87,12 @@ export default class MeetingPage extends Component{
                                     <p>{this.state.meeting.about}</p>
                                 </div>
                                 <div className="row">
-                                    <p> Date: </p>
+                                    <p> Beginning Date: </p>
                                     <p> {this.state.meeting.date} </p>
+                                </div>
+                                <div className="row">
+                                    <p> End Date: </p>
+                                    <p> {this.state.meeting.endDate} </p>
                                 </div>
                                 <div className="row">
                                     <p> Participant amount: {this.state.meeting.participantAmount}</p>

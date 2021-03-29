@@ -15,7 +15,7 @@ import BoardAdmin from "./components/BoardUserComponent";
 import CreateMeeting from "./components/CreateMeetingComponent";
 import MeetingList from "./components/MeetingListComponent";
 import MeetingPage from "./components/MeetingPageComponent";
-import UpdateMeeting from "./components/UpdateMeetingComponent";
+import UpdateMeeting from "./components/ChangeMeetingComponent";
 import CreateRequest from "./components/CreateRequestComponent";
 import MeetingRequest from "./components/MeetingRequestComponent";
 
