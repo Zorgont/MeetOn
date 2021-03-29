@@ -20,5 +20,6 @@ public class MeetingDTO {
     private Boolean isPrivate;
     private Boolean isParticipantAmountRestricted;
     private int participantAmount;
+    private String status;
     private List<String> tags;
 }

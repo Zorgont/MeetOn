@@ -23,7 +23,9 @@ public class Meeting {
     private int participantAmount;
     private Boolean isPrivate;
     private String details;
-    private String status;
+
+    @Enumerated(EnumType.STRING)
+    private MeetingStatus status;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "manager_id")
@@ -39,7 +41,7 @@ public class Meeting {
     @JsonIgnore
     private List<Request> requests;
 
-    public Meeting(String name, Date date, Date endDate, String about, boolean isParticipantAmountRestricted, int participantAmount, boolean isPrivate, String details, String status, User manager, Set<Tag> tags) {
+    public Meeting(String name, Date date, Date endDate, String about, boolean isParticipantAmountRestricted, int participantAmount, boolean isPrivate, String details, MeetingStatus status, User manager, Set<Tag> tags) {
         this.name = name;
         this.date = date;
         this.endDate = endDate;

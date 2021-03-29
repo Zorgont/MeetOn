@@ -21,6 +21,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 
@@ -90,10 +93,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             meetingByVladlen.setName("Meeting by Vladlen");
             meetingByVladlen.setAbout("Joins this wonderful meeting!");
             meetingByVladlen.setDate(new Date());
+            Calendar instance = Calendar.getInstance();
+            instance.setTime(meetingByVladlen.getDate());
+            instance.add(Calendar.DAY_OF_MONTH, 3);
+            meetingByVladlen.setEndDate(instance.getTime());
             meetingByVladlen.setParticipantAmount(100);
             meetingByVladlen.setIsPrivate(false);
             meetingByVladlen.setIsParticipantAmountRestricted(false);
-            meetingByVladlen.setStatus("Planning");
+            meetingByVladlen.setStatus(MeetingStatus.PLANNING);
             meetingByVladlen.setDetails("Secret Zoom link: ....");
             meetingByVladlen.setManager(userRepository.findByUsername("Zorgont").get());
             meetingByVladlen.setTags(new HashSet<>(tagRepository.findAll()));

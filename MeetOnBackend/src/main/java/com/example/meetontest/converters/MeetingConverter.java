@@ -1,6 +1,7 @@
 package com.example.meetontest.converters;
 
 import com.example.meetontest.entities.Meeting;
+import com.example.meetontest.entities.MeetingStatus;
 import com.example.meetontest.entities.Tag;
 import com.example.meetontest.dto.MeetingDTO;
 import com.example.meetontest.services.TagService;
@@ -28,6 +29,13 @@ public class MeetingConverter implements Converter<Meeting, MeetingDTO> {
         meeting.setIsPrivate(entity.getIsPrivate());
         meeting.setDetails(entity.getDetails());
         meeting.setTags(tagService.getTags(entity.getTags()));
+        try {
+            meeting.setStatus(MeetingStatus.valueOf(entity.getStatus().toUpperCase()));
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+            meeting.setStatus(MeetingStatus.PLANNING);
+        }
         return meeting;
     }
 
@@ -44,6 +52,7 @@ public class MeetingConverter implements Converter<Meeting, MeetingDTO> {
                 entity.getIsPrivate(),
                 entity.getIsParticipantAmountRestricted(),
                 entity.getParticipantAmount(),
+                entity.getStatus().toString(),
                 entity.getTags().stream().map(Tag::getName).collect(Collectors.toList()));
     }
 }

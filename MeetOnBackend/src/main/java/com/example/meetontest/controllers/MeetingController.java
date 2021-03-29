@@ -49,12 +49,12 @@ public class MeetingController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateMeeting (@PathVariable Long id, @RequestBody MeetingDTO meetingRequest) throws ValidatorException {
-        try {
+        //try {
             return ResponseEntity.ok(meetingService.updateMeeting(id,meetingConverter.convert(meetingRequest)));
-        }
-        catch (Exception e){
-            return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
-        }
+        //}
+        //catch (Exception e){
+            //return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
+        //}
     }
 
     @DeleteMapping("/{id}")

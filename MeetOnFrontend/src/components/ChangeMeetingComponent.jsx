@@ -16,6 +16,7 @@ export default class CreateMeeting extends Component{
             participantAmount: 0,
             isPrivate: '',
             details: "",
+            status: "",
             tags: []
         };
 
@@ -32,6 +33,7 @@ export default class CreateMeeting extends Component{
             participantAmount: this.state.participantAmount,
             isPrivate: this.state.isPrivate,
             details: this.state.details,
+            status: this.state.status,
             tags: this.state.tags
         };
         console.log(meeting);
@@ -102,6 +104,7 @@ export default class CreateMeeting extends Component{
                     participantAmount: parseInt(meeting.participantAmount),
                     isPrivate: meeting.isPrivate ,
                     details: meeting.details,
+                    status: meeting.status,
                     tags: meeting.tags
                 });
             console.log(this.state);
