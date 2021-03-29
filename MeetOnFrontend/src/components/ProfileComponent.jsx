@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Link } from 'react-router-dom';
 import AuthService from "../services/AuthService";
 import MeetingService from "../services/MeetingService";
+import RequestService from "../services/RequestService"
 
 export default class Profile extends Component {
     constructor(props) {
@@ -9,19 +10,33 @@ export default class Profile extends Component {
 
         this.state = {
             currentUser: AuthService.getCurrentUser(),
-            meetings: []
+            meetings: [],
+            requests:[]
         };
     }
     
     componentDidMount() {
+        this.updateTables();
+    }
+
+    updateTables() {
         MeetingService.getMeetingsByManager(this.state.currentUser.username).then((res) => {
             this.setState({meetings: res.data});
+            RequestService.getRequestsByUserId(this.state.currentUser.id).then((res)=>{
+                this.setState({requests: res.data})
+            })
         });
     }
     
     createMeeting(e){
         this.props.history.push('/add_meeting');
 
+    }
+
+    removeRequest(id){
+        RequestService.removeRequest(id).then((res) => {
+            this.updateTables();
+        })
     }
     render() {
         const { currentUser } = this.state;
@@ -53,7 +68,9 @@ export default class Profile extends Component {
                     currentUser.roles.map((role, index) => <li key={index}>{role}</li>)}
                 </ul>
                 <button className="btn btn-primary" onClick={this.createMeeting.bind(this)}>Create meeting</button>
-                <h2 className="text-center">Meetings list</h2>
+                <div className="row">
+                    <div className="col-6">
+                        <h2 className="text-center">Meetings list</h2>
                         <table className="table table-striped table-bordered">
                             <thead>
                                 <tr>
@@ -69,13 +86,40 @@ export default class Profile extends Component {
                                         <tr key={meeting.id}>
                                             <td><Link to={`/meetings/${meeting.meetingId}`}>{meeting.name}</Link></td>
                                             <td> {meeting.about} </td>
-                                            <td> <a href="#">Requests</a> </td>
-
+                                            <td><Link to={`/meetings/${meeting.meetingId}/requests`}>Requests</Link></td>
                                         </tr>
                                     )
                                 }
                             </tbody>
                         </table>
+                    </div>
+                    <div className="col-6">
+                        <h2 className="text-center">Requests list</h2>
+                        <table className="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Meeting</th>
+                                    <th>About</th>
+                                    <th>Delete</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    this.state.requests.map(
+                                        request => 
+                                        <tr key={request.id}>
+                                            <td><Link to={`/meetings/${request.meeting_id}`}>{request.meetingName}</Link></td>
+                                            <td> {request.about} </td>
+                                            <td>
+                                                <button className="btn btn-danger" onClick={this.removeRequest.bind(this, request.id)}>Delete</button>
+                                            </td>
+                                        </tr>
+                                    )
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         );
     }

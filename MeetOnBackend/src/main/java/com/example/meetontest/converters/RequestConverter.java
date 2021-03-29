@@ -24,6 +24,6 @@ public class RequestConverter implements Converter<Request, RequestDTO> {
 
     @Override
     public RequestDTO convertBack(Request entity) {
-        return new RequestDTO(entity.getRequest_id(),entity.getAbout(),entity.getMeeting().getId(),entity.getUser().getId(),entity.getStatus().toString());
+        return new RequestDTO(entity.getRequest_id(), entity.getAbout(), entity.getMeeting().getId(), entity.getMeeting().getName(), entity.getUser().getId(), entity.getUser().getUsername(), entity.getStatus().toString());
     }
 }

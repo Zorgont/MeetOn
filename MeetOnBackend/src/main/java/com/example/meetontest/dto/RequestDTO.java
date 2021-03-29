@@ -9,6 +9,8 @@ public class RequestDTO {
     private Long id;
     private String about;
     private Long meeting_id;
+    private String meetingName;
     private Long user_id;
+    private String username;
     private String status;
 }

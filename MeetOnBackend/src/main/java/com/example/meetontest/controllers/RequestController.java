@@ -56,7 +56,7 @@ public class RequestController {
     public ResponseEntity<?> updateRequestStatus(@PathVariable Long id, @RequestParam String status) {
         try {
             requestService.changeStatus(requestService.getById(id).get(), RequestStatus.valueOf(status.toUpperCase()));
-            return ResponseEntity.ok("Success");
+            return ResponseEntity.ok(requestConverter.convertBack(requestService.getById(id).get()));
         }
         catch (Exception e) {
             return ResponseEntity.badRequest().body(new MessageResponse("Failed updating status!"));
