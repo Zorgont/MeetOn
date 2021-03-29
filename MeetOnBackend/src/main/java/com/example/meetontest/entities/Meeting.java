@@ -17,6 +17,7 @@ public class Meeting {
     private Long id;
     private String name;
     private Date date;
+    private Date endDate;
     private String about;
     private Boolean isParticipantAmountRestricted;
     private int participantAmount;
@@ -38,9 +39,10 @@ public class Meeting {
     @JsonIgnore
     private List<Request> requests;
 
-    public Meeting(String name, Date date, String about, boolean isParticipantAmountRestricted, int participantAmount, boolean isPrivate, String details, String status, User manager, Set<Tag> tags) {
+    public Meeting(String name, Date date, Date endDate, String about, boolean isParticipantAmountRestricted, int participantAmount, boolean isPrivate, String details, String status, User manager, Set<Tag> tags) {
         this.name = name;
         this.date = date;
+        this.endDate = endDate;
         this.about = about;
         this.isParticipantAmountRestricted = isParticipantAmountRestricted;
         this.participantAmount = participantAmount;

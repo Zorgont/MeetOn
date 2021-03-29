@@ -18,9 +18,11 @@ public class MeetingValidatorImpl implements MeetingValidator {
         if (meeting.getDate().before(new Date()))
             throw new ValidatorException("Incorrect date!");
 
-        // Валидация тегов - они существуют в БД и их количество не ноль:
+        if (meeting.getDate().after(meeting.getEndDate()))
+            throw new ValidatorException("Date of the meeting cannot be before end date!");
 
+        // Валидация тегов - они существуют в БД и их количество не ноль:
         if (meeting.getTags().isEmpty())
-            throw new ValidatorException("Incorrect tags!");;
+            throw new ValidatorException("Incorrect tags!");
     }
 }

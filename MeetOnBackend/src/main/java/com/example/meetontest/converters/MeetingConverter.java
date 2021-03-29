@@ -22,6 +22,7 @@ public class MeetingConverter implements Converter<Meeting, MeetingDTO> {
         meeting.setName(entity.getName());
         meeting.setAbout(entity.getAbout());
         meeting.setDate(entity.getDate());
+        meeting.setEndDate(entity.getEndDate());
         meeting.setIsParticipantAmountRestricted(entity.getIsParticipantAmountRestricted());
         meeting.setParticipantAmount(entity.getParticipantAmount());
         meeting.setIsPrivate(entity.getIsPrivate());
@@ -35,6 +36,7 @@ public class MeetingConverter implements Converter<Meeting, MeetingDTO> {
         return new MeetingDTO(entity.getId(),
                 entity.getName(),
                 entity.getDate(),
+                entity.getEndDate(),
                 entity.getAbout(),
                 entity.getDetails(),
                 entity.getManager().getId(),
