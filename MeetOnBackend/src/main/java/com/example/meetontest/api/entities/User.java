@@ -26,14 +26,14 @@ public class User {
     private String secondName;
     private double karma;
     private String status;
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(	name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name="request_id")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", orphanRemoval = true)
+    @JsonIgnore
     private List<Request> requests;
 
     public User(String username, String password, String email, String about, String firstName, String secondName, double karma, String status, Set<Role> roles) {

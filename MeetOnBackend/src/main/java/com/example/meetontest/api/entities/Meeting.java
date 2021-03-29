@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 @Entity
@@ -35,8 +36,8 @@ public class Meeting {
             inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private Set<Tag> tags = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name="request_id")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "meeting", orphanRemoval = true)
+    @JsonIgnore
     private List<Request> requests;
 
     public Meeting(String name, Date date, String about, boolean isParticipantAmountRestricted, int participantAmount, boolean isPrivate, String details, String status, User manager, Set<Tag> tags) {

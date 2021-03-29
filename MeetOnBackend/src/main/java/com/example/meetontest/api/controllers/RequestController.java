@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -28,23 +30,23 @@ public class RequestController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getRequestById(@PathVariable Long id) {
         Optional<Request> request = requestService.getById(id);
-        return request.isPresent() ? ResponseEntity.ok(request.get()) :
+        return request.isPresent() ? ResponseEntity.ok(requestConverter.convertBack(request.get())) :
                 ResponseEntity.badRequest().body(new MessageResponse("Request not found!"));
     }
 
     @PostMapping
     public ResponseEntity<?> createRequest(@RequestBody RequestDTO requestDTO) {
-        return ResponseEntity.ok(requestService.create(requestConverter.convert(requestDTO)));
+        return ResponseEntity.ok(requestConverter.convertBack(requestService.create(requestConverter.convert(requestDTO))));
     }
 
     @GetMapping("/byUser/{id}")
-    public List<Request> getRequestsByUserId(@PathVariable Long id) {
-        return requestService.getByUser(userAPIService.getUserById(id));
+    public List<RequestDTO> getRequestsByUserId(@PathVariable Long id) {
+        return requestService.getByUser(userAPIService.getUserById(id)).stream().map(requestConverter::convertBack).collect(Collectors.toList());
     }
 
     @GetMapping("/byMeeting/{id}")
-    public List<Request> getRequestsByMeetingId(@PathVariable Long id){
-        return requestService.getByMeeting(meetingService.getMeetingById(id));
+    public List<RequestDTO> getRequestsByMeetingId(@PathVariable Long id){
+        return requestService.getByMeeting(meetingService.getMeetingById(id)).stream().map(requestConverter::convertBack).collect(Collectors.toList());
     }
 
     @PutMapping("/changeStatus/{id}")
