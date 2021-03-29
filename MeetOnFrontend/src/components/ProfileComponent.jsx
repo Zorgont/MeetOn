@@ -100,6 +100,7 @@ export default class Profile extends Component {
                                 <tr>
                                     <th>Meeting</th>
                                     <th>About</th>
+                                    <th>Status</th>
                                     <th>Delete</th>
                                 </tr>
                             </thead>
@@ -110,6 +111,7 @@ export default class Profile extends Component {
                                         <tr key={request.id}>
                                             <td><Link to={`/meetings/${request.meeting_id}`}>{request.meetingName}</Link></td>
                                             <td> {request.about} </td>
+                                            <td> {request.status} </td>
                                             <td>
                                                 <button className="btn btn-danger" onClick={this.removeRequest.bind(this, request.id)}>Delete</button>
                                             </td>

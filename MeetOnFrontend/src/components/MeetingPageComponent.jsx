@@ -11,28 +11,27 @@ export default class MeetingPage extends Component{
         
         this.state = {
             meeting: {},
-            requestExistence: true,
-            currentUser: AuthService.getCurrentUser()
+            request: null,
+            currentUser: AuthService.getCurrentUser(),
+            requestsAmount: 0
         };
-        
     }
 
     componentDidMount() {
         console.log("here");
         MeetingService.getMeetingById(this.props.match.params.id).then((res) => {
             this.setState({ meeting: res.data});
-            console.log("LOOOK HEEEREEEEE");
-            console.log(this.state);
-            console.log(this.state.meeting.meetingId);
-            console.log(this.state.currentUser.id);
             
-            RequestService.checkRequestExistence(this.state.meeting.meetingId, this.state.currentUser.id).then((res) => {
-                this.setState({ requestExistence: res.data});
+            RequestService.getAprovedRequestsAmount(this.state.meeting.meetingId).then((res) => {
+                this.setState({ requestsAmount: res.data});
+            });
+            
+            RequestService.getRequestByMeetingAndUser(this.state.meeting.meetingId, this.state.currentUser.id).then((res) => {
+                this.setState({ request: res.data});
             });
         });
     }
     deleteMeeting() {
-
         MeetingService.deleteMeeting(this.props.match.params.id).then((res) => {
             this.props.history.push('/meetings');
         });
@@ -40,28 +39,35 @@ export default class MeetingPage extends Component{
     buttonDelete() {
         console.log(AuthService.getCurrentUser())
         if (this.state.meeting.managerId === AuthService.getCurrentUser().id)
-            return <div>     
-                <button className="btn btn-danger" style={{marginLeft:"5px"}} onClick={this.deleteMeeting.bind(this)}>Delete</button>
-                </div>
+            return  <div>     
+                        <button className="btn btn-danger" style={{marginLeft:"5px"}} onClick={this.deleteMeeting.bind(this)}>Delete</button>
+                    </div>
     }
     buttonUpdate() {
         console.log(AuthService.getCurrentUser())
         if (this.state.meeting.managerId === AuthService.getCurrentUser().id)
             return <div>
-                    <Link to={`/update/${this.props.match.params.id}`}>
-                        <button className="btn btn-primary">Update</button>
-                    </Link>
-                </div>
+                        <Link to={`/update/${this.props.match.params.id}`}>
+                            <button className="btn btn-primary">Update</button>
+                        </Link>
+                    </div>
     }
     buttonEnroll() {
-        console.log(AuthService.getCurrentUser())
-        // todo: писать, что вы уже зарегистрированы
-        if ((this.state.meeting.managerId !== AuthService.getCurrentUser().id)&&(!this.state.requestExistence))
-            return  <div>     
+        if (this.state.meeting.managerId !== AuthService.getCurrentUser().id){
+            if(this.state.request)
+                return  <div>
+                            <p>You have already enrolled to the meeting!</p>
+                            <p>Status: {this.state.request.status}</p>
+                        </div>
+            if(this.state.requestsAmount >= this.state.meeting.participantAmount) 
+                return <div><p>No available places!</p></div>
+            
+            return  <div>
                         <Link to={`/enroll/${this.props.match.params.id}`}>
                             <button className="btn btn-primary" style={{marginLeft:"5px"}}>Enroll</button>
                         </Link>
                     </div>
+        }
     }
     
     render() {

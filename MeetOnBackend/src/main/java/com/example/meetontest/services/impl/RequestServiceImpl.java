@@ -52,12 +52,17 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public boolean existsByMeetingIdUserId(Long meetingId, Long userId) {
-        return requestRepository.existsByMeetingAndUser(meetingService.getMeetingById(meetingId), userService.getUserById(userId));
+    public Optional<Request> getByMeetingIdUserId(Long meetingId, Long userId) {
+        return requestRepository.findByMeetingAndUser(meetingService.getMeetingById(meetingId), userService.getUserById(userId));
     }
 
     @Override
     public void removeById(Long id) {
         requestRepository.deleteById(id);
+    }
+
+    @Override
+    public int getApprovedRequestsAmount(long meetingId) {
+        return requestRepository.countByMeetingAndStatus(meetingService.getMeetingById(meetingId), RequestStatus.APPROVED);
     }
 }

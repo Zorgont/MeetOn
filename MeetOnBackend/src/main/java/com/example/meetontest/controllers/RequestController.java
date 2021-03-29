@@ -42,9 +42,14 @@ public class RequestController {
         return requestService.getByMeeting(meetingService.getMeetingById(id)).stream().map(requestConverter::convertBack).collect(Collectors.toList());
     }
 
-    @GetMapping("/check")
-    public boolean checkRequestExistence(@RequestParam Long meetingId, @RequestParam Long userId){
-        return requestService.existsByMeetingIdUserId(meetingId,userId);
+    @GetMapping("/by")
+    public RequestDTO getRequestByMeetingAndUser(@RequestParam Long meetingId, @RequestParam Long userId){
+        return requestService.getByMeetingIdUserId(meetingId, userId).map(requestConverter::convertBack).orElse(null);
+    }
+
+    @GetMapping("/amount/{id}")
+    public int getRequestAmountByMeetingId(@PathVariable Long id) {
+        return requestService.getApprovedRequestsAmount(id);
     }
 
     @PostMapping

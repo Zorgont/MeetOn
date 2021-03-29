@@ -20,12 +20,15 @@ class RequestService{
         return axios.put(REQUEST_API_BASE_URL + `/changeStatus/${requestId}?status=${status}`, null, { headers: authHeader() });
     }
 
-    checkRequestExistence(meetingId, userId) {
-        return axios.get(REQUEST_API_BASE_URL + `/check?meetingId=${meetingId}&userId=${userId}`, { headers: authHeader() });
+    getRequestByMeetingAndUser(meetingId, userId) {
+        return axios.get(REQUEST_API_BASE_URL + `/by?meetingId=${meetingId}&userId=${userId}`, { headers: authHeader() });
     }
 
     removeRequest(id) {
         return axios.delete(REQUEST_API_BASE_URL + '/'+ id, { headers: authHeader() });
+    }
+    getAprovedRequestsAmount(meetingId){
+        return axios.get(REQUEST_API_BASE_URL + '/amount/' + meetingId, { headers: authHeader() });
     }
 }
 export default new RequestService()
