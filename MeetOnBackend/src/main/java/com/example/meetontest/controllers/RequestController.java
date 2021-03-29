@@ -62,4 +62,15 @@ public class RequestController {
             return ResponseEntity.badRequest().body(new MessageResponse("Failed updating status!"));
         }
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> removeRequestById(@PathVariable Long id) {
+        try {
+            requestService.removeById(id);
+            return ResponseEntity.ok("deleted");
+        }
+        catch (Exception e) {
+            return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
+        }
+    }
 }

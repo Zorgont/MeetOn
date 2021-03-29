@@ -55,4 +55,9 @@ public class RequestServiceImpl implements RequestService {
     public boolean existsByMeetingIdUserId(Long meetingId, Long userId) {
         return requestRepository.existsByMeetingAndUser(meetingService.getMeetingById(meetingId), userService.getUserById(userId));
     }
+
+    @Override
+    public void removeById(Long id) {
+        requestRepository.deleteById(id);
+    }
 }
