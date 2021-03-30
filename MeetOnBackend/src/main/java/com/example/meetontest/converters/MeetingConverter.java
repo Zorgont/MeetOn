@@ -8,6 +8,11 @@ import com.example.meetontest.services.TagService;
 import com.example.meetontest.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -15,15 +20,16 @@ import java.util.stream.Collectors;
 public class MeetingConverter implements Converter<Meeting, MeetingDTO> {
     private final UserService userService;
     private final TagService tagService;
-
+    private final DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
     @Override
-    public Meeting convert(MeetingDTO entity) {
+    public Meeting convert(MeetingDTO entity) throws ParseException {
+
         Meeting meeting=new Meeting();
         meeting.setManager(userService.getUserByName(entity.getManagerUsername()));
         meeting.setName(entity.getName());
         meeting.setAbout(entity.getAbout());
-        meeting.setDate(entity.getDate());
-        meeting.setEndDate(entity.getEndDate());
+        meeting.setDate(df.parse(entity.getDate()));
+        meeting.setEndDate(df.parse(entity.getEndDate()));
         meeting.setIsParticipantAmountRestricted(entity.getIsParticipantAmountRestricted());
         meeting.setParticipantAmount(entity.getParticipantAmount());
         meeting.setIsPrivate(entity.getIsPrivate());
@@ -33,7 +39,6 @@ public class MeetingConverter implements Converter<Meeting, MeetingDTO> {
             meeting.setStatus(MeetingStatus.valueOf(entity.getStatus().toUpperCase()));
         }
         catch (Exception e) {
-            System.out.println(e.getMessage());
             meeting.setStatus(MeetingStatus.PLANNING);
         }
         return meeting;
@@ -43,8 +48,8 @@ public class MeetingConverter implements Converter<Meeting, MeetingDTO> {
     public MeetingDTO convertBack(Meeting entity) {
         return new MeetingDTO(entity.getId(),
                 entity.getName(),
-                entity.getDate(),
-                entity.getEndDate(),
+                entity.getDate().toString(),
+                entity.getEndDate().toString(),
                 entity.getAbout(),
                 entity.getDetails(),
                 entity.getManager().getId(),

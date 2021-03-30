@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
+
+import java.text.ParseException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,7 +40,7 @@ public class MeetingController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createMeeting(@RequestBody MeetingDTO meetingRequest) throws ValidatorException {
+    public ResponseEntity<?> createMeeting(@RequestBody MeetingDTO meetingRequest) throws ValidatorException,ParseException {
         try {
             return ResponseEntity.ok(meetingService.createMeeting(meetingConverter.convert(meetingRequest)));
         }
@@ -48,13 +50,13 @@ public class MeetingController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateMeeting (@PathVariable Long id, @RequestBody MeetingDTO meetingRequest) throws ValidatorException {
-        //try {
+    public ResponseEntity<?> updateMeeting (@PathVariable Long id, @RequestBody MeetingDTO meetingRequest) throws ValidatorException, ParseException {
+        try {
             return ResponseEntity.ok(meetingService.updateMeeting(id,meetingConverter.convert(meetingRequest)));
-        //}
-        //catch (Exception e){
-            //return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
-        //}
+        }
+        catch (Exception e){
+            return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
+        }
     }
 
     @DeleteMapping("/{id}")

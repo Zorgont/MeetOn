@@ -50,19 +50,22 @@ public class MeetingServiceImpl implements MeetingService {
     }
 
     public Meeting updateMeeting(Long id,Meeting meetingRequest) throws ValidatorException {
-        meetingValidator.validate(meetingRequest);
+            meetingValidator.validate(meetingRequest);
 
-        Meeting meeting=meetingRepository.findById(id).get();
-        meeting.setName(meetingRequest.getName());
-        meeting.setAbout(meetingRequest.getAbout());
-        meeting.setDate(meetingRequest.getDate());
-        meeting.setIsParticipantAmountRestricted(meetingRequest.getIsParticipantAmountRestricted());
-        meeting.setParticipantAmount(meetingRequest.getParticipantAmount());
-        meeting.setIsPrivate(meetingRequest.getIsPrivate());
-        meeting.setDetails(meetingRequest.getDetails());
-        meeting.setManager(meetingRequest.getManager());
-        meeting.setTags(meetingRequest.getTags());
-        return meetingRepository.save(meeting);
+            Meeting meeting = meetingRepository.findById(id).get();
+            meeting.setName(meetingRequest.getName());
+            meeting.setAbout(meetingRequest.getAbout());
+            meeting.setDate(meetingRequest.getDate());
+            meeting.setIsParticipantAmountRestricted(meetingRequest.getIsParticipantAmountRestricted());
+            meeting.setParticipantAmount(meetingRequest.getParticipantAmount());
+            meeting.setIsPrivate(meetingRequest.getIsPrivate());
+            meeting.setStatus(meetingRequest.getStatus());
+            meeting.setDetails(meetingRequest.getDetails());
+            meeting.setManager(meetingRequest.getManager());
+            meeting.setTags(meetingRequest.getTags());
+            meeting.setRequests(meetingRequest.getRequests());
+            return meetingRepository.save(meeting);
+
     }
 
     public List<Meeting> getMeetingsByManager(User manager) {

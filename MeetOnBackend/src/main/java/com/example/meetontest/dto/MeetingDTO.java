@@ -11,8 +11,8 @@ import java.util.List;
 public class MeetingDTO {
     private Long meetingId;
     private String name;
-    private Date date;
-    private Date endDate;
+    private String date;
+    private String endDate;
     private String about;
     private String details;
     private Long managerId;

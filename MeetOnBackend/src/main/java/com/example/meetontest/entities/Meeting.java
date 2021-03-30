@@ -10,7 +10,7 @@ import lombok.*;
 
 @Entity
 @Table(name = "meetings")
-@Getter @Setter @NoArgsConstructor
+@Getter @Setter @NoArgsConstructor @ToString
 public class Meeting {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,13 +31,13 @@ public class Meeting {
     @JoinColumn(name = "manager_id")
     private User manager;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "meeting_tags",
             joinColumns = @JoinColumn(name = "meeting_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private Set<Tag> tags = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "meeting", orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "meeting", orphanRemoval = true)
     @JsonIgnore
     private List<Request> requests;
 
