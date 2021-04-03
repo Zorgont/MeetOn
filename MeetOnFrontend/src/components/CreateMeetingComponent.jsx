@@ -123,7 +123,7 @@ export default class CreateMeeting extends Component{
                                     </div>
                                     <div className="form-group row">
                                         <label htmlFor="isPrivate"> Is private?: </label>
-                                        <input type="checkbox" name="isPrivate" className="form-control" checke={this.state.isPrivate} onChange={this.changePrivateHandler.bind(this)}/>
+                                        <input type="checkbox" name="isPrivate" className="form-control" checked={this.state.isPrivate} onChange={this.changePrivateHandler.bind(this)}/>
                                     </div>
                                     <div className="form-group row">
                                         <label htmlFor="details"> Details: </label>

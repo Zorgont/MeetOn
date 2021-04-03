@@ -3,25 +3,33 @@ import MeetingService from "../services/MeetingService";
 import 'font-awesome/css/font-awesome.min.css';
 import AuthService from "../services/AuthService";
 import RequestService from "../services/RequestService";
+import CommentService from "../services/CommentService";
+import CommentsList from "./CommentsListComponent";
 import { Link } from 'react-router-dom';
+
+
+
 export default class MeetingPage extends Component{
     constructor(props) {
-        console.log("constructor");
         super(props);
         
         this.state = {
             meeting: {},
             request: null,
+            comments: [],
             currentUser: AuthService.getCurrentUser(),
             requestsAmount: 0
         };
     }
 
     componentDidMount() {
-        console.log("here");
         MeetingService.getMeetingById(this.props.match.params.id).then((res) => {
             this.setState({ meeting: res.data});
-            
+
+            CommentService.getCommentsByMeetingId(this.state.meeting.meetingId).then((res) => {
+                this.setState({ comments: res.data});
+            });
+
             RequestService.getAprovedRequestsAmount(this.state.meeting.meetingId).then((res) => {
                 this.setState({ requestsAmount: res.data});
             });
@@ -29,22 +37,48 @@ export default class MeetingPage extends Component{
             RequestService.getRequestByMeetingAndUser(this.state.meeting.meetingId, this.state.currentUser.id).then((res) => {
                 this.setState({ request: res.data});
             });
+
+
+            console.log(this.state)
         });
+
     }
+    commentsList(){
+        if(this.state.meeting.status==="FINISHED") {
+
+            return  <CommentsList comments={this.state.comments} onCommentChange={this.addComment.bind(this)}/>
+
+        }
+    }
+    addComment(content){
+        const comment={
+            meeting_id:this.state.meeting.meetingId,
+            meetingName:this.state.meeting.name,
+            user_id:this.state.currentUser.id,
+            username:this.state.currentUser.username,
+            content:content
+        }
+        console.log(comment)
+        CommentService.createComment(comment).then(r => {
+            CommentService.getCommentsByMeetingId(this.state.meeting.meetingId).then((res) => {
+                this.setState({ comments: res.data});
+            })
+            }
+        )
+    }
+
     deleteMeeting() {
         MeetingService.deleteMeeting(this.props.match.params.id).then((res) => {
             this.props.history.push('/meetings');
         });
     }
     buttonDelete() {
-        console.log(AuthService.getCurrentUser())
         if (this.state.meeting.managerId === AuthService.getCurrentUser().id)
             return  <div>     
                         <button className="btn btn-danger" style={{marginLeft:"5px"}} onClick={this.deleteMeeting.bind(this)}>Delete</button>
                     </div>
     }
     buttonUpdate() {
-        console.log(AuthService.getCurrentUser())
         if (this.state.meeting.managerId === AuthService.getCurrentUser().id)
             return <div>
                         <Link to={`/update/${this.props.match.params.id}`}>
@@ -72,7 +106,6 @@ export default class MeetingPage extends Component{
     }
 
     render() {
-        console.log(this.props.match.params.id);
         return (
             <div>
                 <div className="container">
@@ -120,6 +153,7 @@ export default class MeetingPage extends Component{
                                     {this.buttonDelete()}
                                     {this.buttonEnroll()}
                                 </div>
+                                {this.commentsList()}
                             </div>
                         </div>
                     </div>
