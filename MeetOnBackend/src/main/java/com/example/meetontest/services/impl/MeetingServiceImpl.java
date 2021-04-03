@@ -63,7 +63,6 @@ public class MeetingServiceImpl implements MeetingService {
             meeting.setDetails(meetingRequest.getDetails());
             meeting.setManager(meetingRequest.getManager());
             meeting.setTags(meetingRequest.getTags());
-            meeting.setRequests(meetingRequest.getRequests());
             return meetingRepository.save(meeting);
 
     }

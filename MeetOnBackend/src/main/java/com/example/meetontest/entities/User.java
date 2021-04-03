@@ -35,6 +35,10 @@ public class User {
     @JsonIgnore
     private List<Request> requests;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", orphanRemoval = true)
+    @JsonIgnore
+    private List<Comment> comments;
+
     public User(String username, String password, String email, String about, String firstName, String secondName, double karma, String status, Set<Role> roles) {
         this.username = username;
         this.about = about;

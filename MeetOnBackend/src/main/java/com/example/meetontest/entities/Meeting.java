@@ -37,9 +37,12 @@ public class Meeting {
             inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private Set<Tag> tags = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "meeting", orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "meeting", orphanRemoval = true)
     @JsonIgnore
     private List<Request> requests;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "meeting", orphanRemoval = true)
+    @JsonIgnore
+    private List<Comment> comments;
 
     public Meeting(String name, Date date, Date endDate, String about, boolean isParticipantAmountRestricted, int participantAmount, boolean isPrivate, String details, MeetingStatus status, User manager, Set<Tag> tags) {
         this.name = name;

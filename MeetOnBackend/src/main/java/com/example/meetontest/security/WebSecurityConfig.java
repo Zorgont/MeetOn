@@ -116,6 +116,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/v1/meetings").permitAll()
                 .antMatchers("/api/v1/meetings/**").authenticated()
                 .antMatchers("/api/v1/requests/**").authenticated()
+                .antMatchers("/api/v1/comments/**").authenticated()
                 .anyRequest().authenticated();
 
         http.addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class);

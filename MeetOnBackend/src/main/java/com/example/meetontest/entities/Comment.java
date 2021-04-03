@@ -1,17 +1,22 @@
 package com.example.meetontest.entities;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.Setter;
+
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
-@Table(name="requests")
+@Table(name="comments")
 @Getter @Setter @NoArgsConstructor
-public class Request {
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long request_id;
+    private Long comment_id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY )
     @JoinColumn(name = "meeting_id")
     @NonNull
     private Meeting meeting;
@@ -21,10 +26,10 @@ public class Request {
     @NonNull
     private User user;
 
-    private String about;
+    private Date date;
+    private String content;
 
-    @Enumerated(EnumType.STRING)
-    @Column(length = 20)
     @NonNull
-    private RequestStatus status;
+    private int score;
+
 }
