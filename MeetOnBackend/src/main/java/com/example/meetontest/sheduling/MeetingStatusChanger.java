@@ -27,13 +27,12 @@ public class MeetingStatusChanger {
                 meeting.setStatus(MeetingStatus.IN_PROGRESS);
                 log.info("Changed status of meeting " + meeting.getName() + " to " + meeting.getStatus());
                 meetingService.updateMeeting(meeting.getId(), meeting);
-                emailService.sendSimpleMessage("kirill.petuhov.00@mail.ru","Test","Changed status of meeting " + meeting.getName() + " to " + meeting.getStatus());
+
             }
             if(dateFormat.format(meeting.getEndDate()).equals(dateFormat.format(new Date()))) {
                 meeting.setStatus(MeetingStatus.FINISHED);
                 log.info("Changed status of meeting " + meeting.getName() + " to " + meeting.getStatus());
                 meetingService.updateMeeting(meeting.getId(), meeting);
-                emailService.sendSimpleMessage("kirill.petuhov.00@mail.ru","Test","Changed status of meeting " + meeting.getName() + " to " + meeting.getStatus());
             }
         });
 

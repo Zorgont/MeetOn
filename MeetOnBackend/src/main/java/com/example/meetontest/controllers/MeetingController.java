@@ -6,7 +6,10 @@ import com.example.meetontest.dto.MessageResponse;
 import com.example.meetontest.converters.MeetingConverter;
 import com.example.meetontest.services.MeetingService;
 import com.example.meetontest.services.UserService;
+import com.example.meetontest.sheduling.MeetingStatusChanger;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +26,7 @@ public class MeetingController {
     private final MeetingService meetingService;
     private final UserService userService;
     private final MeetingConverter meetingConverter;
-
+    private static final Logger log = LoggerFactory.getLogger(MeetingController.class);
     @GetMapping
     public Iterable<MeetingDTO> getMeetings(@RequestParam @Nullable List<String> tags) {
         return meetingService.getMeetingsByTags(tags).stream().map(meetingConverter::convertBack).collect(Collectors.toList());
@@ -55,6 +58,7 @@ public class MeetingController {
             return ResponseEntity.ok(meetingService.updateMeeting(id,meetingConverter.convert(meetingRequest)));
         }
         catch (Exception e){
+            e.printStackTrace();
             return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
         }
     }

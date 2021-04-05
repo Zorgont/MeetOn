@@ -89,22 +89,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         }
 
         if (meetingRepository.count() == 0) {
-            Meeting meetingByVladlen = new Meeting();
-            meetingByVladlen.setName("Meeting by Vladlen");
-            meetingByVladlen.setAbout("Joins this wonderful meeting!");
-            meetingByVladlen.setDate(new Date());
-            Calendar instance = Calendar.getInstance();
-            instance.setTime(meetingByVladlen.getDate());
-            instance.add(Calendar.DAY_OF_MONTH, 3);
-            meetingByVladlen.setEndDate(instance.getTime());
-            meetingByVladlen.setParticipantAmount(100);
-            meetingByVladlen.setIsPrivate(false);
-            meetingByVladlen.setIsParticipantAmountRestricted(false);
-            meetingByVladlen.setStatus(MeetingStatus.PLANNING);
-            meetingByVladlen.setDetails("Secret Zoom link: ....");
-            meetingByVladlen.setManager(userRepository.findByUsername("Zorgont").get());
-            meetingByVladlen.setTags(new HashSet<>(tagRepository.findAll()));
-            meetingRepository.save(meetingByVladlen);
+//            Meeting meetingByVladlen = new Meeting();
+//            meetingByVladlen.setName("Meeting by Vladlen");
+//            meetingByVladlen.setAbout("Joins this wonderful meeting!");
+//            meetingByVladlen.setDate(new Date());
+//            Calendar instance = Calendar.getInstance();
+//            instance.setTime(meetingByVladlen.getDate());
+//            instance.add(Calendar.DAY_OF_MONTH, 3);
+//            meetingByVladlen.setEndDate(instance.getTime());
+//            meetingByVladlen.setParticipantAmount(100);
+//            meetingByVladlen.setIsPrivate(false);
+//            meetingByVladlen.setIsParticipantAmountRestricted(false);
+//            meetingByVladlen.setStatus(MeetingStatus.PLANNING);
+//            meetingByVladlen.setDetails("Secret Zoom link: ....");
+//            meetingByVladlen.setManager(userRepository.findByUsername("Zorgont").get());
+//            meetingByVladlen.setTags(new HashSet<>(tagRepository.findAll()));
+//            meetingRepository.save(meetingByVladlen);
         }
 
         http.cors().and().csrf().disable()

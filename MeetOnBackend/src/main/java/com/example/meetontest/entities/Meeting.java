@@ -5,12 +5,14 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 @Entity
 @Table(name = "meetings")
-@Getter @Setter @NoArgsConstructor @ToString
+@Getter @Setter @NoArgsConstructor
 public class Meeting {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,16 +33,16 @@ public class Meeting {
     @JoinColumn(name = "manager_id")
     private User manager;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "meeting_tags",
             joinColumns = @JoinColumn(name = "meeting_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private Set<Tag> tags = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "meeting", orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "meeting")
     @JsonIgnore
     private List<Request> requests;
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "meeting", orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "meeting")
     @JsonIgnore
     private List<Comment> comments;
 
@@ -56,5 +58,22 @@ public class Meeting {
         this.status = status;
         this.manager = manager;
         this.tags = tags;
+    }
+
+    @Override
+    public String toString() {
+        return "Meeting{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", date=" + date +
+                ", endDate=" + endDate +
+                ", about='" + about + '\'' +
+                ", isParticipantAmountRestricted=" + isParticipantAmountRestricted +
+                ", participantAmount=" + participantAmount +
+                ", isPrivate=" + isPrivate +
+                ", details='" + details + '\'' +
+                ", status=" + status +
+                ", manager=" + manager +
+                '}';
     }
 }

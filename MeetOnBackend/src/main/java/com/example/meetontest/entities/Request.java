@@ -16,7 +16,7 @@ public class Request {
     @NonNull
     private Meeting meeting;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     @NonNull
     private User user;

@@ -5,11 +5,13 @@ import com.example.meetontest.entities.Tag;
 import com.example.meetontest.entities.User;
 import com.example.meetontest.exceptions.ResourceNotFoundException;
 import com.example.meetontest.exceptions.ValidatorException;
+import com.example.meetontest.notifications.events.MeetingChangedEvent;
 import com.example.meetontest.repositories.MeetingRepository;
 import com.example.meetontest.services.MeetingService;
 import com.example.meetontest.services.MeetingValidator;
 import com.example.meetontest.services.TagService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import java.util.*;
 
@@ -19,6 +21,7 @@ public class MeetingServiceImpl implements MeetingService {
     private final MeetingRepository meetingRepository;
     private final TagService tagService;
     private final MeetingValidator meetingValidator;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     public List<Meeting> getMeetingsByTags(List<String> tags) {
         if (tags == null || tags.isEmpty())
@@ -51,8 +54,10 @@ public class MeetingServiceImpl implements MeetingService {
 
     public Meeting updateMeeting(Long id,Meeting meetingRequest) throws ValidatorException {
             meetingValidator.validate(meetingRequest);
-
             Meeting meeting = meetingRepository.findById(id).get();
+            Meeting oldMeeting=new Meeting(meeting.getName(),meeting.getDate(),meeting.getEndDate(),meeting.getAbout(),
+                    meeting.getIsParticipantAmountRestricted(),meeting.getParticipantAmount(),meeting.getIsPrivate(),
+                    meeting.getDetails(),meeting.getStatus(),meeting.getManager(),meeting.getTags());
             meeting.setName(meetingRequest.getName());
             meeting.setAbout(meetingRequest.getAbout());
             meeting.setDate(meetingRequest.getDate());
@@ -63,7 +68,14 @@ public class MeetingServiceImpl implements MeetingService {
             meeting.setDetails(meetingRequest.getDetails());
             meeting.setManager(meetingRequest.getManager());
             meeting.setTags(meetingRequest.getTags());
-            return meetingRepository.save(meeting);
+//            meeting.setRequests(meetingRequest.getRequests());
+
+            meetingRepository.save(meeting);
+
+            MeetingChangedEvent event = new MeetingChangedEvent(this,oldMeeting,meeting);
+            applicationEventPublisher.publishEvent(event);
+
+            return meeting;
 
     }
 
