@@ -98,8 +98,8 @@ export default class CreateMeeting extends Component{
                 {
                     name: meeting.name,
                     about: meeting.about,
-                    date: meeting.date.substring(0,16),
-                    endDate:meeting.endDate.substring(0,16),
+                    date: meeting.date,
+                    endDate:meeting.endDate,
                     isParticipantAmountRestricted : meeting.isParticipantAmountRestricted ,
                     participantAmount: parseInt(meeting.participantAmount),
                     isPrivate: meeting.isPrivate ,

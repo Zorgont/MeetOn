@@ -73,13 +73,13 @@ export default class MeetingPage extends Component{
         });
     }
     buttonDelete() {
-        if (this.state.meeting.managerId === AuthService.getCurrentUser().id)
+        if ((this.state.meeting.managerId === AuthService.getCurrentUser().id)&&(this.state.meeting.status!=="FINISHED"))
             return  <div>     
                         <button className="btn btn-danger" style={{marginLeft:"5px"}} onClick={this.deleteMeeting.bind(this)}>Delete</button>
                     </div>
     }
     buttonUpdate() {
-        if (this.state.meeting.managerId === AuthService.getCurrentUser().id)
+        if ((this.state.meeting.managerId === AuthService.getCurrentUser().id)&&(this.state.meeting.status!=="FINISHED"))
             return <div>
                         <Link to={`/update/${this.props.match.params.id}`}>
                             <button className="btn btn-primary">Update</button>
@@ -87,7 +87,7 @@ export default class MeetingPage extends Component{
                     </div>
     }
     buttonEnroll() {
-        if (this.state.meeting.managerId !== AuthService.getCurrentUser().id){
+        if ((this.state.meeting.managerId !== AuthService.getCurrentUser().id)&&(this.state.meeting.status!=="FINISHED")){
             if(this.state.request)
                 return  <div>
                             <p>You have already enrolled to the meeting!</p>

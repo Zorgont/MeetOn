@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -48,8 +47,8 @@ public class MeetingConverter implements Converter<Meeting, MeetingDTO> {
     public MeetingDTO convertBack(Meeting entity) {
         return new MeetingDTO(entity.getId(),
                 entity.getName(),
-                entity.getDate().toString(),
-                entity.getEndDate().toString(),
+                entity.getDate().toString().substring(0,16).replace(" ","T"),
+                entity.getEndDate().toString().substring(0,16).replace(" ","T"),
                 entity.getAbout(),
                 entity.getDetails(),
                 entity.getManager().getId(),

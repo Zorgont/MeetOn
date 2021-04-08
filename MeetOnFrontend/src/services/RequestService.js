@@ -30,5 +30,8 @@ class RequestService{
     getAprovedRequestsAmount(meetingId){
         return axios.get(REQUEST_API_BASE_URL + '/amount/' + meetingId, { headers: authHeader() });
     }
+    getPendingRequests(meetingId){
+        return axios.get(REQUEST_API_BASE_URL + '/pendingRequests/' + meetingId, { headers: authHeader() });
+    }
 }
 export default new RequestService()

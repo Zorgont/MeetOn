@@ -16,4 +16,5 @@ public interface RequestService {
     Optional<Request> getByMeetingIdUserId(Long meetingId, Long userId);
     void removeById(Long id);
     int getApprovedRequestsAmount(long meetingId);
+    List<Request> getByMeetingAndStatus(Meeting meeting,RequestStatus status);
 }

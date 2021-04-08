@@ -12,7 +12,7 @@ export default class MeetingRequest extends Component {
     }
     
     componentDidMount() {
-        RequestService.getRequestsByMeetingId(this.state.meetingId).then((res) => {
+        RequestService.getPendingRequests(this.state.meetingId).then((res) => {
             this.setState({ requests: res.data });
         });
     }
@@ -21,7 +21,7 @@ export default class MeetingRequest extends Component {
         console.log(request);
         console.log(request + " " + status);
         RequestService.updateRequestStatus(request.id, status).then((res) => {
-            this.state.requests[this.state.requests.indexOf(request)] = res.data;
+            this.state.requests.splice(this.state.requests.indexOf(request),1)
             this.setState({requests: this.state.requests});
         });
     }

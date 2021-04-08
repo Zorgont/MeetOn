@@ -51,6 +51,11 @@ public class RequestController {
     public int getRequestAmountByMeetingId(@PathVariable Long id) {
         return requestService.getApprovedRequestsAmount(id);
     }
+    @GetMapping("/pendingRequests/{id}")
+    public List<RequestDTO> getPendingRequests(@PathVariable Long id){
+        return requestService.getByMeetingAndStatus(meetingService.getMeetingById(id),RequestStatus.PENDING).
+                stream().map(requestConverter::convertBack).collect(Collectors.toList());
+    }
 
     @PostMapping
     public ResponseEntity<?> createRequest(@RequestBody RequestDTO requestDTO) {

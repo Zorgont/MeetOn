@@ -5,7 +5,6 @@ import com.example.meetontest.entities.MeetingStatus;
 import com.example.meetontest.exceptions.ValidatorException;
 import com.example.meetontest.services.MeetingValidator;
 import org.springframework.stereotype.Component;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 

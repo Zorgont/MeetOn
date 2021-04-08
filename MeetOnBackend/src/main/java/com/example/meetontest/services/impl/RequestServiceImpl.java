@@ -65,4 +65,9 @@ public class RequestServiceImpl implements RequestService {
     public int getApprovedRequestsAmount(long meetingId) {
         return requestRepository.countByMeetingAndStatus(meetingService.getMeetingById(meetingId), RequestStatus.APPROVED);
     }
+
+    @Override
+    public List<Request> getByMeetingAndStatus(Meeting meeting, RequestStatus status) {
+        return requestRepository.findByMeetingAndStatus(meeting,status);
+    }
 }

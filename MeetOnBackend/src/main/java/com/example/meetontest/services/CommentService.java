@@ -1,9 +1,7 @@
 package com.example.meetontest.services;
 
 import com.example.meetontest.entities.*;
-
 import java.util.List;
-
 
 public interface CommentService {
     Comment create(Comment comment);

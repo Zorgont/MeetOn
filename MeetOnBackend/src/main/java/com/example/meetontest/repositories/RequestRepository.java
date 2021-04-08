@@ -13,4 +13,5 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
     List<Request> findByMeeting(Meeting meeting);
     Optional<Request> findByMeetingAndUser(Meeting meeting, User user);
     int countByMeetingAndStatus(Meeting meeting, RequestStatus status);
+    List<Request> findByMeetingAndStatus(Meeting meeting,RequestStatus status);
 }

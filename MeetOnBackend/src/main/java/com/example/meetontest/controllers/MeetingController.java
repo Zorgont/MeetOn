@@ -6,7 +6,6 @@ import com.example.meetontest.dto.MessageResponse;
 import com.example.meetontest.converters.MeetingConverter;
 import com.example.meetontest.services.MeetingService;
 import com.example.meetontest.services.UserService;
-import com.example.meetontest.sheduling.MeetingStatusChanger;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

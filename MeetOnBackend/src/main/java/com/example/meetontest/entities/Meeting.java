@@ -5,8 +5,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
@@ -39,7 +37,7 @@ public class Meeting {
             inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private Set<Tag> tags = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "meeting")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "meeting")
     @JsonIgnore
     private List<Request> requests;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "meeting")

@@ -5,8 +5,6 @@ import com.example.meetontest.repositories.MeetingRepository;
 import com.example.meetontest.repositories.RoleRepository;
 import com.example.meetontest.repositories.TagRepository;
 import com.example.meetontest.repositories.UserRepository;
-import com.example.meetontest.security.AuthEntryPointJwt;
-import com.example.meetontest.security.AuthTokenFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
