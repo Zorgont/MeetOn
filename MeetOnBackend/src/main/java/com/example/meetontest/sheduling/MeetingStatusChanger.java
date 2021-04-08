@@ -16,7 +16,7 @@ public class MeetingStatusChanger {
     private static final Logger log = LoggerFactory.getLogger(MeetingStatusChanger.class);
     private final MeetingService meetingService;
 
-    @Scheduled(fixedRate = 60000)
+//    @Scheduled(fixedRate = 60000)
     public void changeStatus() {
         meetingService.getMeetingsByTags(null).forEach(meeting -> {
             if(new Date().after(meeting.getDate())&&(meeting.getStatus()==MeetingStatus.PLANNING)) {

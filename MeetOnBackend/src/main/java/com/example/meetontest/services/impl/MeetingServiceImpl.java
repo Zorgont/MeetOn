@@ -72,7 +72,7 @@ public class MeetingServiceImpl implements MeetingService {
 
             meetingRepository.save(meeting);
 
-            MeetingChangedEvent event = new MeetingChangedEvent(this,oldMeeting,meeting);
+            MeetingChangedEvent event = new MeetingChangedEvent(this,oldMeeting,meeting,new Date());
             applicationEventPublisher.publishEvent(event);
 
             return meeting;

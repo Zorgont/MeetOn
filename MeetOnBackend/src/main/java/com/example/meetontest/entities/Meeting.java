@@ -31,7 +31,7 @@ public class Meeting {
     @JoinColumn(name = "manager_id")
     private User manager;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "meeting_tags",
             joinColumns = @JoinColumn(name = "meeting_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id"))
