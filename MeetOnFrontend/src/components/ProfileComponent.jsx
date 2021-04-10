@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 import { Link } from 'react-router-dom';
+import NotificationBar from "./NotificationBarComponent";
 import AuthService from "../services/AuthService";
 import MeetingService from "../services/MeetingService";
-import RequestService from "../services/RequestService"
+import RequestService from "../services/RequestService";
+import NotificationService from "../services/NotificationService";
 
 export default class Profile extends Component {
     constructor(props) {
@@ -11,12 +13,17 @@ export default class Profile extends Component {
         this.state = {
             currentUser: AuthService.getCurrentUser(),
             meetings: [],
-            requests:[]
+            requests:[],
+            notifications: []
         };
     }
     
     componentDidMount() {
         this.updateTables();
+        console.log("current user id: " + this.state.currentUser.id);
+        NotificationService.getNotificationsByUser(this.state.currentUser.id).then((res) => {
+            this.setState({notifications: res.data});
+        })
     }
 
     updateTables() {
@@ -26,11 +33,10 @@ export default class Profile extends Component {
                 this.setState({requests: res.data})
             })
         });
-    }
+    }    
     
     createMeeting(e){
         this.props.history.push('/add_meeting');
-
     }
 
     removeRequest(id){
@@ -122,6 +128,7 @@ export default class Profile extends Component {
                         </table>
                     </div>
                 </div>
+                <NotificationBar></NotificationBar>
             </div>
         );
     }
