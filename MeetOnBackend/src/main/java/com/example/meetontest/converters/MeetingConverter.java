@@ -47,8 +47,8 @@ public class MeetingConverter implements Converter<Meeting, MeetingDTO> {
     public MeetingDTO convertBack(Meeting entity) {
         return new MeetingDTO(entity.getId(),
                 entity.getName(),
-                entity.getDate().toString().substring(0,16).replace(" ","T"),
-                entity.getEndDate().toString().substring(0,16).replace(" ","T"),
+                df.format(entity.getDate()),
+                df.format(entity.getEndDate()),
                 entity.getAbout(),
                 entity.getDetails(),
                 entity.getManager().getId(),

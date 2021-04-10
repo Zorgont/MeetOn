@@ -1,10 +1,12 @@
 package com.example.meetontest.notifications.services;
 
+import com.example.meetontest.converters.MeetingConverter;
+import com.example.meetontest.dto.MeetingDTO;
 import com.example.meetontest.entities.Meeting;
 import com.example.meetontest.entities.MeetingStatus;
 import com.example.meetontest.entities.Request;
 import com.example.meetontest.mail.EmailService;
-import com.example.meetontest.notifications.repositories.NotificationEventRepository;
+import com.example.meetontest.services.MeetingService;
 import com.example.meetontest.services.RequestService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -15,7 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.rmi.MarshalledObject;
+import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 
@@ -24,26 +26,29 @@ import java.util.Map;
 public class NotificationSendingService {
     private final EmailService emailService;
     private final RequestService requestService;
-    private final NotificationEventRepository notificationEventRepository;
+    private final NotificationEventStoringService notificationEventStoringService;
+    private final MeetingConverter meetingConverter;
+    private final MeetingService meetingService;
     private static final Logger log = LoggerFactory.getLogger(NotificationSendingService.class);
 
-    @Scheduled(fixedRate = 60000)
+    @Scheduled(fixedRate = 10000)
     public void checkEvents(){
-        notificationEventRepository.findByStatus("UNSENT").forEach(notificationEvent -> {
+        notificationEventStoringService.getUnsentEventsList().forEach(notificationEvent -> {
             try {
             ObjectMapper objectMapper = new ObjectMapper();
             if(notificationEvent.getType().equals("MEETING_CHANGED")){
-                    Map<String,Meeting> map=objectMapper.readValue(notificationEvent.getBody(),new TypeReference<Map<String, Meeting>>() {});
-
-                    Meeting oldValue = map.get("old");
-                    Meeting newValue = map.get("new");
+                    Map<String, MeetingDTO> map=objectMapper.readValue(notificationEvent.getBody(),new TypeReference<Map<String, MeetingDTO>>() {});
+                    MeetingDTO newValueDTO = map.get("new");
+                    Meeting oldValue=meetingConverter.convert(map.get("old"));
+                    Meeting newValue=meetingConverter.convert(newValueDTO);
+                    newValue.setId(newValueDTO.getMeetingId());
                     if(oldValue.getStatus()!=newValue.getStatus())
                         statusChanged(newValue);
                     else infoChanged(oldValue,newValue);
             }
             notificationEvent.setStatus("SENT");
-            notificationEventRepository.save(notificationEvent);
-            } catch (JsonProcessingException e) {
+            notificationEventStoringService.updateEvent(notificationEvent);
+            } catch (JsonProcessingException | ParseException e) {
                 e.printStackTrace();
             }
         });
@@ -88,7 +93,7 @@ public class NotificationSendingService {
             stringBuilder.append("Details from ").append(oldMeeting.getDetails()).append(" to ").append(newMeeting.getDetails()).append('\n');
         //tags
         log.info(stringBuilder.toString());
-        List<Request> requestList= requestService.getByMeeting(newMeeting);
+        List<Request> requestList= requestService.getByMeeting(meetingService.getMeetingById(newMeeting.getId()));
         requestList.forEach(request ->
         {emailService.sendSimpleMessage(request.getUser().getEmail(),"Meeting " + newMeeting.getName() + " changed", stringBuilder.toString());
         });

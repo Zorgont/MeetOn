@@ -7,13 +7,12 @@ import org.springframework.context.ApplicationEvent;
 
 import java.util.Date;
 @Getter
-public abstract class NotificationAbstractEvent extends ApplicationEvent {
+public abstract class NotificationAbstractEvent {
 
     final Date date;
     String type;//переделать в ENUM
 
-    NotificationAbstractEvent(Object source, Date date) {
-        super(source);
+    NotificationAbstractEvent(Date date) {
         this.date = date;
     }
     public NotificationEvent toEntity() throws JsonProcessingException {
