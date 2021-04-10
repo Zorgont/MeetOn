@@ -1,6 +1,7 @@
 package com.example.meetontest.notifications.services;
 
 import com.example.meetontest.notifications.entities.NotificationEvent;
+import com.example.meetontest.notifications.entities.NotificationEventStatus;
 import com.example.meetontest.notifications.events.NotificationAbstractEvent;
 import com.example.meetontest.notifications.repositories.NotificationEventRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,7 @@ public class NotificationEventStoringServiceImpl implements NotificationEventSto
         }
     }
     public List<NotificationEvent> getUnsentEventsList(){
-        return notificationEventRepository.findByStatus("UNSENT");
+        return notificationEventRepository.findByStatus(NotificationEventStatus.UNSENT);
     }
 
     @Override

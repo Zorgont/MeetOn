@@ -20,12 +20,12 @@ public class NotificationEvent {
     private String type;//переделать в ENUM
     @Column(columnDefinition="text")
     private String body;
-    private String status;//ENUM
-
+    @Enumerated(EnumType.STRING)
+    private NotificationEventStatus status;//ENUM
     public NotificationEvent(Date date, String type, String body) {
         this.date = date;
         this.type = type;
         this.body = body;
-        this.status="UNSENT";
+        this.status=NotificationEventStatus.UNSENT;
     }
 }

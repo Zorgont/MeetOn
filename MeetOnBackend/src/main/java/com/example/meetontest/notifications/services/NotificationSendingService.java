@@ -6,6 +6,7 @@ import com.example.meetontest.entities.Meeting;
 import com.example.meetontest.entities.MeetingStatus;
 import com.example.meetontest.entities.Request;
 import com.example.meetontest.mail.EmailService;
+import com.example.meetontest.notifications.entities.NotificationEventStatus;
 import com.example.meetontest.services.MeetingService;
 import com.example.meetontest.services.RequestService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -46,7 +47,7 @@ public class NotificationSendingService {
                         statusChanged(newValue);
                     else infoChanged(oldValue,newValue);
             }
-            notificationEvent.setStatus("SENT");
+            notificationEvent.setStatus(NotificationEventStatus.SENT);
             notificationEventStoringService.updateEvent(notificationEvent);
             } catch (JsonProcessingException | ParseException e) {
                 e.printStackTrace();
