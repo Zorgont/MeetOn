@@ -23,14 +23,17 @@ public class NotificationStatusController {
     private final NotificationConverter notificationConverter;
     private final UserService userService;
     @GetMapping("/byUser/{id}")
-    public ResponseEntity<?> getByUser(@PathVariable Long id, @RequestParam @Nullable String status){
-        try {
-            return ResponseEntity.ok(notificationService.getByUserAndStatus(userService.getUserById(id), parseStatus(status)).stream().
-                    map(notificationConverter::convertBack).collect(Collectors.toList()));
-        }
-        catch (ValidatorException e){
-            return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
-        }
+    public List<NotificationDTO> getByUser(@PathVariable Long id, @RequestParam @Nullable String status){
+            return notificationService.getByUserAndStatus(userService.getUserById(id), parseStatus(status)).stream().
+                    map(notificationConverter::convertBack).collect(Collectors.toList());
+    }
+
+    @PutMapping("/changeStatus/{id}")
+    public ResponseEntity<?> changeStatusById(@PathVariable Long id,@RequestParam String status){
+
+            notificationService.changeNotificationsStatus(notificationService.getById(id),parseStatus(status));
+            return ResponseEntity.ok(notificationConverter.convertBack(notificationService.getById(id)));
+
     }
     private NotificationStatus parseStatus(String status) throws ValidatorException{
         try{

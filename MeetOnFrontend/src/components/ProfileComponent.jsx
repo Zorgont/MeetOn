@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Link } from 'react-router-dom';
-import NotificationBar from "./NotificationBarComponent";
 import AuthService from "../services/AuthService";
 import MeetingService from "../services/MeetingService";
 import RequestService from "../services/RequestService";
@@ -128,7 +127,6 @@ export default class Profile extends Component {
                         </table>
                     </div>
                 </div>
-                <NotificationBar></NotificationBar>
             </div>
         );
     }

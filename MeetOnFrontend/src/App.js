@@ -17,6 +17,7 @@ import MeetingPage from "./components/MeetingPageComponent";
 import UpdateMeeting from "./components/ChangeMeetingComponent";
 import CreateRequest from "./components/CreateRequestComponent";
 import MeetingRequest from "./components/MeetingRequestComponent";
+import NotificationBar from "./components/NotificationBarComponent";
 
 class App extends Component {
     constructor(props) {
@@ -100,10 +101,17 @@ class App extends Component {
                                 </Link>
                             </li>
                             <li className="nav-item">
+                                <NotificationBar></NotificationBar>
+                            {/*Чтобы сделать уведомления под шапкой,необходимо заменить navbar из bootstrap нв AppBar из Material,тогда это решается так:
+                                https://stackoverflow.com/questions/49051975/material-ui-drawer-wont-move-under-appbar =
+                                Также в Bootstrap,оказывается,есть свой drawer(offcanvas),можно заменить drawer на него.*/}
+                            </li>
+                            <li className="nav-item">
                                 <a href="/login" className="nav-link" onClick={this.logOut}>
                                     LogOut
                                 </a>
                             </li>
+
                         </div>
                     ) : (
                         <div className="navbar-nav ml-auto">
