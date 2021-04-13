@@ -25,9 +25,9 @@ public class MeetingServiceImpl implements MeetingService {
     private final MeetingRepository meetingRepository;
     private final TagService tagService;
     private final MeetingValidator meetingValidator;
-    private final ApplicationEventPublisher applicationEventPublisher;
     private final NotificationEventStoringService notificationEventStoringService;
     private final MeetingConverter meetingConverter;
+
     public List<Meeting> getMeetingsByTags(List<String> tags) {
         if (tags == null || tags.isEmpty())
             return meetingRepository.findAll();
@@ -36,13 +36,11 @@ public class MeetingServiceImpl implements MeetingService {
         Tag first=tagsSet.iterator().next();
         List<Meeting> filteredMeetings=meetingRepository.findByTags(first);
         tagsSet.remove(first);
-        for(Tag item:tagsSet){
+        for(Tag item:tagsSet)
             filteredMeetings.retainAll(meetingRepository.findByTags(item));
-        }
 
         return filteredMeetings;
     }
-
 
     public Meeting createMeeting(Meeting meetingRequest) throws ValidatorException {
         meetingValidator.validate(meetingRequest);
@@ -76,7 +74,7 @@ public class MeetingServiceImpl implements MeetingService {
             meeting.setTags(meetingRequest.getTags());
 
             meetingRepository.save(meeting);
-            notificationEventStoringService.saveEvent(new MeetingChangedEvent(this,meetingConverter.convertBack(oldMeeting),meetingConverter.convertBack(meeting),new Date()));
+            notificationEventStoringService.saveEvent(new MeetingChangedEvent(this, meetingConverter.convertBack(oldMeeting),meetingConverter.convertBack(meeting),new Date()));
             return meeting;
     }
 

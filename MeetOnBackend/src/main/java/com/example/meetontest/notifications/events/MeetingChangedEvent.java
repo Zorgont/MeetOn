@@ -22,7 +22,7 @@ public class MeetingChangedEvent  extends NotificationAbstractEvent {
     }
     @Override
     public NotificationEvent toEntity() throws JsonProcessingException {
-        Map<String,MeetingDTO> map = new HashMap<>();
+        Map<String, MeetingDTO> map = new HashMap<>();
         map.put("old", oldValue);
         map.put("new", newValue);
         return new NotificationEvent(this.date, this.type, new ObjectMapper().writer().withDefaultPrettyPrinter().

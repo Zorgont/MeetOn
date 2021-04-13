@@ -26,13 +26,13 @@ public class NotificationServiceImpl implements NotificationService{
 
     @Override
     public List<Notification> getByUser(User user) {
-        return notificationRepository.findByUser(user).stream().sorted((note1,note2) -> note1.getDate().before(note2.getDate())?1:-1).collect(Collectors.toList());
+        return notificationRepository.findByUser(user).stream().sorted((note1, note2) -> note1.getDate().before(note2.getDate()) ? 1 : -1).collect(Collectors.toList());
     }
 
     @Override
     public List<Notification> getByUserAndStatus(User user, NotificationStatus status) {
         return status!=null?notificationRepository.findByUserAndStatus(user,status).stream()
-                .sorted((note1,note2) -> note1.getDate().before(note2.getDate())?1:-1).collect(Collectors.toList()):getByUser(user);
+                .sorted((note1, note2) -> note1.getDate().before(note2.getDate()) ? 1 : -1).collect(Collectors.toList()):getByUser(user);
     }
 
 

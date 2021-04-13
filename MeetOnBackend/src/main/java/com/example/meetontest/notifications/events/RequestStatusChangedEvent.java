@@ -7,19 +7,17 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
+import java.util.AbstractMap;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 public class RequestStatusChangedEvent extends NotificationAbstractEvent {
+    private final RequestDTO oldValue;
+    private final RequestDTO newValue;
 
-    private final RequestDTO requestDTO;
-    private final RequestStatus oldValue;
-    private final RequestStatus newValue;
-
-    public RequestStatusChangedEvent(Date date, RequestDTO request, RequestStatus oldValue, RequestStatus newValue) {
+    public RequestStatusChangedEvent(Date date, RequestDTO oldValue, RequestDTO newValue) {
         super(date);
-        this.requestDTO = request;
         this.oldValue = oldValue;
         this.newValue = newValue;
         this.type = EventType.REQUEST_STATUS_CHANGED;
@@ -27,13 +25,10 @@ public class RequestStatusChangedEvent extends NotificationAbstractEvent {
 
     @Override
     public NotificationEvent toEntity() throws JsonProcessingException {
-        ObjectWriter objectWriter = new ObjectMapper().writer().withDefaultPrettyPrinter();
-        Map<String, String> map = new HashMap<>();
-        map.put("requestDTO", objectWriter.writeValueAsString(requestDTO));
-        map.put("oldStatusValue",objectWriter.writeValueAsString(oldValue));
-        map.put("newStatusValue", objectWriter.writeValueAsString(newValue));
+        Map<String, RequestDTO> map = new HashMap<>();
+        map.put("old", oldValue);
+        map.put("new", newValue);
         return new NotificationEvent(this.date, this.type, new ObjectMapper().writer().withDefaultPrettyPrinter().
                 writeValueAsString(map));
-
     }
 }
