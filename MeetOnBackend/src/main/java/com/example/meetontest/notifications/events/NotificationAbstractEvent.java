@@ -9,14 +9,14 @@ import java.util.Date;
 @Getter
 public abstract class NotificationAbstractEvent {
 
-    final Date date;
-    String type;//переделать в ENUM
+    protected final Date date;
+    protected EventType type;//переделать в ENUM
 
     NotificationAbstractEvent(Date date) {
         this.date = date;
     }
-    public NotificationEvent toEntity() throws JsonProcessingException {
-        return new NotificationEvent(this.date,this.type,null);
-    }
 
+    public NotificationEvent toEntity() throws JsonProcessingException {
+        return new NotificationEvent(this.date, this.type, null);
+    }
 }

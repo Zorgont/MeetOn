@@ -77,7 +77,7 @@ export default class TemporaryDrawer extends React.Component{
             <ListItem button key={index} style={this.checkViewed(notification.status)} onClick={this.setViewed.bind(this,index)}>
                 <ListItemText>
                   <p>{notification.content}</p>
-                  <p style={{color: "#aaa", fontSize: "12px", margin: "10px 0 0 0"}}>{notification.date}</p>
+                  <p style={{color: "#aaa", fontSize: "12px", margin: "10px 0 0 0"}}>{notification.date.replace("T"," ")}</p>
                 </ListItemText>
             </ListItem>
             <Divider />

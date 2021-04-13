@@ -35,6 +35,16 @@ public class NotificationStatusController {
             return ResponseEntity.ok(notificationConverter.convertBack(notificationService.getById(id)));
 
     }
+
+    @GetMapping("/isChanged/")
+    public boolean getIsChanged(){
+        if(notificationService.isChanged()){
+            notificationService.setChanged(false);
+            return true;
+        }
+        else return false;
+    }
+
     private NotificationStatus parseStatus(String status) throws ValidatorException{
         try{
             return status!=null? NotificationStatus.valueOf(status.toUpperCase()):null;
@@ -44,4 +54,5 @@ public class NotificationStatusController {
             throw new ValidatorException("Incorrect status!");
         }
     }
+
 }

@@ -4,6 +4,7 @@ import AuthService from "../services/AuthService";
 import MeetingService from "../services/MeetingService";
 import RequestService from "../services/RequestService";
 import NotificationService from "../services/NotificationService";
+import NotificationsAlert from "./NotificationsAlert";
 
 export default class Profile extends Component {
     constructor(props) {
@@ -127,7 +128,9 @@ export default class Profile extends Component {
                         </table>
                     </div>
                 </div>
+                <NotificationsAlert/>
             </div>
+
         );
     }
 }

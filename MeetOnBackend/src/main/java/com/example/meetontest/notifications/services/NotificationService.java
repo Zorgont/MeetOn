@@ -12,4 +12,8 @@ public interface NotificationService {
     List<Notification> getByUser(User user);
     List<Notification> getByUserAndStatus(User user, NotificationStatus status);
     void changeNotificationsStatus(Notification notification,NotificationStatus status);
+    void createNotification(Notification notification);
+    boolean isChanged();
+    void setChanged(boolean changed);
+
 }

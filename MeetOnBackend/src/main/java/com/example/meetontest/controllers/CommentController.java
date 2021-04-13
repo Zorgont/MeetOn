@@ -30,6 +30,7 @@ public class CommentController {
         try {
             commentDTO.setScore(5);
             return ResponseEntity.ok(commentService.create(commentConverter.convert(commentDTO)));
+
         }
         catch (ParseException e){
             return ResponseEntity.badRequest().body(new MessageResponse("Bad date!"));

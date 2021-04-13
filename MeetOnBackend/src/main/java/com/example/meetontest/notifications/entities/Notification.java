@@ -28,4 +28,11 @@ public class Notification {
 
     @Enumerated(EnumType.STRING)
     private NotificationStatus status;
+
+    public Notification(Date date, String content, @NonNull User user) {
+        this.date = date;
+        this.content = content;
+        this.user = user;
+        this.status = NotificationStatus.UNVIEWED;
+    }
 }
