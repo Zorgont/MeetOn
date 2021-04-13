@@ -14,6 +14,7 @@ import com.example.meetontest.services.RequestService;
 import com.example.meetontest.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -54,11 +55,12 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
+    @Transactional
     public void changeStatus(Request request, RequestStatus status) {
         RequestDTO oldRequest = requestConverter.convertBack(request);
         request.setStatus(status);
         requestRepository.save(request);
-        notificationEventStoringService.saveEvent(new RequestStatusChangedEvent(new Date(), oldRequest, requestConverter.convertBack(request)));
+        notificationEventStoringService.saveEvent(new RequestStatusChangedEvent(this, new Date(), oldRequest, requestConverter.convertBack(request)));
     }
 
     @Override
