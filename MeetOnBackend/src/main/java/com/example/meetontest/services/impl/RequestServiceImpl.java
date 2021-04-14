@@ -6,6 +6,7 @@ import com.example.meetontest.entities.Meeting;
 import com.example.meetontest.entities.Request;
 import com.example.meetontest.entities.RequestStatus;
 import com.example.meetontest.entities.User;
+import com.example.meetontest.notifications.events.RequestCreatedEvent;
 import com.example.meetontest.notifications.events.RequestStatusChangedEvent;
 import com.example.meetontest.notifications.services.NotificationEventStoringService;
 import com.example.meetontest.repositories.RequestRepository;
@@ -36,7 +37,9 @@ public class RequestServiceImpl implements RequestService {
         else if (!request.getMeeting().getIsPrivate())
             request.setStatus(RequestStatus.APPROVED);
 
-        return requestRepository.save(request);
+        requestRepository.save(request);
+        notificationEventStoringService.saveEvent(new RequestCreatedEvent(this, new Date(), requestConverter.convertBack(request)));
+        return request;
     }
 
     @Override

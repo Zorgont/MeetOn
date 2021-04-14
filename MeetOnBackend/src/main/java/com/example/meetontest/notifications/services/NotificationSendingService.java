@@ -7,14 +7,15 @@ import com.example.meetontest.entities.*;
 import com.example.meetontest.mail.EmailService;
 import com.example.meetontest.notifications.entities.Notification;
 import com.example.meetontest.notifications.entities.NotificationEventStatus;
-import com.example.meetontest.notifications.events.EventType;
+import com.example.meetontest.notifications.events.RequestCreatedEvent;
+import com.example.meetontest.notifications.events.MeetingChangedEvent;
+import com.example.meetontest.notifications.events.RequestStatusChangedEvent;
 import com.example.meetontest.services.MeetingService;
 import com.example.meetontest.services.RequestService;
 import com.example.meetontest.services.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.type.CollectionType;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -41,13 +43,11 @@ public class NotificationSendingService {
     public void checkEvents(){
         notificationEventStoringService.getUnsentEventsList().forEach(notificationEvent -> {
             try {
-                ObjectMapper objectMapper = new ObjectMapper();
-
                 if(!notificationService.isChanged())
                     notificationService.setChanged(true);
 
-                if(notificationEvent.getType() == EventType.MEETING_CHANGED){
-                    Map<String, MeetingDTO> map = objectMapper.readValue(notificationEvent.getBody(), new TypeReference<Map<String, MeetingDTO>>() {});
+                if(notificationEvent.getType().equals(MeetingChangedEvent.class.getSimpleName())) {
+                    Map<String, MeetingDTO> map = new ObjectMapper().readValue(notificationEvent.getBody(), new TypeReference<Map<String, MeetingDTO>>() {});
                     MeetingDTO newValueDTO = map.get("new");
                     Meeting oldValue = meetingConverter.convert(map.get("old"));
                     Meeting newValue = meetingConverter.convert(newValueDTO);
@@ -55,27 +55,57 @@ public class NotificationSendingService {
                     if(oldValue.getStatus() != newValue.getStatus())
                         statusChanged(newValue);
                     else infoChanged(oldValue,newValue);
-                }
 
-                if(notificationEvent.getType() == EventType.REQUEST_STATUS_CHANGED){
-                    Map<String, RequestDTO> map = objectMapper.readValue(notificationEvent.getBody(), new TypeReference<Map<String, RequestDTO>>() {});
+                    notificationEvent.setStatus(NotificationEventStatus.SENT);
+                    notificationEventStoringService.updateEvent(notificationEvent);
+                }
+                else if(notificationEvent.getType().equals(RequestStatusChangedEvent.class.getSimpleName())) {
+                    Map<String, RequestDTO> map = new ObjectMapper().readValue(notificationEvent.getBody(), new TypeReference<Map<String, RequestDTO>>() {});
 
                     RequestDTO request = map.get("new");
                     RequestStatus oldStatus = RequestStatus.valueOf(map.get("old").getStatus());
                     RequestStatus newStatus = RequestStatus.valueOf(request.getStatus());
                     requestChanged(request, oldStatus, newStatus);
+
+                    notificationEvent.setStatus(NotificationEventStatus.SENT);
+                    notificationEventStoringService.updateEvent(notificationEvent);
                 }
 
-                notificationEvent.setStatus(NotificationEventStatus.SENT);
-                notificationEventStoringService.updateEvent(notificationEvent);
             } catch (JsonProcessingException | ParseException e) {
                 e.printStackTrace();
             }
         });
     }
 
+    // once per 1 min.
+    @Scheduled(fixedRate = 60000)
+    public void checkUnsentRequestCreatedEvents() {
+        notificationEventStoringService.getUnsentEventsList().stream().filter(event -> event.getType().equals(RequestCreatedEvent.class.getSimpleName()))
+                .collect(Collectors.groupingBy(event -> {
+                    try {
+                        ObjectMapper objectMapper = new ObjectMapper();
+                        Map<String, RequestDTO> map = objectMapper.readValue(event.getBody(), new TypeReference<Map<String, RequestDTO>>() { });
+
+                        return meetingService.getMeetingById(map.get("new").getMeeting_id()).getId();
+                    }
+                    catch(JsonProcessingException e) {
+                        e.printStackTrace();
+                        return null;
+                    }
+                }))
+                .forEach((meetingId, events) -> {
+                    Meeting meeting = meetingService.getMeetingById(meetingId);
+                    emailService.sendSimpleMessage(meeting.getManager().getEmail(), "New requests for meeting " + meeting.getName(), "You have new " + events.size() + " requests on meeting " + meeting.getName());
+                    events.forEach(event -> {
+                        event.setStatus(NotificationEventStatus.SENT);
+                        notificationEventStoringService.updateEvent(event);
+                    });
+                    notificationService.createNotification(new Notification(new Date(), events.size() + " new requests on meeting " + meeting.getName(), meeting.getManager()));
+        });
+    }
+
     public void statusChanged(Meeting meeting){
-        if(meeting.getStatus() == MeetingStatus.CANCELED){
+        if(meeting.getStatus() == MeetingStatus.CANCELED) {
             requestService.getByMeeting(meeting).forEach(request -> {
                 emailService.sendSimpleMessage(request.getUser().getEmail(), "Meeting " + meeting.getName() + " cancelled", meeting.toString());
                 notificationService.createNotification(new Notification(new Date(), "Meeting " + meeting.getName() + " cancelled", request.getUser()));
@@ -84,7 +114,7 @@ public class NotificationSendingService {
             emailService.sendSimpleMessage(meeting.getManager().getEmail(), "Meeting " + meeting.getName() + " cancelled", meeting.toString());
             notificationService.createNotification(new Notification(new Date(), "Meeting " + meeting.getName() + " cancelled", meeting.getManager()));
         }
-        if(meeting.getStatus() == MeetingStatus.IN_PROGRESS){
+        else if(meeting.getStatus() == MeetingStatus.IN_PROGRESS) {
             requestService.getByMeeting(meeting).forEach(request -> {
                 emailService.sendSimpleMessage(request.getUser().getEmail(), "Meeting " + meeting.getName() + " began", meeting.toString());
                 notificationService.createNotification(new Notification(new Date(), "Meeting " + meeting.getName() + " began", request.getUser()));
@@ -93,7 +123,7 @@ public class NotificationSendingService {
             emailService.sendSimpleMessage(meeting.getManager().getEmail(), "Meeting " + meeting.getName() + " began", meeting.toString());
             notificationService.createNotification(new Notification(new Date(), "Meeting " + meeting.getName() + " began", meeting.getManager()));
         }
-        if(meeting.getStatus() == MeetingStatus.FINISHED){
+        else if(meeting.getStatus() == MeetingStatus.FINISHED) {
             requestService.getByMeeting(meeting).forEach(request -> {
                 emailService.sendSimpleMessage(request.getUser().getEmail(), "Meeting " + meeting.getName() + " finished", meeting.toString());
                 notificationService.createNotification(new Notification(new Date(), "Meeting " + meeting.getName() + " finished", request.getUser()));
@@ -104,7 +134,7 @@ public class NotificationSendingService {
         }
     }
 
-    public void infoChanged(Meeting oldMeeting,Meeting newMeeting){
+    public void infoChanged(Meeting oldMeeting, Meeting newMeeting){
         StringBuilder stringBuilder = new StringBuilder("Information of this meeting was changed:"+'\n');
         if(!oldMeeting.getName().equals(newMeeting.getName()))
             stringBuilder.append("Name from ").append(oldMeeting.getName()).append(" to ").append(newMeeting.getName()).append('\n');

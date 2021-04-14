@@ -1,6 +1,5 @@
 package com.example.meetontest.notifications.entities;
 
-import com.example.meetontest.notifications.events.EventType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,16 +17,18 @@ public class NotificationEvent {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Date date;
-    @Enumerated(EnumType.STRING)
-    private EventType type;//переделать в ENUM
+    private String type;
+
     @Column(columnDefinition="text")
     private String body;
+
     @Enumerated(EnumType.STRING)
-    private NotificationEventStatus status;//ENUM
-    public NotificationEvent(Date date, EventType type, String body) {
+    private NotificationEventStatus status;
+
+    public NotificationEvent(Date date, String type, String body) {
         this.date = date;
         this.type = type;
         this.body = body;
-        this.status=NotificationEventStatus.UNSENT;
+        this.status = NotificationEventStatus.UNSENT;
     }
 }

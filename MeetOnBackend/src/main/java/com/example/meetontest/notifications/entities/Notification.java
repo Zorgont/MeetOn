@@ -23,7 +23,6 @@ public class Notification {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
-    @NonNull
     private User user;
 
     @Enumerated(EnumType.STRING)
