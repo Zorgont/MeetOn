@@ -39,7 +39,7 @@ export default class TemporaryDrawer extends React.Component{
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift'))
       return;
 
-    this.setState({isNotificationListOpened: open });
+    this.setState({ isNotificationListOpened: open });
   }
 
   checkViewed=(status) => {
@@ -114,7 +114,7 @@ export default class TemporaryDrawer extends React.Component{
         </React.Fragment>
       }
         <div>
-          <Snackbar open={this.state.notificationIsOpened} autoHideDuration={6000} onClose={this.handleClose} anchorOrigin={{vertical: 'bottom', horizontal: 'left'}}>
+          <Snackbar open={this.state.notificationIsOpened && this.state.unviewedAmount > 0} autoHideDuration={6000} onClose={this.handleClose} anchorOrigin={{vertical: 'bottom', horizontal: 'left'}}>
             <MuiAlert style={{marginBottom: "10px"}} elevation={6} variant="filled" onClose={this.handleClose} severity="info">
               You have {this.state.unviewedAmount} new notifications!
             </MuiAlert>
