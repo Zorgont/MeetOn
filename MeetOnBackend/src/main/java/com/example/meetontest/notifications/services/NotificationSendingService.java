@@ -107,8 +107,6 @@ public class NotificationSendingService {
                 notificationService.createNotification(new Notification(new Date(), "Meeting " + meeting.getName() + " cancelled", request.getUser()));
             });
 
-            emailService.sendSimpleMessage(meetingService.getManager(meeting).getEmail(), "Meeting " + meeting.getName() + " cancelled", meeting.toString());
-            notificationService.createNotification(new Notification(new Date(), "Meeting " + meeting.getName() + " cancelled", meetingService.getManager(meeting)));
         }
         else if(meeting.getStatus() == MeetingStatus.IN_PROGRESS) {
             requestService.getByMeeting(meeting).forEach(request -> {
@@ -116,8 +114,6 @@ public class NotificationSendingService {
                 notificationService.createNotification(new Notification(new Date(), "Meeting " + meeting.getName() + " began", request.getUser()));
             });
 
-            emailService.sendSimpleMessage(meetingService.getManager(meeting).getEmail(), "Meeting " + meeting.getName() + " began", meeting.toString());
-            notificationService.createNotification(new Notification(new Date(), "Meeting " + meeting.getName() + " began", meetingService.getManager(meeting)));
         }
         else if(meeting.getStatus() == MeetingStatus.FINISHED) {
             requestService.getByMeeting(meeting).forEach(request -> {
@@ -125,8 +121,6 @@ public class NotificationSendingService {
                 notificationService.createNotification(new Notification(new Date(), "Meeting " + meeting.getName() + " finished", request.getUser()));
             });
 
-            emailService.sendSimpleMessage(meetingService.getManager(meeting).getEmail(), "Meeting " + meeting.getName() + " finished", meeting.toString());
-            notificationService.createNotification(new Notification(new Date(), "Meeting " + meeting.getName() + " finished", meetingService.getManager(meeting)));
         }
     }
 
