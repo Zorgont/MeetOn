@@ -43,8 +43,7 @@ public class NotificationSendingService {
     public void checkEvents(){
         notificationEventStoringService.getUnsentEventsList().forEach(notificationEvent -> {
             try {
-                if(!notificationService.isChanged())
-                    notificationService.setChanged(true);
+
 
                 if(notificationEvent.getType().equals(MeetingChangedEvent.class.getSimpleName())) {
                     Map<String, MeetingDTO> map = new ObjectMapper().readValue(notificationEvent.getBody(), new TypeReference<Map<String, MeetingDTO>>() {});

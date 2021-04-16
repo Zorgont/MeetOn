@@ -36,14 +36,6 @@ public class NotificationStatusController {
 
     }
 
-    @GetMapping("/isChanged/")
-    public boolean getIsChanged(){
-        if(notificationService.isChanged()){
-            notificationService.setChanged(false);
-            return true;
-        }
-        else return false;
-    }
 
     private NotificationStatus parseStatus(String status) throws ValidatorException{
         try{

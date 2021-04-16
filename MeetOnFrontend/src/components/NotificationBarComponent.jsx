@@ -11,6 +11,8 @@ import Badge from '@material-ui/core/Badge';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
+import SockJsClient from 'react-stomp'
+
 
 export default class TemporaryDrawer extends React.Component{
   constructor(props) {
@@ -21,12 +23,12 @@ export default class TemporaryDrawer extends React.Component{
         notifications: null,
         isNotificationListOpened: false,
         unviewedAmount: 0,
-        notificationIsOpened: false
+        notificationIsOpened: false,
+
     }
     
     this.toggleDrawer.bind(this);
   }
-
   componentDidMount() {
     NotificationService.getNotificationsByUser(this.state.currentUser.id).then((res) => {
       this.setState({ notifications: res.data });
@@ -35,11 +37,20 @@ export default class TemporaryDrawer extends React.Component{
     })
   }
 
-  toggleDrawer = (open) => (event) => {
+    toggleDrawer = (open) => (event) => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift'))
       return;
 
     this.setState({ isNotificationListOpened: open });
+  }
+
+  handleNotification = (notification) => {
+    console.log(this.state.notifications)
+    this.state.notifications.unshift(notification)
+    this.setState({notifications: this.state.notifications})
+    this.setState({unviewedAmount: this.state.notifications.filter(notification => { return notification.status === "UNVIEWED" }).length})
+    this.setState({notificationIsOpened: this.state.unviewedAmount > 0 });
+    console.log(this.state.notifications)
   }
 
   checkViewed=(status) => {
@@ -120,6 +131,10 @@ export default class TemporaryDrawer extends React.Component{
             </MuiAlert>
           </Snackbar>
         </div>
+          <SockJsClient
+              url={`http://localhost:8080/ws`}
+              topics={[`/user/${this.state.currentUser.id}/queue/notify`]}
+              onMessage={(notification) => this.handleNotification(notification)} />
       </div>
     );
   }

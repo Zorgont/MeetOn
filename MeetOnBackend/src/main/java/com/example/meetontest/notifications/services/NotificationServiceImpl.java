@@ -3,13 +3,14 @@ package com.example.meetontest.notifications.services;
 import com.example.meetontest.entities.User;
 
 import com.example.meetontest.exceptions.ResourceNotFoundException;
+import com.example.meetontest.notifications.converters.NotificationConverter;
 import com.example.meetontest.notifications.entities.Notification;
 import com.example.meetontest.notifications.entities.NotificationStatus;
 import com.example.meetontest.notifications.repositories.NotificationRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.Getter;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,7 +19,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class NotificationServiceImpl implements NotificationService{
     private final NotificationRepository notificationRepository;
-    private boolean isChanged = false;
+    private final SimpMessagingTemplate messagingTemplate;
+    private final NotificationConverter notificationConverter;
+
     @Override
     public Notification getById(Long id) {
         return notificationRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Notification not found!"));
@@ -43,16 +46,13 @@ public class NotificationServiceImpl implements NotificationService{
     }
 
     @Override
+    @Transactional
     public void createNotification(Notification notification) {
+
         notificationRepository.save(notification);
-    }
 
-
-    public boolean isChanged() {
-        return isChanged;
-    }
-
-    public void setChanged(boolean changed) {
-        isChanged = changed;
+        messagingTemplate.convertAndSendToUser(notification.getUser().getId().toString(),
+                "/queue/notify",
+                notificationConverter.convertBack(notification));
     }
 }
