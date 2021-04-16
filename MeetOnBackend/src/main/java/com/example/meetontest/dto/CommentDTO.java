@@ -12,9 +12,5 @@ public class CommentDTO {
     private Long user_id;
     private String username;
     private String content;
-    private int score;
     private String date;
-
-
-
 }

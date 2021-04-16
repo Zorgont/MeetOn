@@ -11,12 +11,10 @@ import java.util.Date;
 @Component
 public class MeetingValidatorImpl implements MeetingValidator {
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+
     @Override
     public void validate(Meeting meeting) throws ValidatorException {
-        if(meeting.getStatus().equals(MeetingStatus.PLANNING)){
-            if (meeting.getManager() == null)
-                throw new ValidatorException("Incorrect manager!");
-
+        if(meeting.getStatus().equals(MeetingStatus.PLANNING)) {
             // Валидация даты - проверка на то, что указанная дата в будущем:
             // todo: Добавить проверку after, чтобы нельзя было запланировать собрание через 100 лет:
             if (meeting.getDate().before(new Date()))

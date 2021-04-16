@@ -27,24 +27,29 @@ public class Meeting {
     @Enumerated(EnumType.STRING)
     private MeetingStatus status;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "manager_id")
-    private User manager;
-
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "meeting_tags",
             joinColumns = @JoinColumn(name = "meeting_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private Set<Tag> tags = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "meeting")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "meeting", orphanRemoval = true, cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Request> requests;
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "meeting")
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "meeting", orphanRemoval = true, cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<MeetingPlatforms> meetingPlatforms;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "meeting", orphanRemoval = true, cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Comment> comments;
 
-    public Meeting(String name, Date date, Date endDate, String about, boolean isParticipantAmountRestricted, int participantAmount, boolean isPrivate, String details, MeetingStatus status, User manager, Set<Tag> tags) {
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "meeting", orphanRemoval = true, cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<MeetingScore> scores;
+
+    public Meeting(String name, Date date, Date endDate, String about, boolean isParticipantAmountRestricted, int participantAmount, boolean isPrivate, String details, MeetingStatus status, Set<Tag> tags) {
         this.name = name;
         this.date = date;
         this.endDate = endDate;
@@ -54,7 +59,6 @@ public class Meeting {
         this.isPrivate = isPrivate;
         this.details = details;
         this.status = status;
-        this.manager = manager;
         this.tags = tags;
     }
 
@@ -71,7 +75,6 @@ public class Meeting {
                 ", isPrivate=" + isPrivate +
                 ", details='" + details + '\'' +
                 ", status=" + status +
-                ", manager=" + manager +
                 '}';
     }
 }

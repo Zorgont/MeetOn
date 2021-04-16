@@ -5,6 +5,7 @@ import com.example.meetontest.repositories.MeetingRepository;
 import com.example.meetontest.repositories.RoleRepository;
 import com.example.meetontest.repositories.TagRepository;
 import com.example.meetontest.repositories.UserRepository;
+import com.example.meetontest.services.PlatformService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
@@ -39,9 +40,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final AuthTokenFilter authTokenFilter;
 
     private final UserRepository userRepository;
-    private final MeetingRepository meetingRepository;
     private final RoleRepository roleRepository;
     private final TagRepository tagRepository;
+    private final PlatformService platformService;
 
     @Override
     public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
@@ -74,6 +75,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             tagRepository.save(new Tag("Spring"));
         }
 
+        if(platformService.getAll().size() == 0) {
+            platformService.create(new Platform("Zoom", "Meeting platform", PlatformType.ONLINE));
+            platformService.create(new Platform("Discord", "Network for gamers", PlatformType.ONLINE));
+            platformService.create(new Platform("Skype", "Only for boomers", PlatformType.ONLINE));
+            platformService.create(new Platform("Microsoft Teams", "Idk what is this", PlatformType.ONLINE));
+        }
+
         if (!userRepository.existsByUsername("Zorgont")) {
             User vladlen = new User();
             vladlen.setUsername("Zorgont");
@@ -87,31 +95,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             userRepository.save(vladlen);
         }
 
-        if (meetingRepository.count() == 0) {
-//            Meeting meetingByVladlen = new Meeting();
-//            meetingByVladlen.setName("Meeting by Vladlen");
-//            meetingByVladlen.setAbout("Joins this wonderful meeting!");
-//            meetingByVladlen.setDate(new Date());
-//            Calendar instance = Calendar.getInstance();
-//            instance.setTime(meetingByVladlen.getDate());
-//            instance.add(Calendar.DAY_OF_MONTH, 3);
-//            meetingByVladlen.setEndDate(instance.getTime());
-//            meetingByVladlen.setParticipantAmount(100);
-//            meetingByVladlen.setIsPrivate(false);
-//            meetingByVladlen.setIsParticipantAmountRestricted(false);
-//            meetingByVladlen.setStatus(MeetingStatus.PLANNING);
-//            meetingByVladlen.setDetails("Secret Zoom link: ....");
-//            meetingByVladlen.setManager(userRepository.findByUsername("Zorgont").get());
-//            meetingByVladlen.setTags(new HashSet<>(tagRepository.findAll()));
-//            meetingRepository.save(meetingByVladlen);
-        }
-
         http.cors().and().csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests().antMatchers("/api/v1/auth/**").permitAll()
                 .antMatchers("/api/v1/users/**").permitAll()
                 .antMatchers("/api/v1/tags/**").permitAll()
+                .antMatchers("/api/v1/platforms/**").permitAll()
                 .antMatchers("/api/v1/meetings").permitAll()
                 .antMatchers("/api/v1/meetings/**").authenticated()
                 .antMatchers("/api/v1/requests/**").authenticated()
@@ -122,5 +112,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class);
     }
-
 }

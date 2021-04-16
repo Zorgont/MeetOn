@@ -28,7 +28,6 @@ public class CommentController {
     @PostMapping
     public ResponseEntity<?> createComment(@RequestBody CommentDTO commentDTO) {
         try {
-            commentDTO.setScore(5);
             return ResponseEntity.ok(commentService.create(commentConverter.convert(commentDTO)));
 
         }
@@ -56,5 +55,4 @@ public class CommentController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
 }

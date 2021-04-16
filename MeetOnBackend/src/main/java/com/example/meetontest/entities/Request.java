@@ -5,7 +5,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name="requests")
-@Getter @Setter @NoArgsConstructor
+@Getter @Setter @NoArgsConstructor @RequiredArgsConstructor
 public class Request {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,6 +22,10 @@ public class Request {
     private User user;
 
     private String about;
+
+    @Enumerated(EnumType.STRING)
+    @NonNull
+    private MeetingRole role;
 
     @Enumerated(EnumType.STRING)
     @Column(length = 20)

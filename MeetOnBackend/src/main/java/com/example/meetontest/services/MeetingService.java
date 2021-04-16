@@ -7,9 +7,10 @@ import java.util.List;
 
 public interface MeetingService {
     List<Meeting> getMeetingsByTags(List<String> tags);
-    Meeting createMeeting (Meeting meetingRequest) throws ValidatorException;
+    Meeting createMeeting (Meeting meetingRequest, User manager) throws ValidatorException;
     Meeting getMeetingById(Long id);
+    User getManager(Meeting meeting);
     boolean deleteMeeting(Long id);
-    Meeting updateMeeting(Long id,Meeting meetingRequest) throws ValidatorException;
+    Meeting updateMeeting(Long id, Meeting meetingRequest) throws ValidatorException;
     List<Meeting> getMeetingsByManager(User manager);
 }

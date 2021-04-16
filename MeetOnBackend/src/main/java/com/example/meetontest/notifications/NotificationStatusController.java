@@ -22,29 +22,26 @@ public class NotificationStatusController {
     private final NotificationService notificationService;
     private final NotificationConverter notificationConverter;
     private final UserService userService;
+
     @GetMapping("/byUser/{id}")
     public List<NotificationDTO> getByUser(@PathVariable Long id, @RequestParam @Nullable String status){
-            return notificationService.getByUserAndStatus(userService.getUserById(id), parseStatus(status)).stream().
-                    map(notificationConverter::convertBack).collect(Collectors.toList());
+        return notificationService.getByUserAndStatus(userService.getUserById(id), parseStatus(status)).stream().
+                map(notificationConverter::convertBack).collect(Collectors.toList());
     }
 
     @PutMapping("/changeStatus/{id}")
-    public ResponseEntity<?> changeStatusById(@PathVariable Long id,@RequestParam String status){
-
-            notificationService.changeNotificationsStatus(notificationService.getById(id),parseStatus(status));
-            return ResponseEntity.ok(notificationConverter.convertBack(notificationService.getById(id)));
-
+    public ResponseEntity<?> changeStatusById(@PathVariable Long id, @RequestParam String status){
+        notificationService.changeNotificationsStatus(notificationService.getById(id),parseStatus(status));
+        return ResponseEntity.ok(notificationConverter.convertBack(notificationService.getById(id)));
     }
-
 
     private NotificationStatus parseStatus(String status) throws ValidatorException{
         try{
-            return status!=null? NotificationStatus.valueOf(status.toUpperCase()):null;
+            return status != null ? NotificationStatus.valueOf(status.toUpperCase()) : null;
 
         }
         catch (IllegalArgumentException e){
             throw new ValidatorException("Incorrect status!");
         }
     }
-
 }

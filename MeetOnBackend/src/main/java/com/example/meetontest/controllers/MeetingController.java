@@ -1,5 +1,6 @@
 package com.example.meetontest.controllers;
 
+import com.example.meetontest.entities.Meeting;
 import com.example.meetontest.exceptions.ValidatorException;
 import com.example.meetontest.dto.MeetingDTO;
 import com.example.meetontest.dto.MessageResponse;
@@ -42,19 +43,21 @@ public class MeetingController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createMeeting(@RequestBody MeetingDTO meetingRequest) throws ValidatorException,ParseException {
+    public ResponseEntity<?> createMeeting(@RequestBody MeetingDTO meetingRequest) throws ValidatorException {
         try {
-            return ResponseEntity.ok(meetingService.createMeeting(meetingConverter.convert(meetingRequest)));
+            Meeting meeting = meetingService.createMeeting(meetingConverter.convert(meetingRequest), userService.getUserByName(meetingRequest.getManagerUsername()));
+            return ResponseEntity.ok(meetingConverter.convertBack(meeting));
         }
         catch(Exception e){
+            e.printStackTrace();
             return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateMeeting (@PathVariable Long id, @RequestBody MeetingDTO meetingRequest) throws ValidatorException, ParseException {
+    public ResponseEntity<?> updateMeeting(@PathVariable Long id, @RequestBody MeetingDTO meetingRequest) throws ValidatorException, ParseException {
         try {
-            return ResponseEntity.ok(meetingService.updateMeeting(id,meetingConverter.convert(meetingRequest)));
+            return ResponseEntity.ok(meetingService.updateMeeting(id, meetingConverter.convert(meetingRequest)));
         }
         catch (Exception e){
             e.printStackTrace();

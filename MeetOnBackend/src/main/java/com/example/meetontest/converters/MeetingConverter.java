@@ -4,9 +4,11 @@ import com.example.meetontest.entities.Meeting;
 import com.example.meetontest.entities.MeetingStatus;
 import com.example.meetontest.entities.Tag;
 import com.example.meetontest.dto.MeetingDTO;
+import com.example.meetontest.services.MeetingService;
 import com.example.meetontest.services.TagService;
 import com.example.meetontest.services.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.text.DateFormat;
@@ -17,14 +19,15 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Component
 public class MeetingConverter implements Converter<Meeting, MeetingDTO> {
-    private final UserService userService;
     private final TagService tagService;
     private final DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+
+    @Autowired
+    private MeetingService meetingService;
+
     @Override
     public Meeting convert(MeetingDTO entity) throws ParseException {
-
-        Meeting meeting=new Meeting();
-        meeting.setManager(userService.getUserByName(entity.getManagerUsername()));
+        Meeting meeting = new Meeting();
         meeting.setName(entity.getName());
         meeting.setAbout(entity.getAbout());
         meeting.setDate(df.parse(entity.getDate()));
@@ -51,8 +54,8 @@ public class MeetingConverter implements Converter<Meeting, MeetingDTO> {
                 df.format(entity.getEndDate()),
                 entity.getAbout(),
                 entity.getDetails(),
-                entity.getManager().getId(),
-                entity.getManager().getUsername(),
+                meetingService.getManager(entity).getId(),
+                meetingService.getManager(entity).getUsername(),
                 entity.getIsPrivate(),
                 entity.getIsParticipantAmountRestricted(),
                 entity.getParticipantAmount(),

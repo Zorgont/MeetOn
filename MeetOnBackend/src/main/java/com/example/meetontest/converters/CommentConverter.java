@@ -15,25 +15,24 @@ import java.util.Date;
 @RequiredArgsConstructor
 @Component
 public class CommentConverter implements Converter<Comment, CommentDTO> {
-
     private final UserService userService;
     private final MeetingService meetingService;
     private final DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+
     @Override
     public Comment convert(CommentDTO entity) throws ParseException {
-        Comment comment=new Comment();
+        Comment comment = new Comment();
         comment.setUser(userService.getUserById(entity.getUser_id()));
         comment.setMeeting(meetingService.getMeetingById(entity.getMeeting_id()));
         comment.setDate(new Date());
 //        entity.getDate()==null?df.parse(entity.getDate()):new Date()
         comment.setContent(entity.getContent());
-        comment.setScore(entity.getScore());
         return comment;
     }
 
     @Override
     public CommentDTO convertBack(Comment entity) {
-        return new CommentDTO(entity.getComment_id(),entity.getMeeting().getId(),entity.getMeeting().getName(), entity.getUser().getId(),
-                entity.getUser().getUsername(),entity.getContent(),entity.getScore(),entity.getDate().toString());
+        return new CommentDTO(entity.getComment_id(), entity.getMeeting().getId(), entity.getMeeting().getName(), entity.getUser().getId(),
+                entity.getUser().getUsername(), entity.getContent(), entity.getDate().toString());
     }
 }

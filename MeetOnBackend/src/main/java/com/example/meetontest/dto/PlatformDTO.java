@@ -6,13 +6,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter @Setter @AllArgsConstructor @NoArgsConstructor
-public class RequestDTO {
+public class PlatformDTO {
     private Long id;
-    private String about;
-    private Long meeting_id;
-    private String meetingName;
-    private Long user_id;
-    private String username;
-    private String role;
-    private String status;
+    private String name;
+    private String info;
+//    private ??? logo;
+    private String type;
 }
