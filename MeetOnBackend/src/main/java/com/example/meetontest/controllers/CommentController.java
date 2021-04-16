@@ -9,6 +9,9 @@ import com.example.meetontest.services.MeetingService;
 import com.example.meetontest.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
@@ -24,16 +27,16 @@ public class CommentController {
     private final UserService userService;
     private final MeetingService meetingService;
     private final CommentConverter commentConverter;
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
-    @PostMapping
-    public ResponseEntity<?> createComment(@RequestBody CommentDTO commentDTO) {
-        try {
-            return ResponseEntity.ok(commentService.create(commentConverter.convert(commentDTO)));
+    @MessageMapping("/createComment")
+    public void createComment(@Payload CommentDTO commentDTO) throws ParseException {
 
-        }
-        catch (ParseException e){
-            return ResponseEntity.badRequest().body(new MessageResponse("Bad date!"));
-        }
+
+
+            simpMessagingTemplate.convertAndSend("/meeting/" + commentDTO.getMeeting_id() + "/queue/comments",
+                    commentConverter.convertBack(commentService.create(commentConverter.convert(commentDTO))));
+
     }
     @GetMapping("/byUser/{id}")
     public List<CommentDTO> getCommentsByUserId(@PathVariable Long id){

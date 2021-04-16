@@ -7,10 +7,9 @@ import com.example.meetontest.repositories.TagRepository;
 import com.example.meetontest.repositories.UserRepository;
 import com.example.meetontest.services.PlatformService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -23,7 +22,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.filter.CorsFilter;
 
 import java.util.HashSet;
 
@@ -102,9 +100,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/v1/users/**").permitAll()
                 .antMatchers("/api/v1/tags/**").permitAll()
                 .antMatchers("/api/v1/platforms/**").permitAll()
-                .antMatchers("/api/v1/meetings").permitAll()
+                .antMatchers(HttpMethod.GET,"/api/v1/meetings/**").permitAll()
                 .antMatchers("/api/v1/meetings/**").authenticated()
                 .antMatchers("/api/v1/requests/**").authenticated()
+                .antMatchers(HttpMethod.GET,"/api/v1/comments/**").permitAll()
                 .antMatchers("/api/v1/comments/**").authenticated()
                 .antMatchers("/api/v1/notifications/**").authenticated()
                 .antMatchers("/ws/**").permitAll()

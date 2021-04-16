@@ -6,6 +6,7 @@ import RequestService from "../services/RequestService";
 import CommentService from "../services/CommentService";
 import CommentsList from "./CommentsListComponent";
 import { Link } from 'react-router-dom';
+import SockJsClient from "react-stomp";
 
 
 
@@ -34,19 +35,26 @@ export default class MeetingPage extends Component{
                 this.setState({ requestsAmount: res.data});
             });
             
-            RequestService.getRequestByMeetingAndUser(this.state.meeting.meetingId, this.state.currentUser.id).then((res) => {
+            RequestService.getRequestByMeetingAndUser(this.state.meeting.meetingId, this.state.currentUser?.id).then((res) => {
                 this.setState({ request: res.data});
             });
 
 
-            console.log(this.state)
+            console.log(`/meeting/${this.state.meeting.meetingId}/queue/comments`)
         });
 
     }
     commentsList(){
         if(this.state.meeting.status==="FINISHED") {
 
-            return  <CommentsList comments={this.state.comments} onCommentChange={this.addComment.bind(this)}/>
+            return <div>
+                <CommentsList comments={this.state.comments} onCommentChange={this.addComment.bind(this)}/>
+                <SockJsClient
+                    url={`http://localhost:8080/ws`}
+                    topics={[`/meeting/${this.state.meeting.meetingId}/queue/comments`]}
+                    onMessage={(comment) => this.handleComment(comment)}
+                    ref={ (client) => { this.clientRef = client }}/>
+            </div>
 
         }
     }
@@ -58,13 +66,15 @@ export default class MeetingPage extends Component{
             username:this.state.currentUser.username,
             content:content
         }
+        this.clientRef.sendMessage("/app/createComment",JSON.stringify(comment));
+    }
+
+    handleComment(comment){
         console.log(comment)
-        CommentService.createComment(comment).then(r => {
-            CommentService.getCommentsByMeetingId(this.state.meeting.meetingId).then((res) => {
-                this.setState({ comments: res.data});
-            })
-            }
-        )
+        this.state.comments.push(comment)
+        this.setState({
+            comments: this.state.comments
+        })
     }
 
     deleteMeeting() {
@@ -73,13 +83,13 @@ export default class MeetingPage extends Component{
         });
     }
     buttonDelete() {
-        if ((this.state.meeting.managerId === AuthService.getCurrentUser().id)&&(this.state.meeting.status!=="FINISHED"))
+        if ((this.state.meeting.managerId === AuthService.getCurrentUser()?.id)&&(this.state.meeting.status!=="FINISHED"))
             return  <div>     
                         <button className="btn btn-danger" style={{marginLeft:"5px"}} onClick={this.deleteMeeting.bind(this)}>Delete</button>
                     </div>
     }
     buttonUpdate() {
-        if ((this.state.meeting.managerId === AuthService.getCurrentUser().id)&&(this.state.meeting.status!=="FINISHED"))
+        if ((this.state.meeting.managerId === AuthService.getCurrentUser()?.id)&&(this.state.meeting.status!=="FINISHED"))
             return <div>
                         <Link to={`/update/${this.props.match.params.id}`}>
                             <button className="btn btn-primary">Update</button>
@@ -87,7 +97,7 @@ export default class MeetingPage extends Component{
                     </div>
     }
     buttonEnroll() {
-        if ((this.state.meeting.managerId !== AuthService.getCurrentUser().id)&&(this.state.meeting.status!=="FINISHED")){
+        if (AuthService.getCurrentUser()&&(this.state.meeting.managerId !== AuthService.getCurrentUser()?.id)&&(this.state.meeting.status!=="FINISHED")){
             if(this.state.request)
                 return  <div>
                             <p>You have already enrolled to the meeting!</p>
