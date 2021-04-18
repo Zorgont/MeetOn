@@ -74,7 +74,11 @@ public class MeetingServiceImpl implements MeetingService {
     }
 
     public boolean deleteMeeting(Long id){
-        meetingRepository.deleteById(id);
+        Meeting meeting = meetingRepository.findById(id).get();
+        meeting.getMeetingPlatforms().forEach(meetingPlatform -> meetingPlatform.setMeeting(null));
+        meeting.getMeetingPlatforms().clear();
+
+        meetingRepository.delete(meeting);
         return true;
     }
 
