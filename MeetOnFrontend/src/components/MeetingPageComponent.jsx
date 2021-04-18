@@ -7,8 +7,7 @@ import CommentService from "../services/CommentService";
 import CommentsList from "./CommentsListComponent";
 import { Link } from 'react-router-dom';
 import SockJsClient from "react-stomp";
-
-
+import PlatformService from "../services/PlatformService";
 
 export default class MeetingPage extends Component{
     constructor(props) {
@@ -19,7 +18,8 @@ export default class MeetingPage extends Component{
             request: null,
             comments: [],
             currentUser: AuthService.getCurrentUser(),
-            requestsAmount: 0
+            requestsAmount: 0,
+            platforms: []
         };
     }
 
@@ -39,6 +39,16 @@ export default class MeetingPage extends Component{
                 this.setState({ request: res.data});
             });
 
+            PlatformService.getAllPlatforms().then(res => {
+                this.setState({platforms: res.data});
+                for(let platform of this.state.meeting.meetingPlatforms) {
+                    let name = this.state.platforms.find(plat => plat.id === platform.platformId).name;
+                    platform.name = name;
+                    platform.meetingId = this.state.meeting.meetingId;
+                }
+                this.setState({meeting: this.state.meeting});
+                console.log(this.state)
+            });
 
             console.log(`/meeting/${this.state.meeting.meetingId}/queue/comments`)
         });
@@ -115,6 +125,26 @@ export default class MeetingPage extends Component{
         }
     }
 
+    platformList() {
+        if (this.state.request?.status === "APPROVED") {
+            return  (
+                <div>
+                    <div className="row">Platforms </div>
+                    {
+                        this.state.meeting.meetingPlatforms?.map(
+                            platform => 
+                                <div className="row mb-2" style={{ background: "#dadada", borderRadius: "10px" }}>
+                                    <div className="col-2"><img width="20px" height="20px" src="https://computercraft.ru/uploads/monthly_2018_09/discord_logo.0.jpg.7a69ad4c741ee1fb1bd39758714e7da5.jpg"></img></div>
+                                    <div className="col-3">{platform.name}</div>
+                                    <div className="col-6">{platform.address}</div>
+                                </div>
+                        )
+                    }
+                </div>
+            );
+        }
+    }
+
     render() {
         return (
             <div>
@@ -158,6 +188,7 @@ export default class MeetingPage extends Component{
                                     )
                                 }                     
                                 </div>
+                                {this.platformList()}
                                 <div className="row"> 
                                     {this.buttonUpdate()}
                                     {this.buttonDelete()}

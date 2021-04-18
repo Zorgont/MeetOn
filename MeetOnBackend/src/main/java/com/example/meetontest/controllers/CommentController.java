@@ -3,7 +3,6 @@ package com.example.meetontest.controllers;
 
 import com.example.meetontest.converters.CommentConverter;
 import com.example.meetontest.dto.CommentDTO;
-import com.example.meetontest.dto.MessageResponse;
 import com.example.meetontest.services.CommentService;
 import com.example.meetontest.services.MeetingService;
 import com.example.meetontest.services.UserService;
