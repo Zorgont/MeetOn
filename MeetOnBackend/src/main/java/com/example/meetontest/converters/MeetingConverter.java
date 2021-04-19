@@ -4,8 +4,7 @@ import com.example.meetontest.entities.Meeting;
 import com.example.meetontest.entities.MeetingStatus;
 import com.example.meetontest.entities.Tag;
 import com.example.meetontest.dto.MeetingDTO;
-import com.example.meetontest.services.MeetingService;
-import com.example.meetontest.services.TagService;
+import com.example.meetontest.services.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -19,6 +18,9 @@ import java.util.stream.Collectors;
 @Component
 public class MeetingConverter implements Converter<Meeting, MeetingDTO> {
     private final TagService tagService;
+    private final MeetingPlatformsService meetingPlatformsService;
+    private final MeetingPlatformsConverter meetingPlatformsConverter;
+
     private final DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
 
     @Autowired
@@ -36,10 +38,10 @@ public class MeetingConverter implements Converter<Meeting, MeetingDTO> {
         meeting.setIsPrivate(entity.getIsPrivate());
         meeting.setDetails(entity.getDetails());
         meeting.setTags(tagService.getTags(entity.getTags()));
+
         try {
             meeting.setStatus(MeetingStatus.valueOf(entity.getStatus().toUpperCase()));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             meeting.setStatus(MeetingStatus.PLANNING);
         }
         return meeting;
@@ -59,6 +61,7 @@ public class MeetingConverter implements Converter<Meeting, MeetingDTO> {
                 entity.getIsParticipantAmountRestricted(),
                 entity.getParticipantAmount(),
                 entity.getStatus().toString(),
-                entity.getTags().stream().map(Tag::getName).collect(Collectors.toList()));
+                entity.getTags().stream().map(Tag::getName).collect(Collectors.toList()),
+                meetingPlatformsService.getPlatformsByMeeting(entity).stream().map(meetingPlatformsConverter::convertBack).collect(Collectors.toList()));
     }
 }

@@ -25,7 +25,7 @@ public class Platform {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "platform", orphanRemoval = true, cascade = CascadeType.ALL)
     @JsonIgnore
-    private List<MeetingPlatforms> meetingPlatforms;
+    private List<MeetingPlatform> meetingPlatforms;
 
     public Platform(String name, String info, PlatformType type) {
         this.name = name;

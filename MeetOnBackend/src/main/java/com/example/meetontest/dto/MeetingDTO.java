@@ -21,4 +21,5 @@ public class MeetingDTO {
     private int participantAmount;
     private String status;
     private List<String> tags;
+    private List<MeetingPlatformsDTO> meetingPlatforms;
 }

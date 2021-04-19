@@ -7,10 +7,7 @@ import com.example.meetontest.exceptions.ValidatorException;
 import com.example.meetontest.notifications.events.MeetingChangedEvent;
 import com.example.meetontest.notifications.services.NotificationEventStoringService;
 import com.example.meetontest.repositories.MeetingRepository;
-import com.example.meetontest.services.MeetingService;
-import com.example.meetontest.services.MeetingValidator;
-import com.example.meetontest.services.RequestService;
-import com.example.meetontest.services.TagService;
+import com.example.meetontest.services.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,6 +30,9 @@ public class MeetingServiceImpl implements MeetingService {
     @Autowired
     private RequestService requestService;
 
+    @Autowired
+    private MeetingPlatformsService meetingPlatformsService;
+
     public List<Meeting> getMeetingsByTags(List<String> tags) {
         if (tags == null || tags.isEmpty())
             return meetingRepository.findAll();
@@ -49,10 +49,14 @@ public class MeetingServiceImpl implements MeetingService {
     }
 
     @Transactional
-    public Meeting createMeeting(Meeting meetingRequest, User manager) throws ValidatorException {
+    public Meeting createMeeting(Meeting meetingRequest, User manager, Set<MeetingPlatform> meetingPlatforms) throws ValidatorException {
         meetingValidator.validate(meetingRequest);
         Meeting meeting = meetingRepository.save(meetingRequest);
         requestService.create(new Request(meeting, manager, MeetingRole.MANAGER, RequestStatus.APPROVED));
+        meetingPlatforms.forEach(meetingPlatform -> {
+            meetingPlatform.setMeeting(meeting);
+            meetingPlatformsService.create(meetingPlatform);
+        });
         return meeting;
     }
 
@@ -64,13 +68,22 @@ public class MeetingServiceImpl implements MeetingService {
         return meetingRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Meeting no exist!"));
     }
 
+    @Override
+    public boolean existsById(Long id) {
+        return meetingRepository.existsById(id);
+    }
+
     public boolean deleteMeeting(Long id){
-        meetingRepository.deleteById(id);
+        Meeting meeting = meetingRepository.findById(id).get();
+        meeting.getMeetingPlatforms().forEach(meetingPlatform -> meetingPlatform.setMeeting(null));
+        meeting.getMeetingPlatforms().clear();
+
+        meetingRepository.delete(meeting);
         return true;
     }
 
     @Transactional
-    public Meeting updateMeeting(Long id, Meeting meetingRequest) throws ValidatorException {
+    public Meeting updateMeeting(Long id, Meeting meetingRequest, Set<MeetingPlatform> meetingPlatforms) throws ValidatorException {
         meetingValidator.validate(meetingRequest);
         Meeting meeting = meetingRepository.findById(id).get();
 
@@ -89,6 +102,11 @@ public class MeetingServiceImpl implements MeetingService {
         meeting.setStatus(meetingRequest.getStatus());
         meeting.setDetails(meetingRequest.getDetails());
         meeting.setTags(meetingRequest.getTags());
+
+        // todo: придумать более адекватный алгоритм
+        meeting.getMeetingPlatforms().forEach(meetingPlatform -> meetingPlatform.setMeeting(null));
+        meeting.getMeetingPlatforms().clear();
+        meetingPlatforms.forEach(meeting::addMeetingPlatform);
 
         meetingRepository.save(meeting);
         notificationEventStoringService.saveEvent(new MeetingChangedEvent(this, new Date(), meetingConverter.convertBack(oldMeeting), meetingConverter.convertBack(meeting)));

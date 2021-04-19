@@ -39,7 +39,7 @@ public class Meeting {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "meeting", orphanRemoval = true, cascade = CascadeType.ALL)
     @JsonIgnore
-    private Set<MeetingPlatforms> meetingPlatforms;
+    private Set<MeetingPlatform> meetingPlatforms;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "meeting", orphanRemoval = true, cascade = CascadeType.ALL)
     @JsonIgnore
@@ -60,6 +60,16 @@ public class Meeting {
         this.details = details;
         this.status = status;
         this.tags = tags;
+    }
+
+    public void addMeetingPlatform(MeetingPlatform meetingPlatform) {
+        meetingPlatforms.add(meetingPlatform);
+        meetingPlatform.setMeeting(this);
+    }
+
+    public void removeMeetingPlatform(MeetingPlatform meetingPlatform) {
+        meetingPlatforms.remove(meetingPlatform);
+        meetingPlatform.setMeeting(null);
     }
 
     @Override
