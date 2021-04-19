@@ -1,6 +1,7 @@
 package com.example.meetontest.entities;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
 
@@ -10,6 +11,7 @@ import java.util.Date;
 @Entity
 @Table(name="scores")
 @Getter @Setter
+@NoArgsConstructor
 public class MeetingScore {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

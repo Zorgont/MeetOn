@@ -18,6 +18,7 @@ import UpdateMeeting from "./components/ChangeMeetingComponent";
 import CreateRequest from "./components/CreateRequestComponent";
 import MeetingRequest from "./components/MeetingRequestComponent";
 import NotificationBar from "./components/NotificationBarComponent";
+import ProfileSettings from "./components/ProfileSettingsComponent";
 
 class App extends Component {
     constructor(props) {
@@ -136,12 +137,13 @@ class App extends Component {
                         <Route exact path="/login" component={Login} />
                         <Route exact path="/register" component={Register} />
                         <Route exact path="/profile" component={Profile} />
+                        <Route exact path="/profile/update" component={ProfileSettings} />
                         <Route exact path="/user" component={BoardUser} />
                         <Route exact path="/mod" component={BoardModerator} />
                         <Route exact path="/admin" component={BoardAdmin} />
                         <Route exact path="/add_meeting" component={CreateMeeting} />
                         <Route exact path="/meetings" component={MeetingList} />
-                        <Route exact path="/meetings/:id" component={MeetingPage} />
+                        <Route path="/meetings/:id" component={MeetingPage} />
                         <Route path="/meetings/:id/requests" component={MeetingRequest} />
                         <Route path="/update/:id" component={UpdateMeeting} />
                         <Route path="/enroll/:id" component={CreateRequest} />

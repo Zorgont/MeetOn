@@ -82,7 +82,7 @@ export default class CreateMeeting extends Component{
         let newValue = document.getElementById('newTagName').value;
         document.getElementById('newTagName').value='';
 
-        if (!newValue ||this.state.tags.includes(newValue))
+        if (!newValue || this.state.tags.includes(newValue))
             return;
 
         this.setState({tags: this.state.tags.concat(newValue)});

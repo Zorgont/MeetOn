@@ -32,7 +32,7 @@ export default class TemporaryDrawer extends React.Component{
   componentDidMount() {
     NotificationService.getNotificationsByUser(this.state.currentUser.id).then((res) => {
       this.setState({ notifications: res.data });
-      this.setState({ unviewedAmount: this.state.notifications.filter(notification => { return notification.status === "UNVIEWED" }).length})
+      this.setState({ unviewedAmount: this.state.notifications?.filter(notification => { return notification.status === "UNVIEWED" }).length})
       this.setState({ notificationIsOpened: this.state.unviewedAmount > 0 });
     })
   }
@@ -48,7 +48,7 @@ export default class TemporaryDrawer extends React.Component{
     console.log(this.state.notifications)
     this.state.notifications.unshift(notification)
     this.setState({notifications: this.state.notifications})
-    this.setState({unviewedAmount: this.state.notifications.filter(notification => { return notification.status === "UNVIEWED" }).length})
+    this.setState({unviewedAmount: this.state.notifications?.filter(notification => { return notification.status === "UNVIEWED" }).length})
     this.setState({notificationIsOpened: this.state.unviewedAmount > 0 });
     console.log(this.state.notifications)
   }

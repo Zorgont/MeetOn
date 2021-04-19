@@ -1,5 +1,6 @@
 package com.example.meetontest.services;
 
+import com.example.meetontest.dto.UserSettingDTO;
 import com.example.meetontest.entities.User;
 
 public interface UserService {
@@ -9,4 +10,5 @@ public interface UserService {
     User updateUser(Long id, User newUser);
     void deleteUser(Long id);
     User getUserByName(String name);
+    UserSettingDTO updateUserSettings(Long id, UserSettingDTO userSettingDTO);
 }

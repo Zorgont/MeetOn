@@ -1,11 +1,20 @@
 package com.example.meetontest.controllers;
 
+import com.example.meetontest.converters.TagGroupConverter;
+import com.example.meetontest.dto.TagGroupDTO;
+import com.example.meetontest.dto.UserSettingDTO;
+import com.example.meetontest.entities.TagGroup;
 import com.example.meetontest.entities.User;
 import com.example.meetontest.dto.MessageResponse;
+import com.example.meetontest.services.TagGroupService;
 import com.example.meetontest.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.text.ParseException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -13,6 +22,9 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+    private final TagGroupService tagGroupService;
+    private final TagGroupConverter tagGroupConverter;
+
 
     @GetMapping
     public Iterable<User> getUsers() {
@@ -48,5 +60,30 @@ public class UserController {
     public ResponseEntity<?> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.ok("User deleted!");
+    }
+
+    @PutMapping("/changeSettings/{id}")
+    public  ResponseEntity<?> updateUserSettings(@PathVariable Long id, @RequestBody UserSettingDTO userSettingDTO){
+        return ResponseEntity.ok(userService.updateUserSettings(id,userSettingDTO));
+    }
+
+    @GetMapping("/{id}/tagGroups")
+    public List<TagGroupDTO> getUserTagGroups(@PathVariable Long id){
+        return tagGroupService.getByUser(userService.getUserById(id)).stream().map(tagGroupConverter::convertBack).collect(Collectors.toList());
+    }
+
+    @PostMapping("/{id}/tagGroups")
+    public TagGroupDTO createTagGroup(@PathVariable Long id,@RequestBody TagGroupDTO tagGroup) throws ParseException {
+        return tagGroupConverter.convertBack(tagGroupService.createTagGroup(tagGroupConverter.convert(tagGroup), userService.getUserById(id)));
+    }
+
+    @PutMapping("/{userId}/tagGroups/{id}")
+    public TagGroupDTO setNotifiable(@PathVariable Long userId, @PathVariable Long id, @RequestParam Boolean isNotifiable){
+        return tagGroupConverter.convertBack(tagGroupService.setNotifiable(id,isNotifiable));
+    }
+
+    @DeleteMapping("/{userId}/tagGroups/{id}")
+    public void deleteTagGroup(@PathVariable Long userId,@PathVariable Long id){
+        tagGroupService.deleteByGroupId(id);
     }
 }

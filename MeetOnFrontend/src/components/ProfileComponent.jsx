@@ -73,6 +73,9 @@ export default class Profile extends Component {
                     currentUser.roles.map((role, index) => <li key={index}>{role}</li>)}
                 </ul>
                 <button className="btn btn-primary" onClick={this.createMeeting.bind(this)}>Create meeting</button>
+                <Link to="/profile/update">
+                    <button className="btn btn-primary">Profile settings</button>
+                </Link>
                 <div className="row">
                     <div className="col-6">
                         <h2 className="text-center">Meetings list</h2>

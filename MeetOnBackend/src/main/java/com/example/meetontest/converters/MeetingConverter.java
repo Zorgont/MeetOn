@@ -6,7 +6,6 @@ import com.example.meetontest.entities.Tag;
 import com.example.meetontest.dto.MeetingDTO;
 import com.example.meetontest.services.MeetingService;
 import com.example.meetontest.services.TagService;
-import com.example.meetontest.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

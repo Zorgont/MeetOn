@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+
 @Entity
 @Table(name = "Users")
 @Getter @Setter @NoArgsConstructor
@@ -43,7 +44,11 @@ public class User {
     @JsonIgnore
     private List<MeetingScore> scores;
 
-    public User(String username, String password, String email, String about, String firstName, String secondName, double karma, String status, Set<Role> roles) {
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<TagGroup> prefs;
+
+    public User(String username, String password, String email, String about, String firstName, String secondName, double karma, String status, Set<Role> roles, Set<TagGroup> prefs) {
         this.username = username;
         this.about = about;
         this.password = password;
@@ -53,6 +58,7 @@ public class User {
         this.karma = karma;
         this.status = status;
         this.roles = roles;
+        this.prefs = prefs;
     }
 
     public User(String username, String password, String email) {

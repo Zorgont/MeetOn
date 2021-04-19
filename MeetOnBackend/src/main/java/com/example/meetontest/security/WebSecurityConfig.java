@@ -1,7 +1,6 @@
 package com.example.meetontest.security;
 
 import com.example.meetontest.entities.*;
-import com.example.meetontest.repositories.MeetingRepository;
 import com.example.meetontest.repositories.RoleRepository;
 import com.example.meetontest.repositories.TagRepository;
 import com.example.meetontest.repositories.UserRepository;
@@ -97,10 +96,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests().antMatchers("/api/v1/auth/**").permitAll()
-                .antMatchers("/api/v1/users/**").permitAll()
                 .antMatchers("/api/v1/tags/**").permitAll()
                 .antMatchers("/api/v1/platforms/**").permitAll()
                 .antMatchers(HttpMethod.GET,"/api/v1/meetings/**").permitAll()
+                .antMatchers("/api/v1/users/**").authenticated()
                 .antMatchers("/api/v1/meetings/**").authenticated()
                 .antMatchers("/api/v1/requests/**").authenticated()
                 .antMatchers(HttpMethod.GET,"/api/v1/comments/**").permitAll()
