@@ -36,6 +36,9 @@ class AuthService {
         return JSON.parse(localStorage.getItem('user'));
 
     }
+    confirmUser(token) {
+        return axios.get(API_URL + "confirmAccount?token=" + token)
+    }
 }
 
 export default new AuthService();

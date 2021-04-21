@@ -37,6 +37,7 @@ export default class MeetingPage extends Component{
             
             RequestService.getRequestByMeetingAndUser(this.state.meeting.meetingId, this.state.currentUser?.id).then((res) => {
                 this.setState({ request: res.data});
+                console.log(this.state.request)
             });
 
             PlatformService.getAllPlatforms().then(res => {

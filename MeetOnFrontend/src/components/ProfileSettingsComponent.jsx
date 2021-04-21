@@ -46,13 +46,9 @@ export default class ProfileSettingsComponent extends Component{
     }
     changeTagGroupIsNotifiableHandler = (index,event) => {
         TagGroupService.setNotifiable(this.state.currentUser.id, this.state.tagGroups[index].groupId, event.target.checked).then( res =>
-        {   console.log(res.data)
-            console.log(this.state.tagGroups)
-            this.state.tagGroups[index] = res.data
-            console.log(this.state.tagGroups)
+        {   this.state.tagGroups[index] = res.data
             this.setState({
                 tagGroups: this.state.tagGroups});
-            console.log(this.state.tagGroups)
             this.setState({
                 tagsNotifiable: this.state.tagGroups.map(tag => tag.isNotifiable)
             })

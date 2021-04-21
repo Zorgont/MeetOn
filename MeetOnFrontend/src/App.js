@@ -19,6 +19,7 @@ import CreateRequest from "./components/CreateRequestComponent";
 import MeetingRequest from "./components/MeetingRequestComponent";
 import NotificationBar from "./components/NotificationBarComponent";
 import ProfileSettings from "./components/ProfileSettingsComponent";
+import ConfirmationCompleted from "./components/ConfirmationCompletedComponent";
 
 class App extends Component {
     constructor(props) {
@@ -143,6 +144,7 @@ class App extends Component {
                         <Route exact path="/admin" component={BoardAdmin} />
                         <Route exact path="/add_meeting" component={CreateMeeting} />
                         <Route exact path="/meetings" component={MeetingList} />
+                        <Route exact path="/confirm" component={ConfirmationCompleted} />
                         <Route path="/meetings/:id" component={MeetingPage} />
                         <Route path="/meetings/:id/requests" component={MeetingRequest} />
                         <Route path="/update/:id" component={UpdateMeeting} />
