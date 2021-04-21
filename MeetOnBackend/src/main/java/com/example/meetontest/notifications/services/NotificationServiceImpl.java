@@ -1,7 +1,6 @@
 package com.example.meetontest.notifications.services;
 
 import com.example.meetontest.entities.User;
-
 import com.example.meetontest.exceptions.ResourceNotFoundException;
 import com.example.meetontest.notifications.converters.NotificationConverter;
 import com.example.meetontest.notifications.entities.Notification;
@@ -17,7 +16,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class NotificationServiceImpl implements NotificationService{
+public class NotificationServiceImpl implements NotificationService {
     private final NotificationRepository notificationRepository;
     private final SimpMessagingTemplate messagingTemplate;
     private final NotificationConverter notificationConverter;
@@ -34,8 +33,8 @@ public class NotificationServiceImpl implements NotificationService{
 
     @Override
     public List<Notification> getByUserAndStatus(User user, NotificationStatus status) {
-        return status!=null?notificationRepository.findByUserAndStatus(user,status).stream()
-                .sorted((note1, note2) -> note1.getDate().before(note2.getDate()) ? 1 : -1).collect(Collectors.toList()):getByUser(user);
+        return status != null ? notificationRepository.findByUserAndStatus(user, status).stream()
+                .sorted((note1, note2) -> note1.getDate().before(note2.getDate()) ? 1 : -1).collect(Collectors.toList()) : getByUser(user);
     }
 
 

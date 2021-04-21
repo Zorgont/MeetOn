@@ -1,11 +1,15 @@
 package com.example.meetontest.entities;
 
 import lombok.*;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "roles")
-@Getter @Setter @NoArgsConstructor @RequiredArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
+@RequiredArgsConstructor
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

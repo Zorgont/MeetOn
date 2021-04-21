@@ -59,20 +59,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        if(roleRepository.count() == 0) {
+        if (roleRepository.count() == 0) {
             roleRepository.save(new Role(ERole.ROLE_USER));
             roleRepository.save(new Role(ERole.ROLE_MODERATOR));
             roleRepository.save(new Role(ERole.ROLE_ADMIN));
         }
 
-        if(tagRepository.count() == 0) {
+        if (tagRepository.count() == 0) {
             tagRepository.save(new Tag("Образование"));
             tagRepository.save(new Tag("Программирование"));
             tagRepository.save(new Tag("Java"));
             tagRepository.save(new Tag("Spring"));
         }
 
-        if(platformService.getAll().size() == 0) {
+        if (platformService.getAll().size() == 0) {
             platformService.create(new Platform("Zoom", "Meeting platform", PlatformType.ONLINE));
             platformService.create(new Platform("Discord", "Network for gamers", PlatformType.ONLINE));
             platformService.create(new Platform("Skype", "Only for boomers", PlatformType.ONLINE));
@@ -85,6 +85,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             vladlen.setFirstName("Vladlen");
             vladlen.setSecondName("Plakhotnyuk");
             vladlen.setEmail("zorgont@gmail.com");
+            vladlen.setIsEnabled(true);
             vladlen.setAbout("Hello, I'm Vladlen!");
             vladlen.setStatus("active");
             vladlen.setPassword(passwordEncoder().encode("123456"));
@@ -98,11 +99,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests().antMatchers("/api/v1/auth/**").permitAll()
                 .antMatchers("/api/v1/tags/**").permitAll()
                 .antMatchers("/api/v1/platforms/**").permitAll()
-                .antMatchers(HttpMethod.GET,"/api/v1/meetings/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/v1/meetings/**").permitAll()
                 .antMatchers("/api/v1/users/**").authenticated()
                 .antMatchers("/api/v1/meetings/**").authenticated()
                 .antMatchers("/api/v1/requests/**").authenticated()
-                .antMatchers(HttpMethod.GET,"/api/v1/comments/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/v1/comments/**").permitAll()
                 .antMatchers("/api/v1/comments/**").authenticated()
                 .antMatchers("/api/v1/notifications/**").authenticated()
                 .antMatchers("/ws/**").permitAll()

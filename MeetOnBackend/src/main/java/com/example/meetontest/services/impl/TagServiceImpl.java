@@ -5,6 +5,7 @@ import com.example.meetontest.repositories.TagRepository;
 import com.example.meetontest.services.TagService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
 public class TagServiceImpl implements TagService {
     private final TagRepository tagRepository;
 
-    public List<String> getTags(){
+    public List<String> getTags() {
         return tagRepository.findAll().stream().map(tag -> tag.getName()).collect(Collectors.toList());
     }
 

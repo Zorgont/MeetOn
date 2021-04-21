@@ -83,6 +83,6 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public List<Request> getByMeetingAndStatus(Meeting meeting, RequestStatus status) {
-        return requestRepository.findByMeetingAndStatus(meeting,status);
+        return requestRepository.findByMeetingAndStatus(meeting, status);
     }
 }

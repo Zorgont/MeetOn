@@ -13,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,7 +44,7 @@ public class MeetingServiceImpl implements MeetingService {
         List<Meeting> filteredMeetings = meetingRepository.findByTags(first);
         tagsSet.remove(first);
 
-        for(Tag item:tagsSet)
+        for (Tag item : tagsSet)
             filteredMeetings.retainAll(meetingRepository.findByTags(item));
 
         return filteredMeetings;
@@ -73,7 +75,7 @@ public class MeetingServiceImpl implements MeetingService {
         return meetingRepository.existsById(id);
     }
 
-    public boolean deleteMeeting(Long id){
+    public boolean deleteMeeting(Long id) {
         Meeting meeting = meetingRepository.findById(id).get();
         meeting.getMeetingPlatforms().forEach(meetingPlatform -> meetingPlatform.setMeeting(null));
         meeting.getMeetingPlatforms().clear();

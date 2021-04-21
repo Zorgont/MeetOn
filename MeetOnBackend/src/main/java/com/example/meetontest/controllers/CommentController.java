@@ -32,28 +32,29 @@ public class CommentController {
     public void createComment(@Payload CommentDTO commentDTO) throws ParseException {
 
 
-
-            simpMessagingTemplate.convertAndSend("/meeting/" + commentDTO.getMeeting_id() + "/queue/comments",
-                    commentConverter.convertBack(commentService.create(commentConverter.convert(commentDTO))));
+        simpMessagingTemplate.convertAndSend("/meeting/" + commentDTO.getMeeting_id() + "/queue/comments",
+                commentConverter.convertBack(commentService.create(commentConverter.convert(commentDTO))));
 
     }
+
     @GetMapping("/byUser/{id}")
-    public List<CommentDTO> getCommentsByUserId(@PathVariable Long id){
+    public List<CommentDTO> getCommentsByUserId(@PathVariable Long id) {
         return commentService.getByUser(userService.getUserById(id)).stream().
                 map(commentConverter::convertBack).collect(Collectors.toList());
     }
+
     @GetMapping("/byMeeting/{id}")
-    public List<CommentDTO> getCommentsByMeeting(@PathVariable Long id){
+    public List<CommentDTO> getCommentsByMeeting(@PathVariable Long id) {
         return commentService.getByMeeting(meetingService.getMeetingById(id)).stream().
                 map(commentConverter::convertBack).collect(Collectors.toList());
     }
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> removeCommentById(@PathVariable Long id){
+    public ResponseEntity<?> removeCommentById(@PathVariable Long id) {
         try {
             commentService.removeById(id);
             return ResponseEntity.ok("deleted!");
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

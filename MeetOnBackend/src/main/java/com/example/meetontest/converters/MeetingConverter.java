@@ -1,10 +1,12 @@
 package com.example.meetontest.converters;
 
+import com.example.meetontest.dto.MeetingDTO;
 import com.example.meetontest.entities.Meeting;
 import com.example.meetontest.entities.MeetingStatus;
 import com.example.meetontest.entities.Tag;
-import com.example.meetontest.dto.MeetingDTO;
-import com.example.meetontest.services.*;
+import com.example.meetontest.services.MeetingPlatformsService;
+import com.example.meetontest.services.MeetingService;
+import com.example.meetontest.services.TagService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

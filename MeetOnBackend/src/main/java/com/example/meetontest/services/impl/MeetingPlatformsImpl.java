@@ -1,12 +1,13 @@
 package com.example.meetontest.services.impl;
 
-import com.example.meetontest.repositories.MeetingPlatformsRepository;
 import com.example.meetontest.entities.Meeting;
 import com.example.meetontest.entities.MeetingPlatform;
 import com.example.meetontest.entities.Platform;
+import com.example.meetontest.repositories.MeetingPlatformsRepository;
 import com.example.meetontest.services.MeetingPlatformsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service

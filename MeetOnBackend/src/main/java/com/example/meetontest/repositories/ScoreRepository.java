@@ -9,5 +9,6 @@ import java.util.List;
 
 public interface ScoreRepository extends JpaRepository<MeetingScore, Long> {
     List<MeetingScore> findByMeeting(Meeting meeting);
+
     List<MeetingScore> findByUser(User user);
 }

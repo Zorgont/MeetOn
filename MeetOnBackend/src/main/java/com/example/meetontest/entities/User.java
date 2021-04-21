@@ -1,7 +1,11 @@
 package com.example.meetontest.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.List;
@@ -10,7 +14,9 @@ import java.util.Set;
 
 @Entity
 @Table(name = "Users")
-@Getter @Setter @NoArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,6 +31,7 @@ public class User {
     private String secondName;
     private double karma;
     private String status;
+    private Boolean isEnabled;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",
@@ -48,11 +55,12 @@ public class User {
     @JsonIgnore
     private Set<TagGroup> prefs;
 
-    public User(String username, String password, String email, String about, String firstName, String secondName, double karma, String status, Set<Role> roles, Set<TagGroup> prefs) {
+    public User(String username, String password, String email, Boolean isEnabled, String about, String firstName, String secondName, double karma, String status, Set<Role> roles, Set<TagGroup> prefs) {
         this.username = username;
         this.about = about;
         this.password = password;
         this.email = email;
+        this.isEnabled =  isEnabled;
         this.firstName = firstName;
         this.secondName = secondName;
         this.karma = karma;
@@ -61,10 +69,11 @@ public class User {
         this.prefs = prefs;
     }
 
-    public User(String username, String password, String email) {
+    public User(String username, String password, String email, Boolean isEnabled) {
         this.username = username;
         this.about = about;
         this.password = password;
         this.email = email;
+        this.isEnabled =  isEnabled;
     }
 }

@@ -11,19 +11,19 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class NotificationEventStoringServiceImpl implements NotificationEventStoringService{
+public class NotificationEventStoringServiceImpl implements NotificationEventStoringService {
 
     private final NotificationEventRepository notificationEventRepository;
 
     public void saveEvent(NotificationAbstractEvent event) {
         try {
-           notificationEventRepository.save(event.toEntity());
-        }
-        catch (Exception e){
+            notificationEventRepository.save(event.toEntity());
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    public List<NotificationEvent> getUnsentEventsList(){
+
+    public List<NotificationEvent> getUnsentEventsList() {
         return notificationEventRepository.findByStatus(NotificationEventStatus.UNSENT);
     }
 
@@ -31,8 +31,7 @@ public class NotificationEventStoringServiceImpl implements NotificationEventSto
     public void updateEvent(NotificationEvent event) {
         try {
             notificationEventRepository.save(event);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

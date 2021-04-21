@@ -1,16 +1,21 @@
 package com.example.meetontest.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
 
 @Entity
 @Table(name = "meetings")
-@Getter @Setter @NoArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
 public class Meeting {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

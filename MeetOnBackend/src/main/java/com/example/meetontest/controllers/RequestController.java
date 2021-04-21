@@ -1,16 +1,17 @@
 package com.example.meetontest.controllers;
 
+import com.example.meetontest.converters.RequestConverter;
+import com.example.meetontest.dto.MessageResponse;
 import com.example.meetontest.dto.RequestDTO;
 import com.example.meetontest.entities.Request;
-import com.example.meetontest.dto.MessageResponse;
 import com.example.meetontest.entities.RequestStatus;
-import com.example.meetontest.converters.RequestConverter;
 import com.example.meetontest.services.MeetingService;
 import com.example.meetontest.services.RequestService;
 import com.example.meetontest.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -38,12 +39,12 @@ public class RequestController {
     }
 
     @GetMapping("/byMeeting/{id}")
-    public List<RequestDTO> getRequestsByMeetingId(@PathVariable Long id){
+    public List<RequestDTO> getRequestsByMeetingId(@PathVariable Long id) {
         return requestService.getByMeeting(meetingService.getMeetingById(id)).stream().map(requestConverter::convertBack).collect(Collectors.toList());
     }
 
     @GetMapping("/by")
-    public RequestDTO getRequestByMeetingAndUser(@RequestParam Long meetingId, @RequestParam Long userId){
+    public RequestDTO getRequestByMeetingAndUser(@RequestParam Long meetingId, @RequestParam Long userId) {
         return requestService.getByMeetingIdUserId(meetingId, userId).map(requestConverter::convertBack).orElse(null);
     }
 
@@ -51,9 +52,10 @@ public class RequestController {
     public int getRequestAmountByMeetingId(@PathVariable Long id) {
         return requestService.getApprovedRequestsAmount(id);
     }
+
     @GetMapping("/pendingRequests/{id}")
-    public List<RequestDTO> getPendingRequests(@PathVariable Long id){
-        return requestService.getByMeetingAndStatus(meetingService.getMeetingById(id),RequestStatus.PENDING).
+    public List<RequestDTO> getPendingRequests(@PathVariable Long id) {
+        return requestService.getByMeetingAndStatus(meetingService.getMeetingById(id), RequestStatus.PENDING).
                 stream().map(requestConverter::convertBack).collect(Collectors.toList());
     }
 
@@ -67,8 +69,7 @@ public class RequestController {
         try {
             requestService.changeStatus(requestService.getById(id).get(), RequestStatus.valueOf(status.toUpperCase()));
             return ResponseEntity.ok(requestConverter.convertBack(requestService.getById(id).get()));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(new MessageResponse("Failed updating status!"));
         }
     }
@@ -78,8 +79,7 @@ public class RequestController {
         try {
             requestService.removeById(id);
             return ResponseEntity.ok("deleted");
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
         }
     }

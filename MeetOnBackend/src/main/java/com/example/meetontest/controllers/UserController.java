@@ -1,11 +1,10 @@
 package com.example.meetontest.controllers;
 
 import com.example.meetontest.converters.TagGroupConverter;
+import com.example.meetontest.dto.MessageResponse;
 import com.example.meetontest.dto.TagGroupDTO;
 import com.example.meetontest.dto.UserSettingDTO;
-import com.example.meetontest.entities.TagGroup;
 import com.example.meetontest.entities.User;
-import com.example.meetontest.dto.MessageResponse;
 import com.example.meetontest.services.TagGroupService;
 import com.example.meetontest.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -28,30 +27,28 @@ public class UserController {
 
     @GetMapping
     public Iterable<User> getUsers() {
-        return  userService.getUsers();
+        return userService.getUsers();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getUserById(@PathVariable Long id) {
         try {
             return ResponseEntity.ok(userService.getUserById(id));
-        }
-        catch (Exception e){
-             return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
         }
     }
 
     @PostMapping
     public User createUser(@RequestBody User user) {
-        return  userService.createUser(user);
+        return userService.createUser(user);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User newUser) {
         try {
-            return ResponseEntity.ok(userService.updateUser(id,newUser));
-        }
-        catch (Exception e){
+            return ResponseEntity.ok(userService.updateUser(id, newUser));
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
         }
     }
@@ -63,27 +60,27 @@ public class UserController {
     }
 
     @PutMapping("/changeSettings/{id}")
-    public  ResponseEntity<?> updateUserSettings(@PathVariable Long id, @RequestBody UserSettingDTO userSettingDTO){
-        return ResponseEntity.ok(userService.updateUserSettings(id,userSettingDTO));
+    public ResponseEntity<?> updateUserSettings(@PathVariable Long id, @RequestBody UserSettingDTO userSettingDTO) {
+        return ResponseEntity.ok(userService.updateUserSettings(id, userSettingDTO));
     }
 
     @GetMapping("/{id}/tagGroups")
-    public List<TagGroupDTO> getUserTagGroups(@PathVariable Long id){
+    public List<TagGroupDTO> getUserTagGroups(@PathVariable Long id) {
         return tagGroupService.getByUser(userService.getUserById(id)).stream().map(tagGroupConverter::convertBack).collect(Collectors.toList());
     }
 
     @PostMapping("/{id}/tagGroups")
-    public TagGroupDTO createTagGroup(@PathVariable Long id,@RequestBody TagGroupDTO tagGroup) throws ParseException {
+    public TagGroupDTO createTagGroup(@PathVariable Long id, @RequestBody TagGroupDTO tagGroup) throws ParseException {
         return tagGroupConverter.convertBack(tagGroupService.createTagGroup(tagGroupConverter.convert(tagGroup), userService.getUserById(id)));
     }
 
     @PutMapping("/{userId}/tagGroups/{id}")
-    public TagGroupDTO setNotifiable(@PathVariable Long userId, @PathVariable Long id, @RequestParam Boolean isNotifiable){
-        return tagGroupConverter.convertBack(tagGroupService.setNotifiable(id,isNotifiable));
+    public TagGroupDTO setNotifiable(@PathVariable Long userId, @PathVariable Long id, @RequestParam Boolean isNotifiable) {
+        return tagGroupConverter.convertBack(tagGroupService.setNotifiable(id, isNotifiable));
     }
 
     @DeleteMapping("/{userId}/tagGroups/{id}")
-    public void deleteTagGroup(@PathVariable Long userId,@PathVariable Long id){
+    public void deleteTagGroup(@PathVariable Long userId, @PathVariable Long id) {
         tagGroupService.deleteByGroupId(id);
     }
 }

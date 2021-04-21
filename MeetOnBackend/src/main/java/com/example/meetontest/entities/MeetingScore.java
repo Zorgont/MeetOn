@@ -9,8 +9,9 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name="scores")
-@Getter @Setter
+@Table(name = "scores")
+@Getter
+@Setter
 @NoArgsConstructor
 public class MeetingScore {
     @Id

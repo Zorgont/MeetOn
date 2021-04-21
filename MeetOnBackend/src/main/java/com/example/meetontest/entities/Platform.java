@@ -5,12 +5,15 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name="platforms")
-@Getter @Setter @NoArgsConstructor
+@Table(name = "platforms")
+@Getter
+@Setter
+@NoArgsConstructor
 public class Platform {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,7 +22,7 @@ public class Platform {
 
     private String name;
     private String info;
-//    private ??? logo;
+    //    private ??? logo;
     @Enumerated(value = EnumType.STRING)
     private PlatformType type;
 

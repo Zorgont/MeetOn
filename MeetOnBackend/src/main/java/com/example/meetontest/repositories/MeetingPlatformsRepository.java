@@ -9,5 +9,6 @@ import java.util.List;
 
 public interface MeetingPlatformsRepository extends JpaRepository<MeetingPlatform, Long> {
     List<MeetingPlatform> findByMeeting(Meeting meeting);
+
     List<MeetingPlatform> findByPlatform(Platform platform);
 }

@@ -7,7 +7,9 @@ import java.util.List;
 
 public interface NotificationEventStoringService {
     void saveEvent(NotificationAbstractEvent event);
+
     List<NotificationEvent> getUnsentEventsList();
+
     void updateEvent(NotificationEvent event);
 
 }

@@ -1,23 +1,20 @@
 package com.example.meetontest.controllers;
 
+import com.example.meetontest.converters.MeetingConverter;
 import com.example.meetontest.converters.MeetingPlatformsConverter;
+import com.example.meetontest.dto.MeetingDTO;
 import com.example.meetontest.dto.MeetingPlatformsDTO;
+import com.example.meetontest.dto.MessageResponse;
 import com.example.meetontest.entities.Meeting;
 import com.example.meetontest.entities.MeetingPlatform;
 import com.example.meetontest.exceptions.ValidatorException;
-import com.example.meetontest.dto.MeetingDTO;
-import com.example.meetontest.dto.MessageResponse;
-import com.example.meetontest.converters.MeetingConverter;
 import com.example.meetontest.services.MeetingService;
 import com.example.meetontest.services.UserService;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.ParseException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,7 +25,6 @@ import java.util.stream.Collectors;
 @RequestMapping(path = "api/v1/meetings")
 @RequiredArgsConstructor
 public class MeetingController {
-    private static final Logger log = LoggerFactory.getLogger(MeetingController.class);
 
     private final MeetingService meetingService;
     private final UserService userService;
@@ -60,15 +56,14 @@ public class MeetingController {
             }
             Meeting meeting = meetingService.createMeeting(meetingConverter.convert(meetingRequest), userService.getUserByName(meetingRequest.getManagerUsername()), meetingPlatforms);
             return ResponseEntity.ok(meetingConverter.convertBack(meeting));
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateMeeting(@PathVariable Long id, @RequestBody MeetingDTO meetingRequest) throws ValidatorException, ParseException {
+    public ResponseEntity<?> updateMeeting(@PathVariable Long id, @RequestBody MeetingDTO meetingRequest) throws ValidatorException {
         try {
             Set<MeetingPlatform> meetingPlatforms = new HashSet<>();
             for (MeetingPlatformsDTO meetingPlatformsDTO : meetingRequest.getMeetingPlatforms()) {
@@ -76,8 +71,7 @@ public class MeetingController {
                 meetingPlatforms.add(convert);
             }
             return ResponseEntity.ok(meetingService.updateMeeting(id, meetingConverter.convert(meetingRequest), meetingPlatforms));
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
         }

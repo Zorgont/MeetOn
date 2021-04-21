@@ -5,6 +5,7 @@ import com.example.meetontest.entities.Platform;
 import com.example.meetontest.entities.PlatformType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
 import java.text.ParseException;
 
 @RequiredArgsConstructor

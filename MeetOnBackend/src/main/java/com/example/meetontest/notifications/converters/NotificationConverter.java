@@ -1,7 +1,6 @@
 package com.example.meetontest.notifications.converters;
 
 import com.example.meetontest.converters.Converter;
-import com.example.meetontest.entities.MeetingStatus;
 import com.example.meetontest.notifications.dto.NotificationDTO;
 import com.example.meetontest.notifications.entities.Notification;
 import com.example.meetontest.notifications.entities.NotificationStatus;
@@ -18,9 +17,10 @@ import java.text.SimpleDateFormat;
 public class NotificationConverter implements Converter<Notification, NotificationDTO> {
     private final UserService userService;
     private final DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+
     @Override
     public Notification convert(NotificationDTO entity) throws ParseException {
-        Notification notification=new Notification();
+        Notification notification = new Notification();
         notification.setContent(entity.getContent());
         notification.setDate(df.parse(entity.getDate()));
         notification.setStatus(NotificationStatus.valueOf((entity.getStatus().toUpperCase())));
@@ -30,6 +30,6 @@ public class NotificationConverter implements Converter<Notification, Notificati
 
     @Override
     public NotificationDTO convertBack(Notification entity) {
-        return new NotificationDTO(entity.getId(), df.format(entity.getDate()),entity.getContent(),entity.getUser().getId(), entity.getStatus().toString());
+        return new NotificationDTO(entity.getId(), df.format(entity.getDate()), entity.getContent(), entity.getUser().getId(), entity.getStatus().toString());
     }
 }

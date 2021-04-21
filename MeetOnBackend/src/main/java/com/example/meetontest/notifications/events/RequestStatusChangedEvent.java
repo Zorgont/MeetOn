@@ -1,6 +1,7 @@
 package com.example.meetontest.notifications.events;
 
 import com.example.meetontest.dto.RequestDTO;
+
 import java.util.Date;
 
 public class RequestStatusChangedEvent extends NotificationAbstractEvent<RequestDTO> {

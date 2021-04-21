@@ -19,7 +19,7 @@ public class NotificationEvent {
     private Date date;
     private String type;
 
-    @Column(columnDefinition="text")
+    @Column(columnDefinition = "text")
     private String body;
 
     @Enumerated(EnumType.STRING)

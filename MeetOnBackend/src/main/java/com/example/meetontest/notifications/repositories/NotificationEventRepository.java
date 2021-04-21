@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface NotificationEventRepository extends JpaRepository<NotificationEvent,Long> {
-    List <NotificationEvent> findByStatus(NotificationEventStatus status);
+public interface NotificationEventRepository extends JpaRepository<NotificationEvent, Long> {
+    List<NotificationEvent> findByStatus(NotificationEventStatus status);
 }

@@ -1,17 +1,13 @@
 package com.example.meetontest.controllers;
 
-import com.example.meetontest.exceptions.ValidatorException;
 import com.example.meetontest.dto.LoginRequest;
-import com.example.meetontest.dto.SignupRequest;
 import com.example.meetontest.dto.MessageResponse;
+import com.example.meetontest.dto.SignupRequest;
+import com.example.meetontest.exceptions.ValidatorException;
 import com.example.meetontest.services.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -32,9 +28,13 @@ public class AuthController {
         try {
             authService.registerUser(signUpRequest);
             return ResponseEntity.ok("Registered!");
-        }
-        catch (ValidatorException e){
+        } catch (ValidatorException e) {
             return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
         }
+    }
+    @RequestMapping(value="/confirmAccount", method= {RequestMethod.GET, RequestMethod.POST})
+    public ResponseEntity<?> confirmUserAccount(@RequestParam String token){
+        authService.confirmUser(token);
+        return ResponseEntity.ok("Registration completed!");
     }
 }

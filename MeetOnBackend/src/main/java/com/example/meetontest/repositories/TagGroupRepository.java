@@ -8,5 +8,6 @@ import java.util.List;
 
 public interface TagGroupRepository extends JpaRepository<TagGroup, Long> {
     List<TagGroup> findByUser(User user);
-    List<TagGroup> findByUserAndIsNotifiable(User user,boolean isNotifiable);
+
+    List<TagGroup> findByUserAndIsNotifiable(User user, boolean isNotifiable);
 }

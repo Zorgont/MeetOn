@@ -1,11 +1,15 @@
 package com.example.meetontest.entities;
 
 import lombok.*;
+
 import javax.persistence.*;
 
 @Entity
-@Table(name="requests")
-@Getter @Setter @NoArgsConstructor @RequiredArgsConstructor
+@Table(name = "requests")
+@Getter
+@Setter
+@NoArgsConstructor
+@RequiredArgsConstructor
 public class Request {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

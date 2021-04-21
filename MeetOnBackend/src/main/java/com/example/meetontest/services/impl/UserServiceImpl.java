@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+
     @Override
     public Iterable<User> getUsers() {
         return userRepository.findAll();
@@ -46,12 +47,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserSettingDTO updateUserSettings(Long id, UserSettingDTO userSettingDTO){
+    public UserSettingDTO updateUserSettings(Long id, UserSettingDTO userSettingDTO) {
         User entity = userRepository.findById(id).get();
         entity.setFirstName(userSettingDTO.getFirstName());
         entity.setSecondName(userSettingDTO.getSecondName());
         entity.setAbout(userSettingDTO.getAbout());
         userRepository.save(entity);
-        return  userSettingDTO;
+        return userSettingDTO;
     }
 }

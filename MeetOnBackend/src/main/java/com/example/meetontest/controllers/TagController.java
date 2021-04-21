@@ -17,7 +17,7 @@ public class TagController {
     private final TagService tagService;
 
     @GetMapping
-    List<String> getTags(){
+    List<String> getTags() {
         return tagService.getTags();
     }
 }

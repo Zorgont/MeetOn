@@ -27,7 +27,7 @@ public class TagGroupServiceImpl implements TagGroupService {
 
     @Override
     public List<TagGroup> getNotifiableByUser(User user) {
-        return tagGroupRepository.findByUserAndIsNotifiable(user,true);
+        return tagGroupRepository.findByUserAndIsNotifiable(user, true);
     }
 
     @Override

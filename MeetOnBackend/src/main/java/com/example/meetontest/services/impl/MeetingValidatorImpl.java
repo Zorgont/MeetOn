@@ -5,6 +5,7 @@ import com.example.meetontest.entities.MeetingStatus;
 import com.example.meetontest.exceptions.ValidatorException;
 import com.example.meetontest.services.MeetingValidator;
 import org.springframework.stereotype.Component;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -14,7 +15,7 @@ public class MeetingValidatorImpl implements MeetingValidator {
 
     @Override
     public void validate(Meeting meeting) throws ValidatorException {
-        if(meeting.getStatus().equals(MeetingStatus.PLANNING)) {
+        if (meeting.getStatus().equals(MeetingStatus.PLANNING)) {
             // Валидация даты - проверка на то, что указанная дата в будущем:
             // todo: Добавить проверку after, чтобы нельзя было запланировать собрание через 100 лет:
             if (meeting.getDate().before(new Date()))
