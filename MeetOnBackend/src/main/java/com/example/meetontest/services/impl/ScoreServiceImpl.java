@@ -1,5 +1,6 @@
 package com.example.meetontest.services.impl;
 
+import com.example.meetontest.dto.AggregatedScoreDTO;
 import com.example.meetontest.entities.Meeting;
 import com.example.meetontest.entities.MeetingScore;
 import com.example.meetontest.entities.User;
@@ -38,7 +39,15 @@ public class ScoreServiceImpl implements ScoreService {
             if (score < 1 || score > 5)
                 throw new ValidatorException("Score must be between 1 and 5");
 
-            MeetingScore meetingScore = new MeetingScore(met, usr, score, new Date());
+            MeetingScore meetingScore;
+            if (scoreRepository.existsByMeetingAndUser(met, usr)) {
+                meetingScore = scoreRepository.findByMeetingAndUser(met, usr);
+                meetingScore.setScore(score);
+                meetingScore.setDate(new Date());
+            }
+            else
+                meetingScore = new MeetingScore(met, usr, score, new Date());
+
             return scoreRepository.save(meetingScore);
         } catch (Exception e) {
             throw new ValidatorException(e.getMessage());
@@ -51,5 +60,10 @@ public class ScoreServiceImpl implements ScoreService {
 
     public List<MeetingScore> getScoresByUser(User user) {
         return scoreRepository.findByUser(user);
+    }
+
+    @Override
+    public AggregatedScoreDTO getAggregatedScoreByMeeting(Meeting meeting) {
+        return scoreRepository.aggregateByMeeting(meeting.getId());
     }
 }

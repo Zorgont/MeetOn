@@ -1,5 +1,6 @@
 package com.example.meetontest.services;
 
+import com.example.meetontest.dto.AggregatedScoreDTO;
 import com.example.meetontest.entities.Meeting;
 import com.example.meetontest.entities.MeetingScore;
 import com.example.meetontest.entities.User;
@@ -15,4 +16,6 @@ public interface ScoreService {
     List<MeetingScore> getScoresByMeeting(Meeting meeting);
 
     List<MeetingScore> getScoresByUser(User user);
+
+    AggregatedScoreDTO getAggregatedScoreByMeeting(Meeting meeting);
 }
