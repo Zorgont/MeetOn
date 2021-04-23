@@ -41,7 +41,7 @@ public class ScoreServiceImpl implements ScoreService {
 
             MeetingScore meetingScore;
             if (scoreRepository.existsByMeetingAndUser(met, usr)) {
-                meetingScore = scoreRepository.findByMeetingAndUser(met, usr);
+                meetingScore = scoreRepository.findFirstByMeetingAndUser(met, usr);
                 meetingScore.setScore(score);
                 meetingScore.setDate(new Date());
             }
@@ -60,6 +60,11 @@ public class ScoreServiceImpl implements ScoreService {
 
     public List<MeetingScore> getScoresByUser(User user) {
         return scoreRepository.findByUser(user);
+    }
+
+    @Override
+    public MeetingScore getByMeetingAndUser(Meeting meeting, User user) {
+        return scoreRepository.findFirstByMeetingAndUser(meeting, user);
     }
 
     @Override

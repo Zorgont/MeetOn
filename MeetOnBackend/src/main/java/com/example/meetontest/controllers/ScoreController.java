@@ -27,8 +27,13 @@ public class ScoreController {
         return scoreService.getAggregatedScoreByMeeting(meetingService.getMeetingById(meetingId));
     }
 
+    @GetMapping("/{meetingId}/byUser/{userId}")
+    public ScoreDTO getScoreByMeetingAndUser(@PathVariable Long meetingId, @PathVariable Long userId) {
+        return converter.convertBack(scoreService.getByMeetingAndUser(meetingService.getMeetingById(meetingId), userService.getUserById(userId)));
+    }
+
     @PostMapping("/{meetingId}")
-    public ScoreDTO createScore(@PathVariable Long meetingId,@RequestBody ScoreDTO score) throws ParseException {
+    public ScoreDTO createScore(@PathVariable Long meetingId, @RequestBody ScoreDTO score) throws ParseException {
         score.setMeeting_id(meetingId);
         MeetingScore meetingScore = converter.convert(score);
         return converter.convertBack(scoreService.createScore(meetingScore.getMeeting(), meetingScore.getUser(), meetingScore.getScore()));

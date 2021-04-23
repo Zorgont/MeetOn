@@ -13,7 +13,7 @@ public interface ScoreRepository extends JpaRepository<MeetingScore, Long> {
     List<MeetingScore> findByMeeting(Meeting meeting);
     List<MeetingScore> findByUser(User user);
     boolean existsByMeetingAndUser(Meeting meeting, User user);
-    MeetingScore findByMeetingAndUser(Meeting meeting, User user);
+    MeetingScore findFirstByMeetingAndUser(Meeting meeting, User user);
 
     @Query("SELECT new com.example.meetontest.dto.AggregatedScoreDTO(s.meeting.id, COUNT(s), AVG(s.score)) FROM MeetingScore s WHERE s.meeting.id = ?1 GROUP BY s.meeting.id")
     AggregatedScoreDTO aggregateByMeeting(Long meetingIdz);

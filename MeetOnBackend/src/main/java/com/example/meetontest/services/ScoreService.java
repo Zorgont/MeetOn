@@ -17,5 +17,7 @@ public interface ScoreService {
 
     List<MeetingScore> getScoresByUser(User user);
 
+    MeetingScore getByMeetingAndUser(Meeting meeting, User user);
+
     AggregatedScoreDTO getAggregatedScoreByMeeting(Meeting meeting);
 }
