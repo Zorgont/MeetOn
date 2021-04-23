@@ -8,18 +8,24 @@ import CommentsList from "./CommentsListComponent";
 import { Link } from 'react-router-dom';
 import SockJsClient from "react-stomp";
 import PlatformService from "../services/PlatformService";
+import MeetingRating from "./MeetingRatingComponent";
+import ScoreService from "../services/ScoreService";
+import {Box} from "@material-ui/core";
+import {Rating} from "@material-ui/lab";
 
 export default class MeetingPage extends Component{
     constructor(props) {
         super(props);
-        
+
         this.state = {
             meeting: {},
             request: null,
             comments: [],
             currentUser: AuthService.getCurrentUser(),
             requestsAmount: 0,
-            platforms: []
+            platforms: [],
+            currentRating: 0,
+            userRating: 0
         };
     }
 
@@ -34,7 +40,7 @@ export default class MeetingPage extends Component{
             RequestService.getAprovedRequestsAmount(this.state.meeting.meetingId).then((res) => {
                 this.setState({ requestsAmount: res.data});
             });
-            
+
             RequestService.getRequestByMeetingAndUser(this.state.meeting.meetingId, this.state.currentUser?.id).then((res) => {
                 this.setState({ request: res.data});
                 console.log(this.state.request)
@@ -51,9 +57,28 @@ export default class MeetingPage extends Component{
                 console.log(this.state)
             });
 
+            this.updateMeetingRating();
+            ScoreService.getUserScore(this.state.meeting.meetingId, this.state.currentUser?.id).then( (res) => {
+
+                    this.setState({
+                        userRating: res.data.score ? res.data.score : 0
+                    })
+                console.log(this.state.userRating)
+                }
+            )
+
             console.log(`/meeting/${this.state.meeting.meetingId}/queue/comments`)
         });
 
+    }
+
+    updateMeetingRating = () => {
+        ScoreService.getAggregatedScore(this.state.meeting.meetingId).then( (res) => {
+                this.setState({
+                    currentRating: res.data.score ? res.data.score : 0
+                })
+            }
+        )
     }
 
     commentsList(){
@@ -96,7 +121,7 @@ export default class MeetingPage extends Component{
 
     buttonDelete() {
         if ((this.state.meeting.managerId === AuthService.getCurrentUser()?.id)&&(this.state.meeting.status!=="FINISHED"))
-            return  <div>     
+            return  <div>
                         <button className="btn btn-danger" style={{marginLeft:"5px"}} onClick={this.deleteMeeting.bind(this)}>Delete</button>
                     </div>
     }
@@ -135,7 +160,7 @@ export default class MeetingPage extends Component{
                     <div className="row">Platforms </div>
                     {
                         this.state.meeting.meetingPlatforms?.map(
-                            platform => 
+                            platform =>
                                 <div className="row mb-2" style={{ background: "#dadada", borderRadius: "10px" }}>
                                     <div className="col-2"><img width="20px" height="20px" src="https://computercraft.ru/uploads/monthly_2018_09/discord_logo.0.jpg.7a69ad4c741ee1fb1bd39758714e7da5.jpg"></img></div>
                                     <div className="col-3">{platform.name}</div>
@@ -148,6 +173,24 @@ export default class MeetingPage extends Component{
         }
     }
 
+    handleRatingChange = (value) => {
+        const score={
+            user_id: this.state.currentUser.id,
+            score: parseInt(value)
+        }
+        ScoreService.setScore(this.state.meeting.meetingId, score).then( () =>
+            this.updateMeetingRating()
+        )
+    }
+
+    meetingRating = () => {
+        console.log(this.state.currentUser);
+        if(!(this.state.meeting.managerId === this.state.currentUser?.id )) {
+            return <MeetingRating onRatingChange={this.handleRatingChange.bind(this)} rating={this.state.userRating}/>
+        }
+
+    }
+
     render() {
         return (
             <div>
@@ -157,7 +200,11 @@ export default class MeetingPage extends Component{
                             <div className="card-body">
                                 <div className="row">
                                     <h2>{this.state.meeting.name}</h2>
+                                    <Box component="fieldset" mb={3} borderColor="transparent">
+                                        <Rating name="read-only" size="large" value={this.state.currentRating} precision={0.1} readOnly />
+                                    </Box>
                                 </div>
+                                {this.meetingRating()}
                                 <div className="row">
                                     <p>About meeting:</p>
                                     <p>{this.state.meeting.about}</p>
@@ -186,12 +233,13 @@ export default class MeetingPage extends Component{
                                 <div className="row">
                                 {
                                     this.state.meeting?.tags?.map(
-                                        tag => 
+                                        tag =>
                                             <div style={{marginRight: "10px", marginBottom: "10px",background: "#ddd", padding: 3, borderRadius: "10px"}}> {tag} </div>
                                     )
-                                }                     
+                                }
                                 </div>
                                 {this.platformList()}
+
                                 <div className="row"> 
                                     {this.buttonUpdate()}
                                     {this.buttonDelete()}

@@ -20,6 +20,7 @@ import MeetingRequest from "./components/MeetingRequestComponent";
 import NotificationBar from "./components/NotificationBarComponent";
 import ProfileSettings from "./components/ProfileSettingsComponent";
 import ConfirmationCompleted from "./components/ConfirmationCompletedComponent";
+import EmailConfirmation from "./components/EmailConfirmationComponent";
 
 class App extends Component {
     constructor(props) {
@@ -145,6 +146,7 @@ class App extends Component {
                         <Route exact path="/add_meeting" component={CreateMeeting} />
                         <Route exact path="/meetings" component={MeetingList} />
                         <Route exact path="/confirm" component={ConfirmationCompleted} />
+                        <Route exact path="/confirm_email" component={EmailConfirmation} />
                         <Route path="/meetings/:id" component={MeetingPage} />
                         <Route path="/meetings/:id/requests" component={MeetingRequest} />
                         <Route path="/update/:id" component={UpdateMeeting} />
