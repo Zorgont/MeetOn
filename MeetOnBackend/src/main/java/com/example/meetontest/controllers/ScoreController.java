@@ -28,7 +28,7 @@ public class ScoreController {
     }
 
     @PostMapping("/{meetingId}")
-    public ScoreDTO createScore(@PathVariable Long meetingId, ScoreDTO score) throws ParseException {
+    public ScoreDTO createScore(@PathVariable Long meetingId,@RequestBody ScoreDTO score) throws ParseException {
         score.setMeeting_id(meetingId);
         MeetingScore meetingScore = converter.convert(score);
         return converter.convertBack(scoreService.createScore(meetingScore.getMeeting(), meetingScore.getUser(), meetingScore.getScore()));

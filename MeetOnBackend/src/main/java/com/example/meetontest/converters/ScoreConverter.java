@@ -14,14 +14,16 @@ public class ScoreConverter implements Converter<MeetingScore, ScoreDTO> {
     @Override
     public MeetingScore convert(ScoreDTO entity) throws ParseException {
         MeetingScore score = new MeetingScore();
+        if(entity.getId() != null)
         score.setScore_id(entity.getId());
         score.setScore(entity.getScore());
+        if(entity.getDate() != null)
         score.setDate(entity.getDate());
         Meeting meeting = new Meeting();
-        meeting.setId(entity.getId());
+        meeting.setId(entity.getMeeting_id());
         score.setMeeting(meeting);
         User user = new User();
-        user.setId(entity.getId());
+        user.setId(entity.getUser_id());
         score.setUser(user);
         return score;
     }
