@@ -55,9 +55,9 @@ export default class MeetingPage extends Component{
         });
 
     }
-    commentsList(){
-        if(this.state.meeting.status==="FINISHED") {
 
+    commentsList(){
+        if(this.state.meeting.status === "FINISHED" || this.state.meeting.status === "IN_PROGRESS") {
             return <div>
                 <CommentsList comments={this.state.comments} onCommentChange={this.addComment.bind(this)}/>
                 <SockJsClient
@@ -66,18 +66,18 @@ export default class MeetingPage extends Component{
                     onMessage={(comment) => this.handleComment(comment)}
                     ref={ (client) => { this.clientRef = client }}/>
             </div>
-
         }
     }
+
     addComment(content){
-        const comment={
-            meeting_id:this.state.meeting.meetingId,
-            meetingName:this.state.meeting.name,
-            user_id:this.state.currentUser.id,
-            username:this.state.currentUser.username,
-            content:content
+        const comment = {
+            meeting_id: this.state.meeting.meetingId,
+            meetingName: this.state.meeting.name,
+            user_id: this.state.currentUser.id,
+            username: this.state.currentUser.username,
+            content: content
         }
-        this.clientRef.sendMessage("/app/createComment",JSON.stringify(comment));
+        this.clientRef.sendMessage("/app/createComment", JSON.stringify(comment));
     }
 
     handleComment(comment){
@@ -93,12 +93,14 @@ export default class MeetingPage extends Component{
             this.props.history.push('/meetings');
         });
     }
+
     buttonDelete() {
         if ((this.state.meeting.managerId === AuthService.getCurrentUser()?.id)&&(this.state.meeting.status!=="FINISHED"))
             return  <div>     
                         <button className="btn btn-danger" style={{marginLeft:"5px"}} onClick={this.deleteMeeting.bind(this)}>Delete</button>
                     </div>
     }
+
     buttonUpdate() {
         if ((this.state.meeting.managerId === AuthService.getCurrentUser()?.id)&&(this.state.meeting.status!=="FINISHED"))
             return <div>
@@ -107,6 +109,7 @@ export default class MeetingPage extends Component{
                         </Link>
                     </div>
     }
+
     buttonEnroll() {
         if (AuthService.getCurrentUser()&&(this.state.meeting.managerId !== AuthService.getCurrentUser()?.id)&&(this.state.meeting.status!=="FINISHED")){
             if(this.state.request)
@@ -114,8 +117,7 @@ export default class MeetingPage extends Component{
                             <p>You have already enrolled to the meeting!</p>
                             <p>Status: {this.state.request.status}</p>
                         </div>
-            if(this.state.meeting.isParticipantAmountRestricted)
-            if(this.state.requestsAmount >= this.state.meeting.participantAmount)
+            if(this.state.meeting.isParticipantAmountRestricted && this.state.requestsAmount >= this.state.meeting.participantAmount)
                 return <div><p>No available places!</p></div>
 
             return  <div>
@@ -199,7 +201,6 @@ export default class MeetingPage extends Component{
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         );
