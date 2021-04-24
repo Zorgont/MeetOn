@@ -16,7 +16,8 @@ export default class ProfileSettingsComponent extends Component{
             tagGroups: null,
             tags: [],
             isNotifiable: false,
-            tagsNotifiable: []
+            tagsNotifiable: [],
+            errorMsg: null
         };
     }
     updateUser = (event) => {
@@ -28,7 +29,11 @@ export default class ProfileSettingsComponent extends Component{
         }
         UserService.updateUserSettings(user, this.state.currentUser.id).then(res => {
             this.props.history.push("/profile")
-        })
+        }).catch( error => {
+            this.setState({
+                errorMsg: error.response.data.message
+            })
+        });
     }
     changeFirstNameHandler = (event) => {
         this.setState({firstName: event.target.value});
@@ -92,7 +97,11 @@ export default class ProfileSettingsComponent extends Component{
                 tags: [],
                 isNotifiable: false
             })
-        })
+        }).catch( error => {
+            this.setState({
+                errorMsg: error.response.data.message
+            })
+        });
     }
     componentDidMount() {
         UserService.getUserById(this.state.currentUser.id).then( res => {
@@ -182,6 +191,10 @@ export default class ProfileSettingsComponent extends Component{
                                         <button className="btn btn-success" onClick={this.updateUser.bind(this)}>Save</button>
                                         <button className="btn btn-danger" onClick={this.cancel.bind(this)} style={{marginLeft: "10px"}}>Cancel</button>
                                     </div>
+                                    {this.state.errorMsg && <div className="row">
+                                        <label class="text-danger">{this.state.errorMsg}</label>
+                                    </div>
+                                    }
                                 </form>
                             </div>
                         </div>

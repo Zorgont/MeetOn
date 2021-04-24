@@ -102,7 +102,7 @@ export default class Register extends Component {
                         message: response.data.message,
                         successful: true
                     });
-                    this.props.history.push(`/confirm_email?email=`)
+                    this.props.history.push(`/confirm_email?email=${this.state.email}`)
                 },
                 error => {
                     const resMessage =
