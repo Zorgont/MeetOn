@@ -8,4 +8,6 @@ public class RequestCreatedEvent extends NotificationAbstractEvent<RequestDTO> {
     public RequestCreatedEvent(Object source, Date date, RequestDTO request) {
         super(source, date, null, request);
     }
+    public void process(){
+    }
 }
