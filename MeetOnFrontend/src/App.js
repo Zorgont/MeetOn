@@ -147,7 +147,7 @@ class App extends Component {
                         <Route exact path="/meetings" component={MeetingList} />
                         <Route exact path="/confirm" component={ConfirmationCompleted} />
                         <Route exact path="/confirm_email" component={EmailConfirmation} />
-                        <Route path="/meetings/:id" component={MeetingPage} />
+                        <Route exact path="/meetings/:id" component={MeetingPage} />
                         <Route path="/meetings/:id/requests" component={MeetingRequest} />
                         <Route path="/update/:id" component={UpdateMeeting} />
                         <Route path="/enroll/:id" component={CreateRequest} />
