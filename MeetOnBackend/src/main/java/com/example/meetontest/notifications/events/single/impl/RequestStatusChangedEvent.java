@@ -1,4 +1,4 @@
-package com.example.meetontest.notifications.events;
+package com.example.meetontest.notifications.events.single.impl;
 
 import com.example.meetontest.dto.RequestDTO;
 import com.example.meetontest.entities.RequestStatus;
@@ -7,6 +7,7 @@ import com.example.meetontest.mail.EmailService;
 import com.example.meetontest.notifications.entities.Notification;
 import com.example.meetontest.notifications.entities.NotificationEvent;
 import com.example.meetontest.notifications.entities.NotificationEventStatus;
+import com.example.meetontest.notifications.events.single.AbstractSingleNotificationEvent;
 import com.example.meetontest.notifications.services.NotificationEventStoringService;
 import com.example.meetontest.notifications.services.NotificationService;
 import com.example.meetontest.services.MeetingService;
@@ -22,7 +23,7 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
-public class RequestStatusChangedEvent implements AbstractNotificationEvent<RequestDTO> {
+public class RequestStatusChangedEvent implements AbstractSingleNotificationEvent<RequestDTO> {
 
     private final NotificationEventStoringService notificationEventStoringService;
     private final NotificationService notificationService;

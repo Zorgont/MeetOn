@@ -4,7 +4,7 @@ import com.example.meetontest.converters.MeetingConverter;
 import com.example.meetontest.entities.*;
 import com.example.meetontest.exceptions.ResourceNotFoundException;
 import com.example.meetontest.exceptions.ValidatorException;
-import com.example.meetontest.notifications.events.MeetingChangedEvent;
+import com.example.meetontest.notifications.events.single.impl.MeetingChangedEvent;
 import com.example.meetontest.notifications.services.NotificationEventStoringService;
 import com.example.meetontest.repositories.MeetingRepository;
 import com.example.meetontest.services.*;

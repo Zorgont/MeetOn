@@ -1,15 +1,10 @@
 package com.example.meetontest.notifications;
 
-import com.example.meetontest.converters.MeetingConverter;
-import com.example.meetontest.mail.EmailService;
-import com.example.meetontest.notifications.events.AbstractNotificationEvent;
-import com.example.meetontest.notifications.events.MeetingChangedEvent;
-import com.example.meetontest.notifications.events.RequestCreatedEvent;
-import com.example.meetontest.notifications.events.RequestStatusChangedEvent;
-import com.example.meetontest.notifications.services.NotificationEventStoringService;
-import com.example.meetontest.notifications.services.NotificationService;
-import com.example.meetontest.services.MeetingService;
-import com.example.meetontest.services.RequestService;
+import com.example.meetontest.notifications.events.multiple.AbstractMultipleNotificationEvent;
+import com.example.meetontest.notifications.events.single.impl.MeetingChangedEvent;
+import com.example.meetontest.notifications.events.multiple.impl.RequestCreatedEvent;
+import com.example.meetontest.notifications.events.single.impl.RequestStatusChangedEvent;
+import com.example.meetontest.notifications.events.single.AbstractSingleNotificationEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,12 +19,18 @@ public class NotificationConfig {
     private final RequestStatusChangedEvent requestStatusChangedEvent;
 
     @Bean
-    public HashMap<String, AbstractNotificationEvent> notificationEventMap() {
-        HashMap<String, AbstractNotificationEvent> result = new HashMap<>();
+    public HashMap<String, AbstractSingleNotificationEvent> notificationSingleEventMap() {
+        HashMap<String, AbstractSingleNotificationEvent> result = new HashMap<>();
 
         result.put("MeetingChangedEvent", meetingChangedEvent);
-        result.put("RequestCreatedEvent", requestCreatedEvent);
         result.put("RequestStatusChangedEvent", requestStatusChangedEvent);
+        return result;
+    }
+
+    @Bean
+    public HashMap<String, AbstractMultipleNotificationEvent> notificationMultipleEventMap() {
+        HashMap<String, AbstractMultipleNotificationEvent> result = new HashMap<>();
+        result.put("RequestCreatedEvent", requestCreatedEvent);
         return result;
     }
 }

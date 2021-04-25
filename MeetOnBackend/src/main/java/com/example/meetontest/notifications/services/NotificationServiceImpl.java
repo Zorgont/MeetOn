@@ -37,7 +37,6 @@ public class NotificationServiceImpl implements NotificationService {
                 .sorted((note1, note2) -> note1.getDate().before(note2.getDate()) ? 1 : -1).collect(Collectors.toList()) : getByUser(user);
     }
 
-
     @Override
     public void changeNotificationsStatus(Notification notification, NotificationStatus status) {
         notification.setStatus(status);

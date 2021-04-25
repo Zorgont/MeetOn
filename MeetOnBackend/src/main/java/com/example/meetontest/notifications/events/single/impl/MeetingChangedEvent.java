@@ -1,8 +1,7 @@
-package com.example.meetontest.notifications.events;
+package com.example.meetontest.notifications.events.single.impl;
 
 import com.example.meetontest.converters.MeetingConverter;
 import com.example.meetontest.dto.MeetingDTO;
-import com.example.meetontest.dto.RequestDTO;
 import com.example.meetontest.entities.Meeting;
 import com.example.meetontest.entities.MeetingStatus;
 import com.example.meetontest.entities.Request;
@@ -10,6 +9,7 @@ import com.example.meetontest.mail.EmailService;
 import com.example.meetontest.notifications.entities.Notification;
 import com.example.meetontest.notifications.entities.NotificationEvent;
 import com.example.meetontest.notifications.entities.NotificationEventStatus;
+import com.example.meetontest.notifications.events.single.AbstractSingleNotificationEvent;
 import com.example.meetontest.notifications.services.NotificationEventStoringService;
 import com.example.meetontest.notifications.services.NotificationService;
 import com.example.meetontest.services.MeetingService;
@@ -27,8 +27,7 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
-public class MeetingChangedEvent implements AbstractNotificationEvent<MeetingDTO> {
-
+public class MeetingChangedEvent implements AbstractSingleNotificationEvent<MeetingDTO> {
     private final MeetingService meetingService;
     private final MeetingConverter meetingConverter;
     private final RequestService requestService;
@@ -58,19 +57,16 @@ public class MeetingChangedEvent implements AbstractNotificationEvent<MeetingDTO
                 mailService.sendSimpleMessage(request.getUser().getEmail(), "Meeting " + meeting.getName() + " cancelled", meeting.toString());
                 notificationService.createNotification(new Notification(new Date(), "Meeting " + meeting.getName() + " cancelled", request.getUser()));
             });
-
         } else if (meeting.getStatus() == MeetingStatus.IN_PROGRESS) {
             requestService.getByMeeting(meeting).forEach(request -> {
                 mailService.sendSimpleMessage(request.getUser().getEmail(), "Meeting " + meeting.getName() + " began", meeting.toString());
                 notificationService.createNotification(new Notification(new Date(), "Meeting " + meeting.getName() + " began", request.getUser()));
             });
-
         } else if (meeting.getStatus() == MeetingStatus.FINISHED) {
             requestService.getByMeeting(meeting).forEach(request -> {
                 mailService.sendSimpleMessage(request.getUser().getEmail(), "Meeting " + meeting.getName() + " finished", meeting.toString());
                 notificationService.createNotification(new Notification(new Date(), "Meeting " + meeting.getName() + " finished", request.getUser()));
             });
-
         }
     }
 
