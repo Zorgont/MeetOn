@@ -4,12 +4,13 @@ import com.example.meetontest.entities.Meeting;
 import com.example.meetontest.entities.Request;
 import com.example.meetontest.entities.RequestStatus;
 import com.example.meetontest.entities.User;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface RequestService {
-    Request create(Request request);
+    Request create(Request request) throws JsonProcessingException;
 
     Optional<Request> getById(Long id);
 
@@ -17,7 +18,7 @@ public interface RequestService {
 
     List<Request> getByMeeting(Meeting meeting);
 
-    void changeStatus(Request request, RequestStatus status);
+    void changeStatus(Request request, RequestStatus status) throws JsonProcessingException;
 
     Optional<Request> getByMeetingIdUserId(Long meetingId, Long userId);
 

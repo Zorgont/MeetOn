@@ -1,26 +1,22 @@
 package com.example.meetontest.notifications.services;
 
 import com.example.meetontest.converters.MeetingConverter;
-import com.example.meetontest.dto.MeetingDTO;
 import com.example.meetontest.dto.RequestDTO;
 import com.example.meetontest.entities.*;
 import com.example.meetontest.mail.EmailService;
 import com.example.meetontest.notifications.entities.Notification;
-import com.example.meetontest.notifications.entities.NotificationEvent;
 import com.example.meetontest.notifications.entities.NotificationEventStatus;
-import com.example.meetontest.notifications.events.MeetingChangedEvent;
-import com.example.meetontest.notifications.events.NotificationAbstractEvent;
+import com.example.meetontest.notifications.events.AbstractNotificationEvent;
 import com.example.meetontest.notifications.events.RequestCreatedEvent;
-import com.example.meetontest.notifications.events.RequestStatusChangedEvent;
 import com.example.meetontest.services.MeetingService;
-import com.example.meetontest.services.RequestService;
-import com.example.meetontest.services.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import java.util.Date;
@@ -33,21 +29,19 @@ public class NotificationSendingService {
     private static final Logger log = LoggerFactory.getLogger(NotificationSendingService.class);
 
     private final NotificationEventStoringService notificationEventStoringService;
-    private final NotificationService notificationService;
-    private final EmailService emailService;
-    private final MeetingConverter meetingConverter;
     private final MeetingService meetingService;
-    private final RequestService requestService;
-    private final UserService userService;
+    private final EmailService emailService;
+    private final NotificationService notificationService;
+
+    @Autowired
+    @Qualifier("notificationEventMap")
+    Map<String, AbstractNotificationEvent> notificationEventMap;
 
     @Scheduled(fixedRate = 10000)
     public void checkEvents() {
         notificationEventStoringService.getUnsentEventsList().forEach(notificationEvent -> {
             try {
-                String className = "com.example.meetontest.notifications.events." + notificationEvent.getType();
-                NotificationAbstractEvent event = (NotificationAbstractEvent) Class.forName(className).getConstructor(NotificationEvent.class).newInstance(new Object[] { notificationEvent });
-                event.injectServices(userService, meetingService, requestService, meetingConverter, emailService, notificationService, notificationEventStoringService);
-                event.process();
+                notificationEventMap.get(notificationEvent.getType()).process(notificationEvent);
             } catch (Exception e) {
                 e.printStackTrace();
             }

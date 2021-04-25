@@ -2,7 +2,7 @@ package com.example.meetontest.notifications.services;
 
 import com.example.meetontest.notifications.entities.NotificationEvent;
 import com.example.meetontest.notifications.entities.NotificationEventStatus;
-import com.example.meetontest.notifications.events.NotificationAbstractEvent;
+import com.example.meetontest.notifications.events.AbstractNotificationEvent;
 import com.example.meetontest.notifications.repositories.NotificationEventRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -15,9 +15,9 @@ public class NotificationEventStoringServiceImpl implements NotificationEventSto
 
     private final NotificationEventRepository notificationEventRepository;
 
-    public void saveEvent(NotificationAbstractEvent event) {
+    public void saveEvent(NotificationEvent event) {
         try {
-            notificationEventRepository.save(event.toEntity());
+            notificationEventRepository.save(event);
         } catch (Exception e) {
             e.printStackTrace();
         }

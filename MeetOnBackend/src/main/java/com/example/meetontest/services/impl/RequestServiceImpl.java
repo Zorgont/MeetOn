@@ -10,6 +10,7 @@ import com.example.meetontest.repositories.RequestRepository;
 import com.example.meetontest.services.MeetingService;
 import com.example.meetontest.services.RequestService;
 import com.example.meetontest.services.UserService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,9 +27,11 @@ public class RequestServiceImpl implements RequestService {
     private final UserService userService;
     private final NotificationEventStoringService notificationEventStoringService;
     private final RequestConverter requestConverter;
+    private final RequestStatusChangedEvent requestStatusChangedEvent;
+    private final RequestCreatedEvent requestCreatedEvent;
 
     @Override
-    public Request create(Request request) {
+    public Request create(Request request) throws JsonProcessingException {
         if (request.getRole() == MeetingRole.PARTICIPANT) {
             if (request.getMeeting().getIsPrivate())
                 request.setStatus(RequestStatus.PENDING);
@@ -38,7 +41,7 @@ public class RequestServiceImpl implements RequestService {
 
         requestRepository.save(request);
         if (request.getRole() != MeetingRole.MANAGER)
-            notificationEventStoringService.saveEvent(new RequestCreatedEvent(this, new Date(), requestConverter.convertBack(request)));
+            notificationEventStoringService.saveEvent(requestCreatedEvent.toEntity(this, new Date(), null, requestConverter.convertBack(request)));
         return request;
     }
 
@@ -59,11 +62,11 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     @Transactional
-    public void changeStatus(Request request, RequestStatus status) {
+    public void changeStatus(Request request, RequestStatus status) throws JsonProcessingException {
         RequestDTO oldRequest = requestConverter.convertBack(request);
         request.setStatus(status);
         requestRepository.save(request);
-        notificationEventStoringService.saveEvent(new RequestStatusChangedEvent(this, new Date(), oldRequest, requestConverter.convertBack(request)));
+        notificationEventStoringService.saveEvent(requestStatusChangedEvent.toEntity(this, new Date(), oldRequest, requestConverter.convertBack(request)));
     }
 
     @Override

@@ -1,13 +1,19 @@
 package com.example.meetontest.notifications.events;
 
 import com.example.meetontest.dto.RequestDTO;
+import com.example.meetontest.entities.Request;
+import com.example.meetontest.notifications.entities.NotificationEvent;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import org.springframework.stereotype.Component;
 
+import java.text.ParseException;
 import java.util.Date;
 
-public class RequestCreatedEvent extends NotificationAbstractEvent<RequestDTO> {
-    public RequestCreatedEvent(Object source, Date date, RequestDTO request) {
-        super(source, date, null, request);
-    }
-    public void process(){
+@Component
+public class RequestCreatedEvent implements AbstractNotificationEvent<RequestDTO> {
+
+    @Override
+    public void process(NotificationEvent event) throws JsonProcessingException, ParseException {
+
     }
 }

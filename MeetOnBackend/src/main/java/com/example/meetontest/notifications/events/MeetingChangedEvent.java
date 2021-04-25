@@ -1,43 +1,50 @@
 package com.example.meetontest.notifications.events;
 
+import com.example.meetontest.converters.MeetingConverter;
 import com.example.meetontest.dto.MeetingDTO;
 import com.example.meetontest.dto.RequestDTO;
 import com.example.meetontest.entities.Meeting;
 import com.example.meetontest.entities.MeetingStatus;
 import com.example.meetontest.entities.Request;
+import com.example.meetontest.mail.EmailService;
 import com.example.meetontest.notifications.entities.Notification;
 import com.example.meetontest.notifications.entities.NotificationEvent;
 import com.example.meetontest.notifications.entities.NotificationEventStatus;
+import com.example.meetontest.notifications.services.NotificationEventStoringService;
+import com.example.meetontest.notifications.services.NotificationService;
+import com.example.meetontest.services.MeetingService;
+import com.example.meetontest.services.RequestService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public class MeetingChangedEvent extends NotificationAbstractEvent<MeetingDTO> {
-    private NotificationEvent event;
+@Component
+@RequiredArgsConstructor
+public class MeetingChangedEvent implements AbstractNotificationEvent<MeetingDTO> {
 
-    public MeetingChangedEvent(Object source, Date date, MeetingDTO oldValue, MeetingDTO newValue) {
-        super(source, date, oldValue, newValue);
-    }
-
-    public MeetingChangedEvent(NotificationEvent event) throws JsonProcessingException {
-        super(null, new Date(),
-                new ObjectMapper().readValue(event.getBody(), new TypeReference<Map<String, MeetingDTO>>() {}).get("old"),
-                new ObjectMapper().readValue(event.getBody(), new TypeReference<Map<String, MeetingDTO>>() {}).get("new"));
-
-        this.event = event;
-    }
+    private final MeetingService meetingService;
+    private final MeetingConverter meetingConverter;
+    private final RequestService requestService;
+    private final EmailService mailService;
+    private final NotificationService notificationService;
+    private final NotificationEventStoringService notificationEventStoringService;
 
     @Override
-    public void process() throws ParseException {
+    public void process(NotificationEvent event) throws JsonProcessingException, ParseException {
+        MeetingDTO oldValue = new ObjectMapper().readValue(event.getBody(), new TypeReference<Map<String, MeetingDTO>>() {}).get("old");
+        MeetingDTO newValue = new ObjectMapper().readValue(event.getBody(), new TypeReference<Map<String, MeetingDTO>>() {}).get("new");
+
         Meeting oldMeeting = meetingConverter.convert(oldValue);
         Meeting newMeeting = meetingConverter.convert(newValue);
         newMeeting.setId(newValue.getMeetingId());
-        if (!oldValue.getStatus().equals(newValue.getStatus()))
+        if (!oldMeeting.getStatus().equals(newMeeting.getStatus()))
             statusChanged(newMeeting);
         else infoChanged(oldMeeting, newMeeting);
 

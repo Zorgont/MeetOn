@@ -8,6 +8,7 @@ import com.example.meetontest.notifications.events.MeetingChangedEvent;
 import com.example.meetontest.notifications.services.NotificationEventStoringService;
 import com.example.meetontest.repositories.MeetingRepository;
 import com.example.meetontest.services.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,10 @@ public class MeetingServiceImpl implements MeetingService {
     private final TagService tagService;
     private final MeetingValidator meetingValidator;
     private final NotificationEventStoringService notificationEventStoringService;
+
+
+    @Autowired
+    private MeetingChangedEvent meetingChangedEvent;
 
     @Autowired
     private MeetingConverter meetingConverter;
@@ -51,7 +56,7 @@ public class MeetingServiceImpl implements MeetingService {
     }
 
     @Transactional
-    public Meeting createMeeting(Meeting meetingRequest, User manager, Set<MeetingPlatform> meetingPlatforms) throws ValidatorException {
+    public Meeting createMeeting(Meeting meetingRequest, User manager, Set<MeetingPlatform> meetingPlatforms) throws ValidatorException, JsonProcessingException {
         meetingValidator.validate(meetingRequest);
         Meeting meeting = meetingRepository.save(meetingRequest);
         requestService.create(new Request(meeting, manager, MeetingRole.MANAGER, RequestStatus.APPROVED));
@@ -85,7 +90,7 @@ public class MeetingServiceImpl implements MeetingService {
     }
 
     @Transactional
-    public Meeting updateMeeting(Long id, Meeting meetingRequest, Set<MeetingPlatform> meetingPlatforms) throws ValidatorException {
+    public Meeting updateMeeting(Long id, Meeting meetingRequest, Set<MeetingPlatform> meetingPlatforms) throws ValidatorException, JsonProcessingException {
         meetingValidator.validate(meetingRequest);
         Meeting meeting = meetingRepository.findById(id).get();
 
@@ -111,7 +116,7 @@ public class MeetingServiceImpl implements MeetingService {
         meetingPlatforms.forEach(meeting::addMeetingPlatform);
 
         meetingRepository.save(meeting);
-        notificationEventStoringService.saveEvent(new MeetingChangedEvent(this, new Date(), meetingConverter.convertBack(oldMeeting), meetingConverter.convertBack(meeting)));
+        notificationEventStoringService.saveEvent(meetingChangedEvent.toEntity(this, new Date(), meetingConverter.convertBack(oldMeeting), meetingConverter.convertBack(meeting)));
         return meeting;
     }
 

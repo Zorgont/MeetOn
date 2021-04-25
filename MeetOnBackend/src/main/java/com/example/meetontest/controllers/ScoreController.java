@@ -29,7 +29,8 @@ public class ScoreController {
 
     @GetMapping("/{meetingId}/byUser/{userId}")
     public ScoreDTO getScoreByMeetingAndUser(@PathVariable Long meetingId, @PathVariable Long userId) {
-        return converter.convertBack(scoreService.getByMeetingAndUser(meetingService.getMeetingById(meetingId), userService.getUserById(userId)));
+        MeetingScore score = scoreService.getByMeetingAndUser(meetingService.getMeetingById(meetingId), userService.getUserById(userId));
+        return score != null ? converter.convertBack(score) : null;
     }
 
     @PostMapping("/{meetingId}")

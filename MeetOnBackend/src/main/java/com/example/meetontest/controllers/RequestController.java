@@ -8,6 +8,7 @@ import com.example.meetontest.entities.RequestStatus;
 import com.example.meetontest.services.MeetingService;
 import com.example.meetontest.services.RequestService;
 import com.example.meetontest.services.UserService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -60,7 +61,7 @@ public class RequestController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createRequest(@RequestBody RequestDTO requestDTO) {
+    public ResponseEntity<?> createRequest(@RequestBody RequestDTO requestDTO) throws JsonProcessingException {
         return ResponseEntity.ok(requestConverter.convertBack(requestService.create(requestConverter.convert(requestDTO))));
     }
 
