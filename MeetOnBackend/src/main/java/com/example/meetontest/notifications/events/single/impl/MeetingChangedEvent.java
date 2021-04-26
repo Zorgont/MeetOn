@@ -7,10 +7,10 @@ import com.example.meetontest.entities.MeetingStatus;
 import com.example.meetontest.entities.Request;
 import com.example.meetontest.mail.EmailService;
 import com.example.meetontest.notifications.entities.Notification;
-import com.example.meetontest.notifications.entities.NotificationEvent;
-import com.example.meetontest.notifications.entities.NotificationEventStatus;
-import com.example.meetontest.notifications.events.single.AbstractSingleNotificationEvent;
-import com.example.meetontest.notifications.services.NotificationEventStoringService;
+import com.example.meetontest.notifications.entities.EventEntity;
+import com.example.meetontest.notifications.entities.EventStatus;
+import com.example.meetontest.notifications.events.single.AbstractSingleEvent;
+import com.example.meetontest.notifications.services.EventStoringService;
 import com.example.meetontest.notifications.services.NotificationService;
 import com.example.meetontest.services.MeetingService;
 import com.example.meetontest.services.RequestService;
@@ -27,16 +27,16 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
-public class MeetingChangedEvent implements AbstractSingleNotificationEvent<MeetingDTO> {
+public class MeetingChangedEvent implements AbstractSingleEvent<MeetingDTO> {
     private final MeetingService meetingService;
     private final MeetingConverter meetingConverter;
     private final RequestService requestService;
     private final EmailService mailService;
     private final NotificationService notificationService;
-    private final NotificationEventStoringService notificationEventStoringService;
+    private final EventStoringService eventStoringService;
 
     @Override
-    public void process(NotificationEvent event) throws JsonProcessingException, ParseException {
+    public void process(EventEntity event) throws JsonProcessingException, ParseException {
         MeetingDTO oldValue = new ObjectMapper().readValue(event.getBody(), new TypeReference<Map<String, MeetingDTO>>() {}).get("old");
         MeetingDTO newValue = new ObjectMapper().readValue(event.getBody(), new TypeReference<Map<String, MeetingDTO>>() {}).get("new");
 
@@ -47,8 +47,8 @@ public class MeetingChangedEvent implements AbstractSingleNotificationEvent<Meet
             statusChanged(newMeeting);
         else infoChanged(oldMeeting, newMeeting);
 
-        event.setStatus(NotificationEventStatus.SENT);
-        notificationEventStoringService.updateEvent(event);
+        event.setStatus(EventStatus.HANDLED);
+        eventStoringService.updateEvent(event);
     }
 
     private void statusChanged(Meeting meeting) {

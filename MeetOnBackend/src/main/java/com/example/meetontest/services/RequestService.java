@@ -1,9 +1,6 @@
 package com.example.meetontest.services;
 
-import com.example.meetontest.entities.Meeting;
-import com.example.meetontest.entities.Request;
-import com.example.meetontest.entities.RequestStatus;
-import com.example.meetontest.entities.User;
+import com.example.meetontest.entities.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import java.util.List;
@@ -27,4 +24,6 @@ public interface RequestService {
     int getApprovedRequestsAmount(long meetingId);
 
     List<Request> getByMeetingAndStatus(Meeting meeting, RequestStatus status);
+
+    List<Request> getByUserAndRole(User user, MeetingRole role);
 }

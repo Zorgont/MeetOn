@@ -5,10 +5,10 @@ import com.example.meetontest.entities.RequestStatus;
 import com.example.meetontest.entities.User;
 import com.example.meetontest.mail.EmailService;
 import com.example.meetontest.notifications.entities.Notification;
-import com.example.meetontest.notifications.entities.NotificationEvent;
-import com.example.meetontest.notifications.entities.NotificationEventStatus;
-import com.example.meetontest.notifications.events.single.AbstractSingleNotificationEvent;
-import com.example.meetontest.notifications.services.NotificationEventStoringService;
+import com.example.meetontest.notifications.entities.EventEntity;
+import com.example.meetontest.notifications.entities.EventStatus;
+import com.example.meetontest.notifications.events.single.AbstractSingleEvent;
+import com.example.meetontest.notifications.services.EventStoringService;
 import com.example.meetontest.notifications.services.NotificationService;
 import com.example.meetontest.services.MeetingService;
 import com.example.meetontest.services.UserService;
@@ -23,21 +23,21 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
-public class RequestStatusChangedEvent implements AbstractSingleNotificationEvent<RequestDTO> {
+public class RequestStatusChangedEvent implements AbstractSingleEvent<RequestDTO> {
 
-    private final NotificationEventStoringService notificationEventStoringService;
+    private final EventStoringService eventStoringService;
     private final NotificationService notificationService;
     private final EmailService mailService;
     private final UserService userService;
     private final MeetingService meetingService;
 
     @Override
-    public void process(NotificationEvent event) throws JsonProcessingException {
+    public void process(EventEntity event) throws JsonProcessingException {
         RequestDTO oldValue = new ObjectMapper().readValue(event.getBody(), new TypeReference<Map<String, RequestDTO>>() {}).get("old");
         RequestDTO newValue = new ObjectMapper().readValue(event.getBody(), new TypeReference<Map<String, RequestDTO>>() {}).get("new");
         requestChanged(newValue, RequestStatus.valueOf(oldValue.getStatus()), RequestStatus.valueOf(newValue.getStatus()));
-        event.setStatus(NotificationEventStatus.SENT);
-        notificationEventStoringService.updateEvent(event);
+        event.setStatus(EventStatus.HANDLED);
+        eventStoringService.updateEvent(event);
     }
 
     private void requestChanged(RequestDTO request, RequestStatus oldStatus, RequestStatus newStatus) {

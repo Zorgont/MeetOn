@@ -5,7 +5,7 @@ import com.example.meetontest.dto.RequestDTO;
 import com.example.meetontest.entities.*;
 import com.example.meetontest.notifications.events.multiple.impl.RequestCreatedEvent;
 import com.example.meetontest.notifications.events.single.impl.RequestStatusChangedEvent;
-import com.example.meetontest.notifications.services.NotificationEventStoringService;
+import com.example.meetontest.notifications.services.EventStoringService;
 import com.example.meetontest.repositories.RequestRepository;
 import com.example.meetontest.services.MeetingService;
 import com.example.meetontest.services.RequestService;
@@ -25,7 +25,7 @@ public class RequestServiceImpl implements RequestService {
     private final RequestRepository requestRepository;
     private final MeetingService meetingService;
     private final UserService userService;
-    private final NotificationEventStoringService notificationEventStoringService;
+    private final EventStoringService eventStoringService;
     private final RequestConverter requestConverter;
     private final RequestStatusChangedEvent requestStatusChangedEvent;
     private final RequestCreatedEvent requestCreatedEvent;
@@ -41,7 +41,7 @@ public class RequestServiceImpl implements RequestService {
 
         requestRepository.save(request);
         if (request.getRole() != MeetingRole.MANAGER)
-            notificationEventStoringService.saveEvent(requestCreatedEvent.toEntity(this, new Date(), null, requestConverter.convertBack(request)));
+            eventStoringService.saveEvent(requestCreatedEvent.toEntity(this, new Date(), null, requestConverter.convertBack(request)));
         return request;
     }
 
@@ -66,7 +66,7 @@ public class RequestServiceImpl implements RequestService {
         RequestDTO oldRequest = requestConverter.convertBack(request);
         request.setStatus(status);
         requestRepository.save(request);
-        notificationEventStoringService.saveEvent(requestStatusChangedEvent.toEntity(this, new Date(), oldRequest, requestConverter.convertBack(request)));
+        eventStoringService.saveEvent(requestStatusChangedEvent.toEntity(this, new Date(), oldRequest, requestConverter.convertBack(request)));
     }
 
     @Override
@@ -87,5 +87,10 @@ public class RequestServiceImpl implements RequestService {
     @Override
     public List<Request> getByMeetingAndStatus(Meeting meeting, RequestStatus status) {
         return requestRepository.findByMeetingAndStatus(meeting, status);
+    }
+
+    @Override
+    public List<Request> getByUserAndRole(User user, MeetingRole role) {
+        return requestRepository.findByUserAndRole(user, role);
     }
 }

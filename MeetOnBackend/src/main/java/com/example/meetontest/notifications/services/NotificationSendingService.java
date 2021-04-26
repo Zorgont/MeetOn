@@ -1,8 +1,8 @@
 package com.example.meetontest.notifications.services;
 
-import com.example.meetontest.notifications.entities.NotificationEvent;
-import com.example.meetontest.notifications.events.multiple.AbstractMultipleNotificationEvent;
-import com.example.meetontest.notifications.events.single.AbstractSingleNotificationEvent;
+import com.example.meetontest.notifications.entities.EventEntity;
+import com.example.meetontest.notifications.events.multiple.AbstractMultipleEvent;
+import com.example.meetontest.notifications.events.single.AbstractSingleEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -16,35 +16,34 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class NotificationSendingService {
-    private final NotificationEventStoringService notificationEventStoringService;
+    private final EventStoringService eventStoringService;
 
     @Autowired
     @Qualifier("notificationSingleEventMap")
-    Map<String, AbstractSingleNotificationEvent> notificationSingleEventMap;
+    Map<String, AbstractSingleEvent> notificationSingleEventMap;
 
     @Autowired
     @Qualifier("notificationMultipleEventMap")
-    Map<String, AbstractMultipleNotificationEvent> notificationMultipleEventMap;
+    Map<String, AbstractMultipleEvent> notificationMultipleEventMap;
 
     @Scheduled(fixedRate = 10000)
     public void checkEvents() {
-        notificationEventStoringService.getUnsentEventsList().stream().filter(event -> notificationSingleEventMap.containsKey(event.getType()))
-            .forEach(notificationEvent -> {
-                try {
-                    notificationSingleEventMap.get(notificationEvent.getType()).process(notificationEvent);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        eventStoringService.getUnhandledEventsByTypes(notificationSingleEventMap.keySet()).forEach(notificationEvent -> {
+            try {
+                notificationSingleEventMap.get(notificationEvent.getType()).process(notificationEvent);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         });
     }
 
     // once per 1 min.
     @Scheduled(fixedRate = 60000)
     public void checkUnsentRequestCreatedEvents() {
-        notificationEventStoringService.getUnsentEventsList().stream().filter(event -> notificationMultipleEventMap.containsKey(event.getType()))
-            .collect(Collectors.groupingBy(NotificationEvent::getType)).forEach((eventType, events) -> {
-                AbstractMultipleNotificationEvent event = notificationMultipleEventMap.get(eventType);
-                event.preprocess(events).forEach((meetingId, eventList) -> event.process(meetingId, (List<NotificationEvent>) eventList));
+        eventStoringService.getUnhandledEventsByTypes(notificationMultipleEventMap.keySet()).stream()
+            .collect(Collectors.groupingBy(EventEntity::getType)).forEach((eventType, events) -> {
+                AbstractMultipleEvent event = notificationMultipleEventMap.get(eventType);
+                event.preprocess(events).forEach((meetingId, eventList) -> event.process(meetingId, (List<EventEntity>) eventList));
             });
     }
 }

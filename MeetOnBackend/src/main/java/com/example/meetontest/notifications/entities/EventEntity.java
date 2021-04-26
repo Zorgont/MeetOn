@@ -12,7 +12,7 @@ import java.util.Date;
 @Getter
 @Setter
 @NoArgsConstructor
-public class NotificationEvent {
+public class EventEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,12 +23,12 @@ public class NotificationEvent {
     private String body;
 
     @Enumerated(EnumType.STRING)
-    private NotificationEventStatus status;
+    private EventStatus status;
 
-    public NotificationEvent(Date date, String type, String body) {
+    public EventEntity(Date date, String type, String body) {
         this.date = date;
         this.type = type;
         this.body = body;
-        this.status = NotificationEventStatus.UNSENT;
+        this.status = EventStatus.UNHANDLED;
     }
 }

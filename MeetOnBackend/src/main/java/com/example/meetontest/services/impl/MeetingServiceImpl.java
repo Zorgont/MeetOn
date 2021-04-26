@@ -5,7 +5,7 @@ import com.example.meetontest.entities.*;
 import com.example.meetontest.exceptions.ResourceNotFoundException;
 import com.example.meetontest.exceptions.ValidatorException;
 import com.example.meetontest.notifications.events.single.impl.MeetingChangedEvent;
-import com.example.meetontest.notifications.services.NotificationEventStoringService;
+import com.example.meetontest.notifications.services.EventStoringService;
 import com.example.meetontest.repositories.MeetingRepository;
 import com.example.meetontest.services.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -25,7 +25,7 @@ public class MeetingServiceImpl implements MeetingService {
     private final MeetingRepository meetingRepository;
     private final TagService tagService;
     private final MeetingValidator meetingValidator;
-    private final NotificationEventStoringService notificationEventStoringService;
+    private final EventStoringService eventStoringService;
 
 
     @Autowired
@@ -116,7 +116,7 @@ public class MeetingServiceImpl implements MeetingService {
         meetingPlatforms.forEach(meeting::addMeetingPlatform);
 
         meetingRepository.save(meeting);
-        notificationEventStoringService.saveEvent(meetingChangedEvent.toEntity(this, new Date(), meetingConverter.convertBack(oldMeeting), meetingConverter.convertBack(meeting)));
+        eventStoringService.saveEvent(meetingChangedEvent.toEntity(this, new Date(), meetingConverter.convertBack(oldMeeting), meetingConverter.convertBack(meeting)));
         return meeting;
     }
 
