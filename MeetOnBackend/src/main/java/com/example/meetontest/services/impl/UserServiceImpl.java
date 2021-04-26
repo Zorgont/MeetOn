@@ -3,19 +3,28 @@ package com.example.meetontest.services.impl;
 import com.example.meetontest.dto.UserSettingDTO;
 import com.example.meetontest.entities.User;
 import com.example.meetontest.exceptions.ResourceNotFoundException;
+import com.example.meetontest.rating.service.UserRatingProvider;
 import com.example.meetontest.repositories.UserRepository;
 import com.example.meetontest.services.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
+    @Autowired
+    private UserRatingProvider userRatingProvider;
+
     @Override
     public Iterable<User> getUsers() {
-        return userRepository.findAll();
+        List<User> users = userRepository.findAll();
+        users.forEach(user -> user.setKarma(userRatingProvider.getUserRating(user)));
+        return users;
     }
 
     @Override
@@ -25,7 +34,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserById(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User no exist!"));
+        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User no exist!"));
+        user.setKarma(userRatingProvider.getUserRating(user));
+        return user;
     }
 
     @Override
@@ -43,7 +54,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserByName(String name) {
-        return userRepository.findByUsername(name).orElseThrow(() -> new ResourceNotFoundException("User no exist!"));
+        User user = userRepository.findByUsername(name).orElseThrow(() -> new ResourceNotFoundException("User no exist!"));
+        user.setKarma(userRatingProvider.getUserRating(user));
+        return user;
     }
 
     @Override
