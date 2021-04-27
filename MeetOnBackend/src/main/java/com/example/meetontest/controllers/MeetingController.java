@@ -30,7 +30,6 @@ public class MeetingController {
     private final UserService userService;
     private final MeetingConverter meetingConverter;
     private final MeetingPlatformsConverter meetingPlatformsConverter;
-
     @GetMapping
     public Iterable<MeetingDTO> getMeetings(@RequestParam @Nullable List<String> tags) {
         return meetingService.getMeetingsByTags(tags).stream().map(meetingConverter::convertBack).collect(Collectors.toList());

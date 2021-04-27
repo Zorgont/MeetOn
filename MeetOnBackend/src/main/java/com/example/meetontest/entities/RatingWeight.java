@@ -18,4 +18,9 @@ public class RatingWeight {
     @Enumerated(EnumType.STRING)
     private RatingWeightType type;
     private Double value;
+
+    public RatingWeight(RatingWeightType type, Double value) {
+        this.type = type;
+        this.value = value;
+    }
 }

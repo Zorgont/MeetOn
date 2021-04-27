@@ -1,6 +1,7 @@
 package com.example.meetontest.security;
 
 import com.example.meetontest.entities.*;
+import com.example.meetontest.repositories.RatingWeightRepository;
 import com.example.meetontest.repositories.RoleRepository;
 import com.example.meetontest.repositories.TagRepository;
 import com.example.meetontest.repositories.UserRepository;
@@ -39,6 +40,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final TagRepository tagRepository;
+    private final RatingWeightRepository ratingWeightRepository;
     private final PlatformService platformService;
 
     @Override
@@ -91,6 +93,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             vladlen.setPassword(passwordEncoder().encode("123456"));
             vladlen.setRoles(new HashSet<>(roleRepository.findAll()));
             userRepository.save(vladlen);
+        }
+
+        if (ratingWeightRepository.count() == 0){
+            ratingWeightRepository.save(new RatingWeight(RatingWeightType.MEETING_CREATION,20.0));
+            ratingWeightRepository.save(new RatingWeight(RatingWeightType.MEETING_ATTENDANCE, 1.0));
+            ratingWeightRepository.save(new RatingWeight(RatingWeightType.MEETING_SCORE_COEFFICIENT, 400.0));
         }
 
         http.cors().and().csrf().disable()
