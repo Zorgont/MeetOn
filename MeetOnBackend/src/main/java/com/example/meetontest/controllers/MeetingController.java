@@ -8,13 +8,19 @@ import com.example.meetontest.dto.MessageResponse;
 import com.example.meetontest.entities.Meeting;
 import com.example.meetontest.entities.MeetingPlatform;
 import com.example.meetontest.exceptions.ValidatorException;
+import com.example.meetontest.rating.recommendation.MeetingRecommendationsService;
 import com.example.meetontest.services.MeetingService;
 import com.example.meetontest.services.UserService;
+import com.example.meetontest.services.impl.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,9 +36,18 @@ public class MeetingController {
     private final UserService userService;
     private final MeetingConverter meetingConverter;
     private final MeetingPlatformsConverter meetingPlatformsConverter;
+    private final MeetingRecommendationsService meetingRecommendationsService;
     @GetMapping
     public Iterable<MeetingDTO> getMeetings(@RequestParam @Nullable List<String> tags) {
         return meetingService.getMeetingsByTags(tags).stream().map(meetingConverter::convertBack).collect(Collectors.toList());
+    }
+    @GetMapping("/recommended")
+    public Iterable<MeetingDTO> getRecommendedMeetings(@RequestParam @Nullable List<String> tags) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserName = authentication.getName();
+
+        return meetingRecommendationsService.getRecommendations(meetingService.getMeetingsByTags(tags), userService.getUserByName(currentUserName), 20)
+                .stream().map(meetingConverter::convertBack).collect(Collectors.toList());
     }
 
     @GetMapping("/byManager/{name}")

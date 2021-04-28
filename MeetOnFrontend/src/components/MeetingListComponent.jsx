@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Link } from 'react-router-dom';
 import MeetingService from '../services/MeetingService';
 import TagService from '../services/TagService';
+import AuthService from "../services/AuthService";
 
 class MeetingList extends Component {
     constructor(props) {
@@ -9,7 +10,8 @@ class MeetingList extends Component {
         this.state = {
             meetings: [],
             tags: [],
-            selectedTags: []
+            selectedTags: [],
+            currentUser: AuthService.getCurrentUser()
         }
     }
     
@@ -24,11 +26,16 @@ class MeetingList extends Component {
         script.async = true;
         document.body.appendChild(script);
 
-
-        MeetingService.getMeetings().then((res) => {
+        if(this.state.currentUser)
+        MeetingService.getRecommendedMeetingsByTags().then((res) => {
             this.setState({meetings: res.data});
             console.log(this.state.meetings);
         });
+        else
+            MeetingService.getMeetings().then((res) => {
+                this.setState({meetings: res.data});
+                console.log(this.state.meetings);
+            });
         TagService.getTags().then((res) => {
             this.setState({tags: res.data});
         });
@@ -46,10 +53,16 @@ class MeetingList extends Component {
             array.splice(array.indexOf(tag), 1);
         
         this.setState({selectedTags: array});
-        MeetingService.getMeetingsByTags(this.state.selectedTags).then((res) => {
+        if(this.state.currentUser)
+        MeetingService.getRecommendedMeetingsByTags(this.state.selectedTags).then((res) => {
             this.setState({meetings: res.data});
             console.log(this.state.meetings);
         });
+        else
+            MeetingService.getMeetingsByTags(this.state.selectedTags).then((res) => {
+                this.setState({meetings: res.data});
+                console.log(this.state.meetings);
+            });
     }
 
     render() {

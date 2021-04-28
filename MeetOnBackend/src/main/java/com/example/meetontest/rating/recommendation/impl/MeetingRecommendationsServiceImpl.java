@@ -2,6 +2,7 @@ package com.example.meetontest.rating.recommendation.impl;
 
 import com.example.meetontest.entities.Meeting;
 import com.example.meetontest.entities.Tag;
+import com.example.meetontest.entities.TagGroup;
 import com.example.meetontest.entities.User;
 import com.example.meetontest.rating.recommendation.MeetingRecommendationsService;
 import com.example.meetontest.rating.service.UserRatingProvider;
@@ -25,7 +26,10 @@ public class MeetingRecommendationsServiceImpl implements MeetingRecommendations
 
     @Override
     public List<Meeting> getRecommendations(List<Meeting> meetings, User target, int batchSize) {
-        return getRecommendationsByTags(new ArrayList<>(meetings), new ArrayList<>(tagGroupService.getByUser(target).get(0).getTags()), batchSize).stream().map(this::getRecommendationsByRating).flatMap(Collection::stream).limit(batchSize).collect(Collectors.toList());
+        List<TagGroup> tagGroups = tagGroupService.getByUser(target);
+        return tagGroups.isEmpty() ? meetings :
+                getRecommendationsByTags(new ArrayList<>(meetings), new ArrayList<>(tagGroups.get(0).getTags()), batchSize)
+                        .stream().map(this::getRecommendationsByRating).flatMap(Collection::stream).limit(batchSize).collect(Collectors.toList());
     }
 
     private List<Meeting> getRecommendationsByRating(List<Meeting> meetings) {
