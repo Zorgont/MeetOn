@@ -31,16 +31,17 @@ import java.util.stream.Collectors;
 @RequestMapping(path = "api/v1/meetings")
 @RequiredArgsConstructor
 public class MeetingController {
-
     private final MeetingService meetingService;
     private final UserService userService;
     private final MeetingConverter meetingConverter;
     private final MeetingPlatformsConverter meetingPlatformsConverter;
     private final MeetingRecommendationsService meetingRecommendationsService;
+
     @GetMapping
     public Iterable<MeetingDTO> getMeetings(@RequestParam @Nullable List<String> tags) {
         return meetingService.getMeetingsByTags(tags).stream().map(meetingConverter::convertBack).collect(Collectors.toList());
     }
+    
     @GetMapping("/recommended")
     public Iterable<MeetingDTO> getRecommendedMeetings(@RequestParam @Nullable List<String> tags) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

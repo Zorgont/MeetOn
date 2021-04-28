@@ -40,6 +40,15 @@ class MeetingService {
         console.log(MEETING_API_BASE_URL + params);
         return axios.get(MEETING_API_BASE_URL + params);
     }
+    getRecommendedMeetingsByTags(tags) {
+        let params="?tags="
+        for(let it in tags){
+            params+=tags[it]+","
+        }
+        params=params.substring(0,params.length - 1)
+        console.log(MEETING_API_BASE_URL + params);
+        return axios.get(MEETING_API_BASE_URL + '/recommended' + params,{ headers: authHeader() });
+    }
 
 }
 

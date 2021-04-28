@@ -3,6 +3,9 @@ import { Link } from 'react-router-dom';
 import MeetingService from '../services/MeetingService';
 import TagService from '../services/TagService';
 import AuthService from "../services/AuthService";
+import Switch from '@material-ui/core/Switch';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 class MeetingList extends Component {
     constructor(props) {
@@ -42,8 +45,7 @@ class MeetingList extends Component {
     }
 
     onTagChecked(tag, event) {
-        let isChecked = document.getElementById(tag).checked;
-        isChecked = !isChecked;
+        let isChecked = event.target.checked;
         console.log("checked? " + isChecked);
 
         let array = this.state.selectedTags;
@@ -51,8 +53,7 @@ class MeetingList extends Component {
             array.push(tag);
         else if (!isChecked && array.includes(tag))
             array.splice(array.indexOf(tag), 1);
-        
-        this.setState({selectedTags: array});
+
         if(this.state.currentUser)
         MeetingService.getRecommendedMeetingsByTags(this.state.selectedTags).then((res) => {
             this.setState({meetings: res.data});
@@ -63,6 +64,7 @@ class MeetingList extends Component {
                 this.setState({meetings: res.data});
                 console.log(this.state.meetings);
             });
+        this.setState({selectedTags: array});
     }
 
     render() {
@@ -104,16 +106,16 @@ class MeetingList extends Component {
                     </div>
                     <div className="col-3">
                         <h2 className="text-center">Filtration</h2>
-                        <div class="btn-group-toggle btn-group-vertical" data-toggle="buttons">
+                        <FormGroup>
                         {
-                            this.state.tags.map(tag => 
-                                <label className="btn btn-light shadow-none" style={{textAlign: "left", marginBottom: "10px", borderRadius: "20px"}} onClick={this.onTagChecked.bind(this, tag)}>
-                                    <span>#{tag}</span>
-                                    <input id={tag} type="checkbox" autocomplete="off"/>
-                                </label>
+                            this.state.tags.map(tag =>
+                            <FormControlLabel
+                            control={<Switch id={tag} size="small"  onChange={this.onTagChecked.bind(this, tag)} />}
+                            label={tag}
+                            />
                             )
                         }
-                        </div>
+                            </FormGroup>
                     </div>
                 </div>
             </div>
