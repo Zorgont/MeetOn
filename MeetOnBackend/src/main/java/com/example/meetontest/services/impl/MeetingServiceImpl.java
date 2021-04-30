@@ -8,6 +8,7 @@ import com.example.meetontest.notifications.events.single.impl.MeetingChangedEve
 import com.example.meetontest.notifications.services.EventStoringService;
 import com.example.meetontest.repositories.MeetingRepository;
 import com.example.meetontest.services.*;
+import com.example.meetontest.validators.MeetingValidator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

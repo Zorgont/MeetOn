@@ -28,7 +28,7 @@ public class TagGroupConverter implements Converter<TagGroup, TagGroupDTO> {
 
     @Override
     public TagGroupDTO convertBack(TagGroup entity) {
-        return new TagGroupDTO(entity.getTags().stream().map(Tag::getName).collect(Collectors.toList()), entity.getId(),
+        return new TagGroupDTO(entity.getTags().stream().map(Tag::getName).sorted().collect(Collectors.toList()), entity.getId(),
                 entity.getUser().getId(), entity.getIsNotifiable());
     }
 }

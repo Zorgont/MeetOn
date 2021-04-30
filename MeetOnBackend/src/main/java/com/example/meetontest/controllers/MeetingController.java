@@ -5,22 +5,22 @@ import com.example.meetontest.converters.MeetingPlatformsConverter;
 import com.example.meetontest.dto.MeetingDTO;
 import com.example.meetontest.dto.MeetingPlatformsDTO;
 import com.example.meetontest.dto.MessageResponse;
+import com.example.meetontest.dto.NullFieldsErrorResponse;
 import com.example.meetontest.entities.Meeting;
 import com.example.meetontest.entities.MeetingPlatform;
 import com.example.meetontest.exceptions.ValidatorException;
 import com.example.meetontest.rating.recommendation.MeetingRecommendationsService;
+import com.example.meetontest.validators.DTOValidator;
 import com.example.meetontest.services.MeetingService;
 import com.example.meetontest.services.UserService;
-import com.example.meetontest.services.impl.UserDetailsImpl;
+import com.example.meetontest.validators.MeetingValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -36,19 +36,25 @@ public class MeetingController {
     private final MeetingConverter meetingConverter;
     private final MeetingPlatformsConverter meetingPlatformsConverter;
     private final MeetingRecommendationsService meetingRecommendationsService;
+    private final MeetingValidator meetingValidator;
 
     @GetMapping
     public Iterable<MeetingDTO> getMeetings(@RequestParam @Nullable List<String> tags) {
         return meetingService.getMeetingsByTags(tags).stream().map(meetingConverter::convertBack).collect(Collectors.toList());
     }
-    
+
     @GetMapping("/recommended")
     public Iterable<MeetingDTO> getRecommendedMeetings(@RequestParam @Nullable List<String> tags) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUserName = authentication.getName();
 
         return meetingRecommendationsService.getRecommendations(meetingService.getMeetingsByTags(tags), userService.getUserByName(currentUserName), 20)
-                .stream().map(meetingConverter::convertBack).collect(Collectors.toList());
+                .stream().map(meetingConverter::convertBack).collect(Collectors.toList());//Ограничения по времени создания
+    }
+
+    @GetMapping("/fields")
+    public Iterable<String> getFieldsList() throws IllegalAccessException {
+        return meetingValidator.getFieldsList();
     }
 
     @GetMapping("/byManager/{name}")
@@ -64,6 +70,11 @@ public class MeetingController {
     @PostMapping
     public ResponseEntity<?> createMeeting(@RequestBody MeetingDTO meetingRequest) throws ValidatorException {
         try {
+
+            List<String> nullFieldsList = meetingValidator.validate(meetingRequest);
+            if(!nullFieldsList.isEmpty()) return ResponseEntity.badRequest().body(new NullFieldsErrorResponse("Some required fields are empty!", nullFieldsList));
+            if(!meetingValidator.validateUser(meetingRequest, userService.getUserByName(SecurityContextHolder.getContext().getAuthentication().getName())))
+                throw new ValidatorException("Users doesn't match!");
             Set<MeetingPlatform> meetingPlatforms = new HashSet<>();
             for (MeetingPlatformsDTO meetingPlatformsDTO : meetingRequest.getMeetingPlatforms()) {
                 MeetingPlatform convert = meetingPlatformsConverter.convert(meetingPlatformsDTO);
