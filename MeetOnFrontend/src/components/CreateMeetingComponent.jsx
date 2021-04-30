@@ -3,6 +3,7 @@ import AuthService from "../services/AuthService";
 import MeetingService from "../services/MeetingService";
 import 'font-awesome/css/font-awesome.min.css';
 import PlatformService from "../services/PlatformService";
+import {InputLabel, TextField} from "@material-ui/core";
 
 export default class CreateMeeting extends Component{
     constructor(props) {
@@ -23,7 +24,9 @@ export default class CreateMeeting extends Component{
             selectedMeetingPlatform: null,
             selectedMeetingPlatformAddress: null,
             isOpenNewPlatformOpened: false,
-            errorMsg: null
+            fields: "",
+            errorMsg: "",
+            errors: []
         };
     }
 
@@ -49,12 +52,26 @@ export default class CreateMeeting extends Component{
             this.setState({platforms: res.data});
             this.setState({selectedMeetingPlatform: res.data[0].name});
         })
+        MeetingService.getDTOFieldsList().then(res => {
+            this.setState({
+                fields: res.data
+            })
+            this.initFields();
+        })
     }
-
+    initFields = () => {
+        this.state.fields.map( field =>
+            this.state.errors[field] = false)
+        this.setState({
+            errors: this.state.errors
+        })
+        console.log(this.state.errors)
+    }
     saveMeeting = (event) => {
         event.preventDefault();
         let meeting = {
             managerUsername: this.state.currentUser.username,
+            managerId: this.state.currentUser.id,
             name: this.state.name,
             about: this.state.about,
             date: this.state.date,
@@ -67,14 +84,20 @@ export default class CreateMeeting extends Component{
             meetingPlatforms: this.state.meetingPlatforms
         };
         console.log(meeting);
+        this.initFields();
 
         MeetingService.createMeeting(meeting).then(res => {
         this.props.history.push('/profile');
         }).catch( error => {
-            this.setState({
-                errorMsg: error.response.data.message
-            })
+            console.log(JSON.stringify(error))
 
+            error.response.data.nullFields.map(field =>
+                this.state.errors[field] = true
+            )
+            this.setState({
+                errorMsg: error.response.data.message,
+                errors: this.state.errors
+            })
         })
 
 
@@ -219,24 +242,24 @@ export default class CreateMeeting extends Component{
                             <div className="card-body">
                                 <form>
                                     <div className="form-group row">
-                                        <label for="name"> Meeting name: </label>
-                                        <input type="text" name="name" className="form-control" value={this.state.name} onChange={this.changeNameHandler.bind(this)} required />
+                                        <InputLabel htmlFor="name"> Meeting name: </InputLabel>
+                                        <TextField required id="name" error={this.state.errors["name"]} label="Required" variant="outlined" fullWidth value={this.state.name} onChange={this.changeNameHandler.bind(this)} />
                                     </div>
                                     <div className="form-group row">
-                                        <label for="about"> About: </label>
-                                        <input type="text"  name="about" className="form-control" value={this.state.about} onChange={this.changeAboutHandler.bind(this)} required />
+                                        <InputLabel htmlFor="about">About: </InputLabel>
+                                        <TextField required id="about" error={this.state.errors["about"]} label="Required" variant="outlined" fullWidth value={this.state.about} onChange={this.changeAboutHandler.bind(this)} />
                                     </div>
                                     <div className="form-group row">
-                                        <label htmlFor="date">Beginning Date: </label>
-                                        <input type="datetime-local" name="date" className="form-control" value={this.state.date} onChange={this.changeDateHandler.bind(this)} required/>
+                                        <InputLabel htmlFor="date">Beginning Date: </InputLabel>
+                                        <TextField type="datetime-local" required id="date" InputLabelProps={{shrink: true}} error={this.state.errors["date"]} label="Required" variant="outlined" fullWidth value={this.state.date} onChange={this.changeDateHandler.bind(this)} />
                                     </div>
                                     <div className="form-group row">
-                                        <label htmlFor="endDate">End Date: </label>
-                                        <input type="datetime-local" name="endDate" className="form-control" value={this.state.endDate} onChange={this.changeEndDateHandler.bind(this)} required/>
+                                        <InputLabel htmlFor="endDate">End Date: </InputLabel>
+                                        <TextField type="datetime-local" id="endDate" InputLabelProps={{shrink: true}} error={this.state.errors["endDate"]} label="Required" variant="outlined" fullWidth value={this.state.endDate} onChange={this.changeEndDateHandler.bind(this)} required/>
                                     </div>
                                     <div className="form-group row">
-                                        <label htmlFor="participant_amount"> ParticipantAmount: </label>
-                                        <input type="number" name="participant_amount" className="form-control" value={this.state.participantAmount} onChange={this.changeParticipantAmountHandler.bind(this)} required/>
+                                        <InputLabel htmlFor="participant_amount"> ParticipantAmount: </InputLabel>
+                                        <TextField type="number" id="participant_amount" InputLabelProps={{shrink: true}} error={this.state.errors["participant_amount"]} label="Required" variant="outlined" fullWidth value={this.state.participantAmount} onChange={this.changeParticipantAmountHandler.bind(this)} required/>
                                     </div>
                                     <div className="form-group row">
                                         <label htmlFor="is_participant_amount_restricted"> Participant amount restricted? </label>
@@ -247,8 +270,8 @@ export default class CreateMeeting extends Component{
                                         <input type="checkbox" name="isPrivate" className="form-control" checked={this.state.isPrivate} onChange={this.changePrivateHandler.bind(this)}/>
                                     </div>
                                     <div className="form-group row">
-                                        <label htmlFor="details"> Details: </label>
-                                        <input type="text" name="details" className="form-control" value={this.state.details} onChange={this.changeDetailsHandler.bind(this)} required/>
+                                        <InputLabel htmlFor="details">  Details: </InputLabel>
+                                        <TextField required id="details" error={this.state.errors["details"]} label="Required" variant="outlined" fullWidth value={this.state.details} onChange={this.changeDetailsHandler.bind(this)} />
                                     </div>
                                     <div className="form-group row">
                                         <label htmlFor="tags"> Tags </label>                        

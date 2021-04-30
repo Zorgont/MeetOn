@@ -49,6 +49,9 @@ class MeetingService {
         console.log(MEETING_API_BASE_URL + params);
         return axios.get(MEETING_API_BASE_URL + '/recommended' + params,{ headers: authHeader() });
     }
+    getDTOFieldsList() {
+        return axios.get(MEETING_API_BASE_URL + '/fields',{ headers: authHeader() })
+    }
 
 }
 

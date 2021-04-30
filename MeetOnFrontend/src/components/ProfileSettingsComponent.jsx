@@ -50,13 +50,12 @@ export default class ProfileSettingsComponent extends Component{
         this.setState({isNotifiable: event.target.checked});
     }
     changeTagGroupIsNotifiableHandler = (index,event) => {
-        TagGroupService.setNotifiable(this.state.currentUser.id, this.state.tagGroups[index].groupId, event.target.checked).then( res =>
-        {   this.state.tagGroups[index] = res.data
-            this.setState({
-                tagGroups: this.state.tagGroups});
-            this.setState({
-                tagsNotifiable: this.state.tagGroups.map(tag => tag.isNotifiable)
-            })
+        TagGroupService.setNotifiable(this.state.currentUser.id, this.state.tagGroups[index].groupId, event.target.checked);
+        this.state.tagGroups[index].isNotifiable = event.target.checked
+        this.setState({
+            tagGroups: this.state.tagGroups});
+        this.setState({
+            tagsNotifiable: this.state.tagGroups.map(tag => tag.isNotifiable)
         })
     }
     cancel() {
@@ -78,10 +77,9 @@ export default class ProfileSettingsComponent extends Component{
     removeTagGroup(removeValue, event) {
         event.preventDefault()
         console.log(removeValue)
-        TagGroupService.deleteTagGroup(this.state.currentUser.id, removeValue.groupId).then( res => {
-            this.state.tagGroups.splice(this.state.tagGroups.indexOf(removeValue), 1);
-            this.setState({tagGroups: this.state.tagGroups});
-        })
+        this.state.tagGroups.splice(this.state.tagGroups.indexOf(removeValue), 1);
+        this.setState({tagGroups: this.state.tagGroups});
+        TagGroupService.deleteTagGroup(this.state.currentUser.id, removeValue.groupId)
     }
     addTagGroup(addValue, isNotifiable, event){
         let tagGroup={
@@ -90,14 +88,15 @@ export default class ProfileSettingsComponent extends Component{
             isNotifiable: isNotifiable
         }
         console.log(tagGroup)
-        TagGroupService.createTagGroup(this.state.currentUser.id, tagGroup).then(res => {
-            this.state.tagGroups.push(res.data)
-            this.setState({
-                tagGroups: this.state.tagGroups,
-                tags: [],
-                isNotifiable: false
-            })
-        }).catch( error => {
+        this.state.tagGroups.push(tagGroup)
+        this.state.tagsNotifiable.push(isNotifiable)
+        this.setState({
+            tagGroups: this.state.tagGroups,
+            tagsNotifiable: this.state.tagsNotifiable,
+            tags: [],
+            isNotifiable: false,
+        })
+        TagGroupService.createTagGroup(this.state.currentUser.id, tagGroup).catch( error => {
             this.setState({
                 errorMsg: error.response.data.message
             })
