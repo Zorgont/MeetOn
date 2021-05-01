@@ -8,6 +8,7 @@ import com.example.meetontest.entities.RequestStatus;
 import com.example.meetontest.services.MeetingService;
 import com.example.meetontest.services.RequestService;
 import com.example.meetontest.services.UserService;
+import com.example.meetontest.validators.RequestValidator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,7 @@ public class RequestController {
     private final UserService userService;
     private final RequestService requestService;
     private final RequestConverter requestConverter;
-
+    private final RequestValidator requestValidator;
     @GetMapping("/{id}")
     public ResponseEntity<?> getRequestById(@PathVariable Long id) {
         Optional<Request> request = requestService.getById(id);
@@ -61,7 +62,8 @@ public class RequestController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createRequest(@RequestBody RequestDTO requestDTO) throws JsonProcessingException {
+    public ResponseEntity<?> createRequest(@RequestBody RequestDTO requestDTO) throws JsonProcessingException, IllegalAccessException, NoSuchFieldException {
+        requestValidator.validate(requestDTO);
         return ResponseEntity.ok(requestConverter.convertBack(requestService.create(requestConverter.convert(requestDTO))));
     }
 

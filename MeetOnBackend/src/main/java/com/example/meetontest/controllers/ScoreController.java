@@ -7,6 +7,7 @@ import com.example.meetontest.entities.MeetingScore;
 import com.example.meetontest.services.MeetingService;
 import com.example.meetontest.services.ScoreService;
 import com.example.meetontest.services.UserService;
+import com.example.meetontest.validators.ScoreValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +22,7 @@ public class ScoreController {
     private final UserService userService;
     private final MeetingService meetingService;
     private final ScoreConverter converter;
+    private final ScoreValidator validator;
 
     @GetMapping("/{meetingId}/aggregated")
     public AggregatedScoreDTO getAggregatedScoreByMeeting(@PathVariable Long meetingId) {
@@ -34,8 +36,9 @@ public class ScoreController {
     }
 
     @PostMapping("/{meetingId}")
-    public ScoreDTO createScore(@PathVariable Long meetingId, @RequestBody ScoreDTO score) throws ParseException {
+    public ScoreDTO createScore(@PathVariable Long meetingId, @RequestBody ScoreDTO score) throws ParseException, NoSuchFieldException, IllegalAccessException {
         score.setMeeting_id(meetingId);
+        validator.validate(score);
         MeetingScore meetingScore = converter.convert(score);
         return converter.convertBack(scoreService.createScore(meetingScore.getMeeting(), meetingScore.getUser(), meetingScore.getScore()));
     }

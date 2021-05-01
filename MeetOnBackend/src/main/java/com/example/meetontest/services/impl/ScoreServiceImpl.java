@@ -36,8 +36,6 @@ public class ScoreServiceImpl implements ScoreService {
         try {
             Meeting met = meetingService.getMeetingById(meeting.getId());
             User usr = userService.getUserById(user.getId());
-            if (score < 1 || score > 5)
-                throw new ValidatorException("Score must be between 1 and 5");
 
             MeetingScore meetingScore;
             if (scoreRepository.existsByMeetingAndUser(met, usr)) {

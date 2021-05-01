@@ -6,6 +6,7 @@ import com.example.meetontest.dto.CommentDTO;
 import com.example.meetontest.services.CommentService;
 import com.example.meetontest.services.MeetingService;
 import com.example.meetontest.services.UserService;
+import com.example.meetontest.validators.CommentValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -27,11 +28,10 @@ public class CommentController {
     private final MeetingService meetingService;
     private final CommentConverter commentConverter;
     private final SimpMessagingTemplate simpMessagingTemplate;
-
+    private final CommentValidator commentValidator;
     @MessageMapping("/createComment")
-    public void createComment(@Payload CommentDTO commentDTO) throws ParseException {
-
-
+    public void createComment(@Payload CommentDTO commentDTO) throws ParseException, NoSuchFieldException, IllegalAccessException {
+        commentValidator.validate(commentDTO);
         simpMessagingTemplate.convertAndSend("/meeting/" + commentDTO.getMeeting_id() + "/queue/comments",
                 commentConverter.convertBack(commentService.create(commentConverter.convert(commentDTO))));
 
