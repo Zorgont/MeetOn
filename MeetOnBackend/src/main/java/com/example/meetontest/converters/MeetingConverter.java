@@ -63,7 +63,7 @@ public class MeetingConverter implements Converter<Meeting, MeetingDTO> {
                 entity.getIsParticipantAmountRestricted(),
                 entity.getParticipantAmount(),
                 entity.getStatus().toString(),
-                entity.getTags().stream().map(Tag::getName).collect(Collectors.toList()),
-                meetingPlatformsService.getPlatformsByMeeting(entity).stream().map(meetingPlatformsConverter::convertBack).collect(Collectors.toList()));
+                entity.getTags().stream().map(Tag::getName).sorted().collect(Collectors.toList()),
+                meetingPlatformsService.getPlatformsByMeeting(entity).stream().map(meetingPlatformsConverter::convertBack).sorted().collect(Collectors.toList()));
     }
 }

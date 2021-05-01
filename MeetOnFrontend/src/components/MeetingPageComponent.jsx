@@ -135,6 +135,24 @@ export default class MeetingPage extends Component{
                     </div>
     }
 
+    handleEnroll() {
+        if(this.state.meeting.isPrivate)
+            this.props.history.push(`/enroll/${this.props.match.params.id}`)
+        else
+            this.sendEnrollment();
+    }
+
+    sendEnrollment() {
+        let request = {
+            user_id: this.state.currentUser.id,
+            meeting_id: this.state.meeting.meetingId
+        };
+        console.log(request)
+        RequestService.createRequest(request).then(res => {
+            this.props.history.push('/meetings');
+        });
+    }
+
     buttonEnroll() {
         if (AuthService.getCurrentUser()&&(this.state.meeting.managerId !== AuthService.getCurrentUser()?.id)&&(this.state.meeting.status!=="FINISHED")){
             if(this.state.request)
@@ -146,9 +164,7 @@ export default class MeetingPage extends Component{
                 return <div><p>No available places!</p></div>
 
             return  <div>
-                        <Link to={`/enroll/${this.props.match.params.id}`}>
-                            <button className="btn btn-primary" style={{marginLeft:"5px"}}>Enroll</button>
-                        </Link>
+                            <button className="btn btn-primary" style={{marginLeft:"5px"}} onClick={this.handleEnroll.bind(this)}>Enroll</button>
                     </div>
         }
     }

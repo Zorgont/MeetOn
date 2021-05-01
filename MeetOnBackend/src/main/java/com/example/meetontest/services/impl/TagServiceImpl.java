@@ -16,7 +16,7 @@ public class TagServiceImpl implements TagService {
     private final TagRepository tagRepository;
 
     public List<String> getTags() {
-        return tagRepository.findAll().stream().map(tag -> tag.getName()).collect(Collectors.toList());
+        return tagRepository.findAll().stream().map(tag -> tag.getName()).sorted().collect(Collectors.toList());
     }
 
     public Set<Tag> getTags(List<String> tags) {

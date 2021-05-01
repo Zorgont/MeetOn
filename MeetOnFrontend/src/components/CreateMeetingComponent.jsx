@@ -257,10 +257,10 @@ export default class CreateMeeting extends Component{
                                         <InputLabel htmlFor="endDate">End Date: </InputLabel>
                                         <TextField type="datetime-local" id="endDate" InputLabelProps={{shrink: true}} error={this.state.errors["endDate"]} label="Required" variant="outlined" fullWidth value={this.state.endDate} onChange={this.changeEndDateHandler.bind(this)} required/>
                                     </div>
-                                    <div className="form-group row">
+                                    {this.state.isParticipantAmountRestricted && <div className="form-group row">
                                         <InputLabel htmlFor="participant_amount"> ParticipantAmount: </InputLabel>
                                         <TextField type="number" id="participant_amount" InputLabelProps={{shrink: true}} error={this.state.errors["participant_amount"]} label="Required" variant="outlined" fullWidth value={this.state.participantAmount} onChange={this.changeParticipantAmountHandler.bind(this)} required/>
-                                    </div>
+                                    </div>}
                                     <div className="form-group row">
                                         <label htmlFor="is_participant_amount_restricted"> Participant amount restricted? </label>
                                         <input type="checkbox" name="is_participant_amount_restricted" className="form-control" checked={this.state.isParticipantAmountRestricted} onChange={this.changeIsParticipantAmountRestrictedHandler.bind(this)} required/>

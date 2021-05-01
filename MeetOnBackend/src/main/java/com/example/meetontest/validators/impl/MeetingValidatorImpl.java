@@ -17,7 +17,6 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class MeetingValidatorImpl implements MeetingValidator {
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
     private final DTOValidator dtoValidator;
     @Override
     public List<String> validate(MeetingDTO meetingRequest) throws IllegalAccessException {
