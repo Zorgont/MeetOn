@@ -11,7 +11,7 @@ export default class EmailConfirmation extends Component{
     componentDidMount() {
         const params = new URLSearchParams (this.props.location.search);
         this.setState({
-            mail: params.get('mail')
+            mail: params.get('email')
         })
     }
     render() {

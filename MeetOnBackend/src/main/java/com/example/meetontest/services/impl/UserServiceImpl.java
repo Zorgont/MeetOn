@@ -60,6 +60,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getUserByEmail(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("User no exist!"));
+        user.setKarma(userRatingProvider.getUserRating(user));
+        return user;
+    }
+
+    @Override
     public UserSettingDTO updateUserSettings(Long id, UserSettingDTO userSettingDTO) {
         User entity = userRepository.findById(id).get();
         entity.setFirstName(userSettingDTO.getFirstName());

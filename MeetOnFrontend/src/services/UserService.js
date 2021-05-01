@@ -16,6 +16,10 @@ class UserService {
         return axios.get(USER_API_BASE_URL + '/' + userId , { headers: authHeader() });
     }
 
+    getUserById(userId) {
+        return axios.get(USER_API_BASE_URL + '/' + userId , { headers: authHeader() });
+    }
+
     updateUser(user, userId) {
         return axios.put(USER_API_BASE_URL + '/' + userId, user , { headers: authHeader() });
     }

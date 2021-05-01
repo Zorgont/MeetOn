@@ -21,6 +21,7 @@ import NotificationBar from "./components/NotificationBarComponent";
 import ProfileSettings from "./components/ProfileSettingsComponent";
 import ConfirmationCompleted from "./components/ConfirmationCompletedComponent";
 import EmailConfirmation from "./components/EmailConfirmationComponent";
+import UsernameInputComponent from "./components/UsernameInputComponent";
 
 class App extends Component {
     constructor(props) {
@@ -151,6 +152,7 @@ class App extends Component {
                         <Route path="/meetings/:id/requests" component={MeetingRequest} />
                         <Route path="/update/:id" component={UpdateMeeting} />
                         <Route path="/enroll/:id" component={CreateRequest} />
+                        <Route exact path="/usernameInput" component={UsernameInputComponent} />
                     </Switch>
                 </div>
             </div>

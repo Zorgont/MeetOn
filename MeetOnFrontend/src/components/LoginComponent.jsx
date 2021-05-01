@@ -2,8 +2,10 @@ import React, { Component } from "react";
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
+import GoogleLogin from "react-google-login";
 
 import AuthService from "../services/AuthService";
+import UserService from "../services/UserService";
 
 const required = value => {
     if (!value) {
@@ -79,6 +81,49 @@ export default class Login extends Component {
         }
     }
 
+    onSuccessfulGoogleAuthorization = (response) => {
+        console.log(response);
+        console.log("hell yeah");
+        let user = {
+            email: response.profileObj.email,
+            firstName: response.profileObj.givenName,
+            secondName: response.profileObj.familyName,
+            accessToken: response.accessToken
+        }
+        console.log(`/usernameInput?email=${user.email}&firstName=${user.firstName}&secondName=${user.secondName}&accessToken=${user.accessToken}`)
+
+        AuthService.existsUserByEmail(user.email).then(res => {
+            console.log(res.data);
+            if (res.data) {
+                AuthService.loginViaGoogle(user).then(res => {
+                    this.props.history.push("/profile")
+                    window.location.reload();
+                }, error => {
+                    const resMessage =
+                        (error.response &&
+                            error.response.data &&
+                            error.response.data.message) ||
+                        error.message ||
+                        error.toString();
+
+                    this.setState({
+                        loading: false,
+                        message: resMessage
+                    })
+                });
+            }
+            else {
+                this.props.history.push(`/usernameInput?email=${user.email}&firstName=${user.firstName}&secondName=${user.secondName}&accessToken=${user.accessToken}`);
+                window.location.reload();
+            }
+        })
+    }
+
+    onFailureGoogleAuthorization = (response) => {
+        console.log(response)
+        console.log("damn it")
+    }
+
     render() {
         return (
             <div className="col-md-12">
@@ -88,6 +133,16 @@ export default class Login extends Component {
                         alt="profile-img"
                         className="profile-img-card"
                     />
+
+                    <GoogleLogin
+                        clientId="9387373968-sqc6916e9o8h2usu5p981bdaj4sr4lu9.apps.googleusercontent.com"
+                        buttonText="Join using Google"
+                        onSuccess={this.onSuccessfulGoogleAuthorization}
+                        onFailure={this.onFailureGoogleAuthorization}
+                        cookiePolicy={'single_host_origin'}
+                    />
+
+                    <hr/>
 
                     <Form
                         onSubmit={this.handleLogin}
