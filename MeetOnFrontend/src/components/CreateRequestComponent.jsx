@@ -21,8 +21,6 @@ export default class CreateMeeting extends Component{
     componentDidMount(){
         MeetingService.getMeetingById(this.props.match.params.id).then(res => {
             this.setState({meeting: res.data});
-            if (!this.state.meeting.isPrivate)
-                this.sendEnrollment();
         });
     }
 

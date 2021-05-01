@@ -6,6 +6,7 @@ import AuthService from "../services/AuthService";
 import Switch from '@material-ui/core/Switch';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import {Pagination} from "@material-ui/lab";
 
 class MeetingList extends Component {
     constructor(props) {
@@ -14,7 +15,9 @@ class MeetingList extends Component {
             meetings: [],
             tags: [],
             selectedTags: [],
-            currentUser: AuthService.getCurrentUser()
+            currentUser: AuthService.getCurrentUser(),
+            page: 1,
+            pagesNumber: 5
         }
     }
     
@@ -29,16 +32,12 @@ class MeetingList extends Component {
         script.async = true;
         document.body.appendChild(script);
 
-        if(this.state.currentUser)
-        MeetingService.getRecommendedMeetingsByTags().then((res) => {
-            this.setState({meetings: res.data});
-            console.log(this.state.meetings);
-        });
-        else
-            MeetingService.getMeetings().then((res) => {
-                this.setState({meetings: res.data});
-                console.log(this.state.meetings);
-            });
+        this.getListByTags()
+        MeetingService.getPagesNumberByTags().then((res) => {
+            this.setState({
+                pagesNumber: res.data
+            })
+        })
         TagService.getTags().then((res) => {
             this.setState({tags: res.data});
         });
@@ -54,17 +53,35 @@ class MeetingList extends Component {
         else if (!isChecked && array.includes(tag))
             array.splice(array.indexOf(tag), 1);
 
+        MeetingService.getPagesNumberByTags(this.state.selectedTags).then((res) => {
+            this.setState({
+                pagesNumber: res.data
+            })
+        })
+
+        this.getListByTags()
+        this.setState({selectedTags: array});
+    }
+
+    getListByTags(){
         if(this.state.currentUser)
-        MeetingService.getRecommendedMeetingsByTags(this.state.selectedTags).then((res) => {
-            this.setState({meetings: res.data});
-            console.log(this.state.meetings);
-        });
-        else
-            MeetingService.getMeetingsByTags(this.state.selectedTags).then((res) => {
+            MeetingService.getRecommendedMeetingsByTags(this.state.selectedTags, this.state.page).then((res) => {
                 this.setState({meetings: res.data});
                 console.log(this.state.meetings);
             });
-        this.setState({selectedTags: array});
+        else
+            MeetingService.getMeetingsByTags(this.state.selectedTags,  this.state.page).then((res) => {
+                this.setState({meetings: res.data});
+                console.log(this.state.meetings);
+            });
+
+    }
+    changePage(event, newPage){
+        this.state.page = newPage;
+        this.getListByTags()
+        this.setState({
+            page: this.state.page
+        })
     }
 
     render() {
@@ -103,6 +120,9 @@ class MeetingList extends Component {
                                 }
                             </tbody>
                         </table>
+                        <div className="row  justify-content-center" >
+                            <Pagination count={this.state.pagesNumber} color="primary" hideNextButton={this.state.hideNextButton} onChange={this.changePage.bind(this)} />
+                        </div>
                     </div>
                     <div className="col-3">
                         <h2 className="text-center">Filtration</h2>
@@ -118,6 +138,7 @@ class MeetingList extends Component {
                             </FormGroup>
                     </div>
                 </div>
+
             </div>
         );
     }

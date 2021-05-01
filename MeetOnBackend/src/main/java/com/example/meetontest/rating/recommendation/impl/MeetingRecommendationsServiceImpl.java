@@ -25,11 +25,11 @@ public class MeetingRecommendationsServiceImpl implements MeetingRecommendations
     private final MeetingService meetingService;
 
     @Override
-    public List<Meeting> getRecommendations(List<Meeting> meetings, User target, int batchSize) {
-        List<TagGroup> tagGroups = tagGroupService.getByUser(target);
-        return tagGroups.isEmpty() ? meetings :
-                getRecommendationsByTags(new ArrayList<>(meetings), new ArrayList<>(tagGroups.get(0).getTags()), batchSize)
-                        .stream().map(this::getRecommendationsByRating).flatMap(Collection::stream).limit(batchSize).collect(Collectors.toList());
+    public List<Meeting> getRecommendations(List<Meeting> meetings, User target,int page) {
+        List<TagGroup> tagGroups = target != null ? tagGroupService.getByUser(target) : null;
+        return  tagGroups == null || tagGroups.isEmpty() ? getRecommendationsByRating(meetings).stream().limit(10L * (page)).skip(10L * (page - 1)).collect(Collectors.toList()) :
+                getRecommendationsByTags(new ArrayList<>(meetings), new ArrayList<>(tagGroups.get(0).getTags()), 10 * page)
+                        .stream().map(this::getRecommendationsByRating).flatMap(Collection::stream).limit(10L * (page)).skip(10L * (page - 1)).collect(Collectors.toList());
     }
 
     private List<Meeting> getRecommendationsByRating(List<Meeting> meetings) {
@@ -37,12 +37,12 @@ public class MeetingRecommendationsServiceImpl implements MeetingRecommendations
         return meetings;
     }
 
-    private List<List<Meeting>> getRecommendationsByTags(List<Meeting> meetings, List<Tag> tags,int batchSize) {
+    private List<List<Meeting>> getRecommendationsByTags(List<Meeting> meetings, List<Tag> tags,int endIndex) {
         List<List<Meeting>> recommendedMeetings = new ArrayList<>();
         for(int i = tags.size(); i > 0; i--){
             recommendedMeetings.add(getRecommendationsSubGroup(meetings, tags, i));
             if(meetings.isEmpty()) break;
-            if(batchSize <= recommendedMeetings.stream().mapToInt(List::size).sum())
+            if(endIndex <= recommendedMeetings.stream().mapToInt(List::size).sum())
                 return recommendedMeetings;
         }
         if(!meetings.isEmpty())

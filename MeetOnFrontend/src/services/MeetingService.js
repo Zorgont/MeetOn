@@ -31,26 +31,37 @@ class MeetingService {
     deleteMeeting(meetingId) {
         return axios.delete(MEETING_API_BASE_URL + '/' + meetingId, { headers: authHeader() });
     }
-    getMeetingsByTags(tags) {
+    getMeetingsByTags(tags , page) {
         let params="?tags="
         for(let it in tags){
             params+=tags[it]+","
         }
-        params=params.substring(0,params.length - 1)
+        params = params.substring(0,params.length - 1)
+        params = params.concat( "&page=" + page )
         console.log(MEETING_API_BASE_URL + params);
         return axios.get(MEETING_API_BASE_URL + params);
     }
-    getRecommendedMeetingsByTags(tags) {
+    getRecommendedMeetingsByTags(tags , page) {
         let params="?tags="
         for(let it in tags){
             params+=tags[it]+","
         }
         params=params.substring(0,params.length - 1)
+        params = params.concat( "&page=" + page )
         console.log(MEETING_API_BASE_URL + params);
         return axios.get(MEETING_API_BASE_URL + '/recommended' + params,{ headers: authHeader() });
     }
     getDTOFieldsList() {
         return axios.get(MEETING_API_BASE_URL + '/fields',{ headers: authHeader() })
+    }
+    getPagesNumberByTags(tags) {
+        let params="?tags="
+        for(let it in tags){
+            params+=tags[it]+","
+        }
+        params = params.substring(0, params.length - 1)
+        console.log(MEETING_API_BASE_URL + params);
+        return axios.get(MEETING_API_BASE_URL + '/pagesNumber' + params,{ headers: authHeader() });
     }
 
 }

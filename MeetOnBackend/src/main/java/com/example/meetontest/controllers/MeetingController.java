@@ -10,7 +10,6 @@ import com.example.meetontest.entities.Meeting;
 import com.example.meetontest.entities.MeetingPlatform;
 import com.example.meetontest.exceptions.ValidatorException;
 import com.example.meetontest.rating.recommendation.MeetingRecommendationsService;
-import com.example.meetontest.validators.DTOValidator;
 import com.example.meetontest.services.MeetingService;
 import com.example.meetontest.services.UserService;
 import com.example.meetontest.validators.MeetingValidator;
@@ -39,17 +38,23 @@ public class MeetingController {
     private final MeetingValidator meetingValidator;
 
     @GetMapping
-    public Iterable<MeetingDTO> getMeetings(@RequestParam @Nullable List<String> tags) {
-        return meetingService.getMeetingsByTags(tags).stream().map(meetingConverter::convertBack).collect(Collectors.toList());
+    public Iterable<MeetingDTO> getMeetings(@RequestParam @Nullable List<String> tags, @RequestParam int page ) {
+        return  meetingRecommendationsService.getRecommendations(meetingService.getMeetingsByTags(tags),null, page)
+                .stream().map(meetingConverter::convertBack).collect(Collectors.toList());
     }
 
     @GetMapping("/recommended")
-    public Iterable<MeetingDTO> getRecommendedMeetings(@RequestParam @Nullable List<String> tags) {
+    public Iterable<MeetingDTO> getRecommendedMeetings(@RequestParam @Nullable List<String> tags, @RequestParam int page) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUserName = authentication.getName();
 
-        return meetingRecommendationsService.getRecommendations(meetingService.getMeetingsByTags(tags), userService.getUserByName(currentUserName), 20)
+        return meetingRecommendationsService.getRecommendations(meetingService.getMeetingsByTags(tags), userService.getUserByName(currentUserName), page)
                 .stream().map(meetingConverter::convertBack).collect(Collectors.toList());//Ограничения по времени создания
+    }
+
+    @GetMapping("/pagesNumber")
+    public Integer getPagesNumberByTags(@RequestParam @Nullable List<String> tags){
+        return meetingService.getMeetingsByTags(tags).size() / 10 + 1;
     }
 
     @GetMapping("/fields")
