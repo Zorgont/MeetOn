@@ -13,6 +13,16 @@
   }
 }
 
+@font-face {
+	font-family: 'Poiret One'; 
+	src: url(./styles/Poiret_One/PoiretOne-Regular.ttf); 
+}
+
+@font-face {
+	font-family: 'Raleway'; 
+	src: url(./styles/Raleway/Raleway-VariableFont_wght.ttf); 
+}
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
@@ -37,6 +47,41 @@
   }
 }
 
+.without-decoration {
+  text-decoration: none;
+  z-index: 100;
+}
+
+.without-decoration:hover{
+  text-decoration: none;
+  z-index: 100;
+}
+
+.brand {
+  font-family: "Poiret One";
+  font-size: 36px;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 36px;
+  line-height: 28px;
+  text-align: center;
+  color: #23170D;
+  text-decoration: none;
+  padding-bottom: 16px;
+  margin-right: 50px;
+}
+
+.footer-link {
+  font-family: "Raleway";
+  font-style: normal;
+  font-weight: 300;
+  font-size: 24px;
+  line-height: 28px;
+  text-align: center;
+  text-decoration: none;
+  color: #23170D;
+  z-index: 100;
+}
 
 .footer {
   position: absolute;
@@ -97,4 +142,8 @@ label {
 .shadow-container {
   border-radius: 20px;
   box-shadow: 0px 0px 16px rgba(0, 0, 0, 0.1);
+}
+
+.gradient-gray-border{
+  border: 1px solid #eee;
 }

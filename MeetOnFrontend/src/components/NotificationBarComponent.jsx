@@ -8,7 +8,7 @@ import AuthService from "../services/AuthService";
 import NotificationService from "../services/NotificationService";
 import IconButton from '@material-ui/core/IconButton';
 import Badge from '@material-ui/core/Badge';
-import NotificationsIcon from '@material-ui/icons/Notifications';
+import NotificationsNoneOutlinedIcon from '@material-ui/icons/NotificationsNoneOutlined';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import SockJsClient from 'react-stomp'
@@ -114,9 +114,9 @@ export default class TemporaryDrawer extends React.Component{
       <div>
       {
         <React.Fragment>
-          <IconButton aria-label="show 4 new mails" color="inherit" onClick={this.toggleDrawer(true)}>
+          <IconButton aria-label="show 4 new mails" color="inherit" onClick={this.toggleDrawer(true)} style={{marginTop: "2px"}}>
             <Badge badgeContent={this.state.unviewedAmount} color="secondary">
-              <NotificationsIcon/>
+              <NotificationsNoneOutlinedIcon/>
             </Badge>
           </IconButton>
           <Drawer anchor="right" style={{flexShrink: 0}} open={this.state.isNotificationListOpened} onClose={this.toggleDrawer(false)}>

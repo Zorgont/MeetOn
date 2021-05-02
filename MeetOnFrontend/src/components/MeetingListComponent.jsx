@@ -119,7 +119,7 @@ class MeetingList extends Component {
                                         <tr key={meeting.id}>
                                             <td><Link to={`/meetings/${meeting.meetingId}`}>{meeting.name}</Link></td>
                                             <td> {meeting.about} </td>
-                                            <td> <a href={`/users/${meeting.managerId}`}>{meeting.managerUsername} </a></td>
+                                            <td> <Link to={`/users/${meeting.managerId}`}>{meeting.managerUsername} </Link></td>
                                             <td>
                                             {
                                                 meeting.tags.map(

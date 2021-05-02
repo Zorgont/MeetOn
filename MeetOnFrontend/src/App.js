@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { Switch, Route, Link } from "react-router-dom";
+import Button from '@material-ui/core/Button';
+import AddIcon from '@material-ui/icons/Add';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
@@ -24,6 +26,7 @@ import EmailConfirmation from "./components/EmailConfirmationComponent";
 import UsernameInputComponent from "./components/UsernameInputComponent";
 import MeetingCardComponent from "./components/MeetingCardComponent";
 import UserProfileComponent from "./components/UserProfileComponent";
+import UserMenuComponent from "./components/UserMenuComponent";
 
 class App extends Component {
     constructor(props) {
@@ -58,77 +61,43 @@ class App extends Component {
 
         return (
             <div>
-                <nav className="navbar navbar-expand navbar-dark bg-dark">
-                    <Link to={"/"} className="navbar-brand">
-                        MeetOn
+                <nav className="navbar navbar-expand navbar-light" style={{backgroundColor: "white"}}>
+                    <Link to={"/"} className="nav-link brand" style={{marginLeft: "30px"}}>
+                        meeton
                     </Link>
                     <div className="navbar-nav mr-auto">
                         <li className="nav-item">
-                            <Link to={"/home"} className="nav-link">
-                                Home
+                            <Link to={"/meetings"} className="nav-link footer-link">
+                                meetings
                             </Link>
                         </li>
-                        <li className="nav-item">
-                            <Link to={"/meetings"} className="nav-link">
-                                Meetings
-                            </Link>
-                        </li>
-
-                        {showModeratorBoard && (
-                            <li className="nav-item">
-                                <Link to={"/mod"} className="nav-link">
-                                    Moderator Board
-                                </Link>
-                            </li>
-                        )}
-
-                        {showAdminBoard && (
-                            <li className="nav-item">
-                                <Link to={"/admin"} className="nav-link">
-                                    Admin Board
-                                </Link>
-                            </li>
-                        )}
-
-                        {currentUser && (
-                            <li className="nav-item">
-                                <Link to={"/user"} className="nav-link">
-                                    User
-                                </Link>
-                            </li>
-                        )}
                     </div>
 
                     {currentUser ? (
-                        <div className="navbar-nav ml-auto">
+                        <div className="navbar-nav ml-auto" style={{marginRight: "30px"}}>
                             <li className="nav-item">
-                                <Link to={"/profile"} className="nav-link">
-                                    {currentUser.username}
+                                <Link to="add_meeting" className="without-decoration">
+                                    <Button variant="contained" style={{marginTop: "8px", textDecoration: "none"}}><AddIcon/>Create meeting</Button>
                                 </Link>
                             </li>
-                            <li className="nav-item">
+                            <li className="nav-item" style={{marginRight: "18px", marginLeft: "30px"}}>
                                 <NotificationBar></NotificationBar>
-                            {/*Чтобы сделать уведомления под шапкой,необходимо заменить navbar из bootstrap нв AppBar из Material,тогда это решается так:
-                                https://stackoverflow.com/questions/49051975/material-ui-drawer-wont-move-under-appbar =
-                                Также в Bootstrap,оказывается,есть свой drawer(offcanvas),можно заменить drawer на него.*/}
                             </li>
                             <li className="nav-item">
-                                <a href="/login" className="nav-link" onClick={this.logOut}>
-                                    LogOut
-                                </a>
+                                <UserMenuComponent/>
                             </li>
 
                         </div>
                     ) : (
-                        <div className="navbar-nav ml-auto">
+                        <div className="navbar-nav ml-auto" style={{marginRight: "30px"}}>
                             <li className="nav-item">
-                                <Link to={"/login"} className="nav-link">
+                                <Link to={"/login"} className="nav-link footer-link">
                                     Login
                                 </Link>
                             </li>
 
                             <li className="nav-item">
-                                <Link to={"/register"} className="nav-link">
+                                <Link to={"/register"} className="nav-link footer-link">
                                     Sign Up
                                 </Link>
                             </li>
@@ -141,6 +110,7 @@ class App extends Component {
                         <Route exact path={["/", "/home"]} component={MeetingList} />
                         <Route exact path="/login" component={Login} />
                         <Route exact path="/register" component={Register} />
+                        <Route exact path="/users/:userId" component={UserProfileComponent}  />
                         <Route exact path="/profile" component={UserProfileComponent} />
                         <Route exact path="/profile/update" component={ProfileSettings} />
                         <Route exact path="/user" component={BoardUser} />

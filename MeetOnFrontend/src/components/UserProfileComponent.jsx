@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { Link } from 'react-router-dom';
 import Chip from '@material-ui/core/Chip';
 import MailOutlineIcon from '@material-ui/icons/MailOutline';
+import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
+import Divider from '@material-ui/core/Divider';
 import AuthService from "../services/AuthService";
 import MeetingService from "../services/MeetingService";
 import RequestService from "../services/RequestService";
@@ -18,7 +20,7 @@ export default class UserProfileComponent extends Component {
         this.state = {
             currentUser: AuthService.getCurrentUser(),
             meetings: [],
-            requests:[],
+            requests: null,
             notifications: [],
             user: null,
             tagGroups: null,
@@ -26,7 +28,9 @@ export default class UserProfileComponent extends Component {
     }
     
     componentDidMount() {
-        let id = this.props?.userId ? this.props.userId : this.state.currentUser.id;
+        let id = Number(this.props.match.params.userId ? this.props.match.params.userId : this.state.currentUser.id);
+        console.log("dasdasdasdd")
+        console.log(id)
         UserService.getUserById(id).then(res =>{
             this.setState({user: res.data})
             TagGroupService.getTagGroups(id).then( res => {
@@ -34,29 +38,39 @@ export default class UserProfileComponent extends Component {
             });
             MeetingService.getMeetingsByManager(this.state.user.username).then((res) => {
                 this.setState({meetings: res.data});
-                if (id === this.state.currentUser.id)
-                    RequestService.getRequestsByUserId(id).then((res)=>{
-                        let requests = []
-                        console.log(res.data)
-                        for(let index in res.data) {
-                            let request = res.data[index];
-                            MeetingService.getMeetingById(request.meeting_id).then(res => {
-                                requests.push({
-                                    request: request,
-                                    meeting: res.data
-                                })
-                                this.setState({requests: requests})
-                            })
-                        }
-                            
-                    })
             });
+            console.log(id)
+            console.log(this.state.currentUser.id)
+            if (id === this.state.currentUser.id)
+                RequestService.getRequestsByUserId(id).then((res)=>{
+                    let requests = []
+                    console.log(res.data)
+                    for(let index in res.data) {
+                        console.log(res.data)
+                        let request = res.data[index];
+                        MeetingService.getMeetingById(request.meeting_id).then(res => {
+                            requests.push({
+                                request: request,
+                                meeting: res.data
+                            })
+                            this.setState({requests: requests})
+                        })
+                    }
+                })
         });
-        
         
         NotificationService.getNotificationsByUser(this.state.currentUser.id).then((res) => {
             this.setState({notifications: res.data});
         });
+    }
+
+    componentDidUpdate(prevProps) {
+        if (this.props.match.params.userId !== prevProps.match.params.userId)
+            window.location.reload();
+    }
+
+    editProfileClicked(event) {
+        this.props.history.push('/profile/update');
     }
 
     render() {
@@ -71,7 +85,12 @@ export default class UserProfileComponent extends Component {
                             <div className="col mt-4 mb-2">
                                 <div className="row">
                                     <div className="col d-flex justify-content-center">
-                                        <Avatar style={{width: "130px", height: "130px"}}/>
+                                        <div style={{position: "relative"}}>
+                                            <Avatar style={{width: "130px", height: "130px"}}/>
+                                            {user?.id === this.state.currentUser?.id && <div onClick={this.editProfileClicked.bind(this)} style={{position: "absolute", right: "12px", width: "30px", height: "30px", bottom: "-5px", backgroundColor: "white", borderRadius: "50px", cursor: "pointer"}} className="gradient-gray-border">
+                                                <EditOutlinedIcon style={{margin: "0 0 0 3px"}} />
+                                            </div>}
+                                        </div>
                                     </div>
                                 </div>
                                 <div className="row mt-2">
@@ -138,11 +157,11 @@ export default class UserProfileComponent extends Component {
                             <div className="col mt-3 mb-3">
                                 <div className="row">
                                     <div className="col">
-                                        <h3>My meetings</h3>
+                                        <h3>{requests ? "My meetings" : "Meetings"}</h3>
                                     </div>
                                 </div> 
                                 <div className="row">
-                                    {meetings?.map(meeting =>
+                                    {meetings?.sort((a,b) => new Date(a.date) - new Date(b.date)).map(meeting =>
                                         <div className="col-6 mt-3">
                                             <MeetingCardComponent meeting={meeting} height="250px"/>
                                         </div>
@@ -151,13 +170,14 @@ export default class UserProfileComponent extends Component {
                                 {requests &&
                                     <div className="row">
                                         <div className="col mt-3">
+                                            <hr/>
                                             <h3>My requests</h3>
                                         </div>
                                     </div> 
                                 }
                                 {requests &&
-                                    <div className="row">
-                                        {requests?.filter(request => request.request.user_id !== request.meeting.managerId).map(request =>
+                                    <div className="row">{console.log(requests)}
+                                        {requests?.filter(request => request.request.user_id !== request.meeting.managerId).sort((a,b) => new Date(a.meeting.date) - new Date(b.meeting.date)).map(request =>
                                             <div className="col-6 mt-3">
                                                 <MeetingCardComponent request={request.request} meeting={request.meeting} height="285px"/>
                                             </div>
