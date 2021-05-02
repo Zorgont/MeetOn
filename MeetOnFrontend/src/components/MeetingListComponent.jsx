@@ -7,6 +7,7 @@ import Switch from '@material-ui/core/Switch';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import {Pagination} from "@material-ui/lab";
+import MeetingGroupComponent from "./MeetingGroupComponent";
 
 class MeetingList extends Component {
     constructor(props) {
@@ -88,6 +89,18 @@ class MeetingList extends Component {
         return (
             <div className="container">
                 <div className="row">
+                    <div className="col">
+                        <h2 className="text-center">Favorite meetings</h2>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col"/>
+                    <div className="col">
+                        <MeetingGroupComponent meetings={this.state.meetings}/>
+                    </div>
+                    <div className="col"/>
+                </div>
+                <div className="row">
                     <div className="col-9">
                         <h2 className="text-center">Meetings list</h2>
                         <table className="table table-striped table-bordered">
@@ -120,7 +133,7 @@ class MeetingList extends Component {
                                 }
                             </tbody>
                         </table>
-                        <div className="row  justify-content-center" >
+                        <div className="row justify-content-center" >
                             <Pagination count={this.state.pagesNumber} color="primary" hideNextButton={this.state.hideNextButton} onChange={this.changePage.bind(this)} />
                         </div>
                     </div>
@@ -138,7 +151,6 @@ class MeetingList extends Component {
                             </FormGroup>
                     </div>
                 </div>
-
             </div>
         );
     }

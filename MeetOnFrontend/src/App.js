@@ -22,6 +22,8 @@ import ProfileSettings from "./components/ProfileSettingsComponent";
 import ConfirmationCompleted from "./components/ConfirmationCompletedComponent";
 import EmailConfirmation from "./components/EmailConfirmationComponent";
 import UsernameInputComponent from "./components/UsernameInputComponent";
+import MeetingCardComponent from "./components/MeetingCardComponent";
+import UserProfileComponent from "./components/UserProfileComponent";
 
 class App extends Component {
     constructor(props) {
@@ -139,7 +141,7 @@ class App extends Component {
                         <Route exact path={["/", "/home"]} component={MeetingList} />
                         <Route exact path="/login" component={Login} />
                         <Route exact path="/register" component={Register} />
-                        <Route exact path="/profile" component={Profile} />
+                        <Route exact path="/profile" component={UserProfileComponent} />
                         <Route exact path="/profile/update" component={ProfileSettings} />
                         <Route exact path="/user" component={BoardUser} />
                         <Route exact path="/mod" component={BoardModerator} />

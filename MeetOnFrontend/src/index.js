@@ -5,11 +5,18 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css'
 import {BrowserRouter} from "react-router-dom";
+import getMuiTheme from 'material-ui/styles/getMuiTheme'
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
+
+
+const muiThemebtn = getMuiTheme()   
 
 ReactDOM.render(
+  <MuiThemeProvider muiTheme={muiThemebtn}>
     <BrowserRouter>
         <App />
-    </BrowserRouter>,
+    </BrowserRouter>
+    </MuiThemeProvider>,
   document.getElementById('root')
 );
 
