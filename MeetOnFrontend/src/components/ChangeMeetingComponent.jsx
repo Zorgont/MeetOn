@@ -65,6 +65,7 @@ export default class UpdateMeeting extends Component{
         event.preventDefault();
         let meeting = {
             managerUsername: this.state.currentUser.username,
+            managerId: this.state.currentUser.id,
             name: this.state.name,
             about: this.state.about,
             date: this.state.date,

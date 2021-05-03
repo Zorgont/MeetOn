@@ -75,7 +75,7 @@ public class AuthServiceImpl implements AuthService {
         User user;
         if (!userRepository.existsByEmail(loginRequest.getEmail())) {
             if (userRepository.existsByUsername(loginRequest.getUsername()))
-                throw new ResourceNotFoundException("This username is already taken!");
+                throw new ValidatorException("This username is already taken!");
 
             // зарегистрировать пользователя
             user = createUser(new SignupRequest(loginRequest.getUsername(), loginRequest.getEmail(), null, loginRequest.getAccessToken()));
@@ -88,7 +88,7 @@ public class AuthServiceImpl implements AuthService {
         else {
             user = userRepository.findByEmail(loginRequest.getEmail()).get();
             if (!user.getStatus().equals("oAuth2"))
-                throw new ResourceNotFoundException("User already registered via platform registration. Please enter your username and password!");
+                throw new ValidatorException("User already registered via platform registration. Please enter your username and password!");
         }
 
         user.setPassword(encoder.encode(loginRequest.getAccessToken()));

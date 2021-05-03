@@ -19,13 +19,22 @@ import java.util.List;
 public class MeetingValidatorImpl implements MeetingValidator {
     private final DTOValidator dtoValidator;
     @Override
-    public List<String> validate(MeetingDTO meetingRequest) throws IllegalAccessException {
+    public List<String> getNullFieldsList(MeetingDTO meetingRequest) throws IllegalAccessException {
         List<String> nullFieldsList = dtoValidator.validate(meetingRequest);
         if(meetingRequest.getIsParticipantAmountRestricted() && meetingRequest.getParticipantAmount() == 0)
             nullFieldsList.add("participant_amount");
         nullFieldsList.remove("status");
         nullFieldsList.remove("meetingId");
         return nullFieldsList;
+    }
+    public void validate(MeetingDTO meetingRequest) throws IllegalAccessException{
+        List<String> nullFieldsList = dtoValidator.validate(meetingRequest);
+        if(meetingRequest.getIsParticipantAmountRestricted() && meetingRequest.getParticipantAmount() == 0)
+            nullFieldsList.add("participant_amount");
+        nullFieldsList.remove("status");
+        nullFieldsList.remove("meetingId");
+        if(!nullFieldsList.isEmpty())
+            throw new ValidatorException("Some fields are empty!");
     }
 
     @Override

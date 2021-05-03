@@ -7,7 +7,8 @@ import com.example.meetontest.entities.User;
 import java.util.List;
 
 public interface MeetingValidator{
-    List<String> validate(MeetingDTO meetingRequest) throws IllegalAccessException;
+    void validate(MeetingDTO meetingRequest) throws IllegalAccessException;
+    List<String> getNullFieldsList(MeetingDTO meetingRequest) throws IllegalAccessException;
     List<String> getFieldsList() throws IllegalAccessException;
     void validate(Meeting meeting);
     boolean validateUser(MeetingDTO meetingDTO, User user) throws NoSuchFieldException, IllegalAccessException;
