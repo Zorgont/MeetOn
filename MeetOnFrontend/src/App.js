@@ -8,6 +8,7 @@ import "./App.css";
 import AuthService from "./services/AuthService";
 
 import Login from "./components/LoginComponent";
+import NewLoginComponent from "./components/NewLoginComponent";
 import Register from "./components/RegisterComponent";
 import Profile from "./components/ProfileComponent";
 import BoardUser from "./components/BoardUserComponent";
@@ -108,7 +109,7 @@ class App extends Component {
                 <div className="container mt-3">
                     <Switch>
                         <Route exact path={["/", "/home"]} component={MeetingList} />
-                        <Route exact path="/login" component={Login} />
+                        <Route exact path="/login" component={NewLoginComponent} />
                         <Route exact path="/register" component={Register} />
                         <Route exact path="/users/:userId" component={UserProfileComponent}  />
                         <Route exact path="/profile" component={UserProfileComponent} />

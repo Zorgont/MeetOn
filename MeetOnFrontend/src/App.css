@@ -147,3 +147,23 @@ label {
 .gradient-gray-border{
   border: 1px solid #eee;
 }
+
+.underlined-link {
+  font-family: "Raleway";
+  font-size: 20px;
+  text-decoration: underline;
+  color: #636363;
+}
+
+.raleway {
+  font-family: "Raleway";
+}
+
+.custom-header {
+  font-size: 48px;
+}
+
+.custom-paragraph {
+  font-size: 20px;
+  
+}

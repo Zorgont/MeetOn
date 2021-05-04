@@ -1,19 +1,9 @@
 import React, { Component } from 'react';
 import Form from "react-validation/build/form";
-import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
-import UserService from '../services/UserService';
 import AuthService from "../services/AuthService";
-
-const required = value => {
-    if (!value) {
-        return (
-            <div className="alert alert-danger" role="alert">
-                This field is required!
-            </div>
-        );
-    }
-};
+import TextField from '@material-ui/core/TextField';
+import RegistrationStepperComponent from './RegistrationStepperComponent';
 
 class UsernameInputComponent extends Component {
     constructor(props) {
@@ -96,50 +86,40 @@ class UsernameInputComponent extends Component {
     }
 
     render() {
+        const styles = {
+            helper: {
+                 color: '#CD5642',
+            }
+        }
         return (
-            <div className="col-md-12">
-                <div className="card card-container">
-                    <img
-                        src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
-                        alt="profile-img"
-                        className="profile-img-card"
-                    />
-
-                    <Form onSubmit={this.handleLogin} ref={c => { this.form = c; }}>
-                        <div className="form-group">
-                            <label htmlFor="username">Username</label>
-                            <Input type="text" className="form-control" name="username"
-                                value={this.state.username} onChange={this.onChangeUsername}
-                                validations={[required]}
-                            />
+            <div className="container">
+                <div className="row">
+                    <div className="col-6 offset-3">
+                        <div className="row mt-1 mb-3">
+                            <div className="col">
+                                <p className="text-center raleway custom-paragraph">Just one more step to finish your registration...</p>
+                                <RegistrationStepperComponent/>
+                            </div>
                         </div>
-
-                        <div className="form-group">
-                            <button
-                                className="btn btn-primary btn-block"
-                                disabled={this.state.loading}
-                            >
-                                {this.state.loading && (
-                                    <span className="spinner-border spinner-border-sm"></span>
-                                )}
-                                <span>Login</span>
-                            </button>
-                        </div>
-
-                        {this.state.message && (
-                            <div className="form-group">
-                                <div className="alert alert-danger" role="alert">
-                                    {this.state.message}
+                        <Form onSubmit={this.handleLogin} ref={c => { this.form = c; }}>
+                        <div className="row">
+                                <div className="col">
+                                    <p className="raleway custom-paragraph" style={{marginLeft: "9px", marginBottom: "0"}}>Username</p>
+                                    <TextField style={{ margin: "8px" }} placeholder="Enter your username" required
+                                        fullWidth margin="normal" variant="outlined" onChange={this.onChangeUsername}
+                                        InputLabelProps={{ shrink: true }}  error={this.state.message} helperText={this.state.message}
+                                        FormHelperTextProps={{ style: styles.helper }} />
                                 </div>
                             </div>
-                        )}
-                        <CheckButton
-                            style={{ display: "none" }}
-                            ref={c => {
-                                this.checkBtn = c;
-                            }}
-                        />
-                    </Form>
+
+                            <div className="row mt-3 mb-2">
+                                <div className="col">
+                                    <button className="btn btn-primary raleway custom-paragraph" style={{width: "100%", backgroundColor: "#373737", marginLeft: "8px", marginRight: "-8px"}} type="submit">Finish</button>
+                                </div>
+                            </div>
+                            <CheckButton style={{ display: "none" }} ref={c => { this.checkBtn = c; }} />
+                        </Form>
+                    </div>
                 </div>
             </div>
         );
