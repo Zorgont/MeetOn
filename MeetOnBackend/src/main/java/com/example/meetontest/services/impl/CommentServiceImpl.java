@@ -22,6 +22,9 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    public Comment getById(Long id){return commentRepository.findById(id).get();}
+
+    @Override
     public List<Comment> getByUser(User user) {
         return commentRepository.findByUser(user);
     }

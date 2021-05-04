@@ -9,6 +9,7 @@ import com.example.meetontest.rating.service.UserRatingProvider;
 import com.example.meetontest.services.MeetingService;
 import com.example.meetontest.services.TagGroupService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -25,11 +26,20 @@ public class MeetingRecommendationsServiceImpl implements MeetingRecommendations
     private final MeetingService meetingService;
 
     @Override
-    public List<Meeting> getRecommendations(List<Meeting> meetings, User target,int page) {
+    public List<List<Meeting>> getRecommendations(List<Meeting> meetings, User target,int page) {
+        List<List<Meeting>> list = new ArrayList<>();
         List<TagGroup> tagGroups = target != null ? tagGroupService.getByUser(target) : null;
-        return  tagGroups == null || tagGroups.isEmpty() ? getRecommendationsByRating(meetings).stream().limit(10L * (page)).skip(10L * (page - 1)).collect(Collectors.toList()) :
-                getRecommendationsByTags(new ArrayList<>(meetings), new ArrayList<>(tagGroups.get(0).getTags()), 10 * page)
-                        .stream().map(this::getRecommendationsByRating).flatMap(Collection::stream).limit(10L * (page)).skip(10L * (page - 1)).collect(Collectors.toList());
+        if(tagGroups == null || tagGroups.isEmpty()) {
+             list.add(getRecommendationsByRating(meetings).stream().limit(10L * (page)).skip(10L * (page - 1)).collect(Collectors.toList()));
+        }
+        else {
+            tagGroups.forEach((tagGroup -> {
+                list.add(getRecommendationsByTags(new ArrayList<>(meetings), new ArrayList<>(tagGroup.getTags()), 10 * page)
+                        .stream().map(this::getRecommendationsByRating).flatMap(Collection::stream).limit(10L * (page)).skip(10L * (page - 1)).collect(Collectors.toList()));
+            }));
+        }
+        return list;
+
     }
 
     private List<Meeting> getRecommendationsByRating(List<Meeting> meetings) {

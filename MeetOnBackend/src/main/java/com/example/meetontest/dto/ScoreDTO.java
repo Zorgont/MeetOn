@@ -12,9 +12,9 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ScoreDTO {
+    private Long user_id;
     private Long id;
     private Long meeting_id;
-    private Long user_id;
     private Integer score;
     private Date date;
 }

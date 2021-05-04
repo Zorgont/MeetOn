@@ -30,8 +30,6 @@ public class ScoreValidatorImpl implements ScoreValidator {
         Meeting meeting = meetingService.getMeetingById(score.getMeeting_id());
         if(!nullFieldsList.isEmpty())
             throw new ValidatorException("Some fields are empty!");
-        if(!dtoValidator.checkFieldCompliance(score,"user_id", ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId()))
-            throw new ValidatorException("User id doesn't match to current user!");
         if(meetingService.getManager(meeting).getId().equals(score.getUser_id()))
             throw new ValidatorException("Creator can't estimate his meeting!");
         if(!((meeting.getStatus() == MeetingStatus.IN_PROGRESS) || (meeting.getStatus() == MeetingStatus.FINISHED)))

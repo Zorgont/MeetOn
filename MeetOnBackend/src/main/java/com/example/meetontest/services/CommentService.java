@@ -9,6 +9,8 @@ import java.util.List;
 public interface CommentService {
     Comment create(Comment comment);
 
+    Comment getById(Long id);
+
     List<Comment> getByUser(User user);
 
     List<Comment> getByMeeting(Meeting meeting);

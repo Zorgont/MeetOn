@@ -7,7 +7,9 @@ import com.example.meetontest.services.TagGroupService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,7 +24,7 @@ public class TagGroupServiceImpl implements TagGroupService {
 
     @Override
     public List<TagGroup> getByUser(User user) {
-        return tagGroupRepository.findByUser(user);
+        return tagGroupRepository.findByUser(user).stream().sorted(Comparator.comparing(TagGroup::getId)).collect(Collectors.toList());
     }
 
     @Override

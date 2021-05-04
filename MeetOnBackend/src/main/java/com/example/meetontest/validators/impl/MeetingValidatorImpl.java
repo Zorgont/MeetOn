@@ -60,9 +60,4 @@ public class MeetingValidatorImpl implements MeetingValidator {
                 throw new ValidatorException("Incorrect tags!");
         }
     }
-
-    @Override
-    public boolean validateUser(MeetingDTO meetingDTO, User user) throws NoSuchFieldException, IllegalAccessException {
-         return (dtoValidator.checkFieldCompliance(meetingDTO, "managerId", user.getId()) && dtoValidator.checkFieldCompliance(meetingDTO, "managerUsername", user.getUsername()));
-    }
 }

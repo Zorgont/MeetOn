@@ -2,13 +2,18 @@ package com.example.meetontest.controllers;
 
 import com.example.meetontest.converters.ScoreConverter;
 import com.example.meetontest.dto.AggregatedScoreDTO;
+import com.example.meetontest.dto.DTO;
+import com.example.meetontest.dto.MessageResponse;
 import com.example.meetontest.dto.ScoreDTO;
 import com.example.meetontest.entities.MeetingScore;
+import com.example.meetontest.exceptions.ValidatorException;
+import com.example.meetontest.megabrainutils.CheckUserCompliance;
 import com.example.meetontest.services.MeetingService;
 import com.example.meetontest.services.ScoreService;
 import com.example.meetontest.services.UserService;
 import com.example.meetontest.validators.ScoreValidator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
@@ -36,10 +41,17 @@ public class ScoreController {
     }
 
     @PostMapping("/{meetingId}")
-    public ScoreDTO createScore(@PathVariable Long meetingId, @RequestBody ScoreDTO score) throws ParseException, NoSuchFieldException, IllegalAccessException {
-        score.setMeeting_id(meetingId);
-        validator.validate(score);
-        MeetingScore meetingScore = converter.convert(score);
-        return converter.convertBack(scoreService.createScore(meetingScore.getMeeting(), meetingScore.getUser(), meetingScore.getScore()));
+    @CheckUserCompliance
+    public ResponseEntity<?> createScore(@PathVariable Long meetingId, @RequestBody @DTO(name = "user_id") ScoreDTO score) throws ValidatorException {
+        try {
+            score.setMeeting_id(meetingId);
+            validator.validate(score);
+            MeetingScore meetingScore = converter.convert(score);
+            return ResponseEntity.ok(converter.convertBack(scoreService.createScore(meetingScore.getMeeting(), meetingScore.getUser(), meetingScore.getScore())));
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
+        }
     }
 }

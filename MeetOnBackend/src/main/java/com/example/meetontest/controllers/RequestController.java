@@ -1,16 +1,20 @@
 package com.example.meetontest.controllers;
 
 import com.example.meetontest.converters.RequestConverter;
+import com.example.meetontest.dto.DTO;
 import com.example.meetontest.dto.MessageResponse;
 import com.example.meetontest.dto.RequestDTO;
 import com.example.meetontest.entities.Request;
 import com.example.meetontest.entities.RequestStatus;
+import com.example.meetontest.megabrainutils.CheckUserCompliance;
 import com.example.meetontest.services.MeetingService;
 import com.example.meetontest.services.RequestService;
 import com.example.meetontest.services.UserService;
 import com.example.meetontest.validators.RequestValidator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,6 +32,10 @@ public class RequestController {
     private final RequestService requestService;
     private final RequestConverter requestConverter;
     private final RequestValidator requestValidator;
+    @Autowired
+    @Lazy
+    private RequestController requestController;
+
     @GetMapping("/{id}")
     public ResponseEntity<?> getRequestById(@PathVariable Long id) {
         Optional<Request> request = requestService.getById(id);
@@ -60,9 +68,9 @@ public class RequestController {
         return requestService.getByMeetingAndStatus(meetingService.getMeetingById(id), RequestStatus.PENDING).
                 stream().map(requestConverter::convertBack).collect(Collectors.toList());
     }
-
+    @CheckUserCompliance
     @PostMapping
-    public ResponseEntity<?> createRequest(@RequestBody RequestDTO requestDTO) throws JsonProcessingException, IllegalAccessException, NoSuchFieldException {
+    public ResponseEntity<?> createRequest(@RequestBody @DTO(name = "user_id") RequestDTO requestDTO) throws JsonProcessingException, IllegalAccessException, NoSuchFieldException {
         requestValidator.validate(requestDTO);
         return ResponseEntity.ok(requestConverter.convertBack(requestService.create(requestConverter.convert(requestDTO))));
     }
@@ -70,20 +78,32 @@ public class RequestController {
     @PutMapping("/changeStatus/{id}")
     public ResponseEntity<?> updateRequestStatus(@PathVariable Long id, @RequestParam String status) {
         try {
-            requestService.changeStatus(requestService.getById(id).get(), RequestStatus.valueOf(status.toUpperCase()));
-            return ResponseEntity.ok(requestConverter.convertBack(requestService.getById(id).get()));
+                RequestDTO dto = requestConverter.convertBack(requestService.getById(id).get());
+                dto.setStatus(status);
+            return requestController.updateRequestStatusWithDTO(dto) ? ResponseEntity.ok(dto) : ResponseEntity.badRequest().body(new MessageResponse("Wrong id!"));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new MessageResponse("Failed updating status!"));
+            return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
         }
+    }
+    @CheckUserCompliance
+    public Boolean updateRequestStatusWithDTO(@DTO(name = "user_id") RequestDTO requestDTO) throws JsonProcessingException {
+        requestService.changeStatus(requestService.getById(requestDTO.getId()).get(), RequestStatus.valueOf(requestDTO.getStatus().toUpperCase()));
+        return true;
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> removeRequestById(@PathVariable Long id) {
         try {
-            requestService.removeById(id);
-            return ResponseEntity.ok("deleted");
+
+            return requestController.deleteRequestStatusWithDTO(requestConverter.convertBack(requestService.getById(id).get())) ?
+                    ResponseEntity.ok("deleted") : ResponseEntity.badRequest().body(new MessageResponse("Wrong id!"));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
         }
+    }
+    @CheckUserCompliance
+    public Boolean deleteRequestStatusWithDTO(@DTO(name = "user_id") RequestDTO requestDTO) {
+        requestService.removeById(requestDTO.getId());
+        return true;
     }
 }

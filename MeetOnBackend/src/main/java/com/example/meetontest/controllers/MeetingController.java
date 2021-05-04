@@ -44,7 +44,7 @@ public class MeetingController {
 
     @GetMapping
     public Iterable<MeetingDTO> getMeetings(@RequestParam @Nullable List<String> tags, @RequestParam int page ) {
-        return  meetingRecommendationsService.getRecommendations(meetingService.getMeetingsByTags(tags),null, page)
+        return  meetingRecommendationsService.getRecommendations(meetingService.getMeetingsByTags(tags),null, page).get(0)
                 .stream().map(meetingConverter::convertBack).collect(Collectors.toList());
     }
 
@@ -53,7 +53,7 @@ public class MeetingController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUserName = authentication.getName();
 
-        return meetingRecommendationsService.getRecommendations(meetingService.getMeetingsByTags(tags), userService.getUserByName(currentUserName), page)
+        return meetingRecommendationsService.getRecommendations(meetingService.getMeetingsByTags(tags), userService.getUserByName(currentUserName), page).get(0)
                 .stream().map(meetingConverter::convertBack).collect(Collectors.toList());//Ограничения по времени создания
     }
 
@@ -122,4 +122,5 @@ public class MeetingController {
     public Boolean deleteMeetingWithDTO(@DTO(name = "managerId") MeetingDTO meetingDTO) {
         return meetingService.deleteMeeting(meetingDTO.getMeetingId());
     }
+    
 }

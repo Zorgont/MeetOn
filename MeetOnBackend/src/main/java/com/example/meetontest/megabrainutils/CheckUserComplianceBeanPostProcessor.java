@@ -1,12 +1,14 @@
 package com.example.meetontest.megabrainutils;
 
 import com.example.meetontest.dto.DTO;
+import com.example.meetontest.dto.MessageResponse;
 import com.example.meetontest.exceptions.ValidatorException;
 import com.example.meetontest.services.impl.UserDetailsImpl;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.cglib.proxy.Enhancer;
 import org.springframework.cglib.proxy.MethodInterceptor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RestController;
@@ -46,6 +48,8 @@ public class CheckUserComplianceBeanPostProcessor implements BeanPostProcessor {
                             if (!((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId().equals((Long) userIdField.get(args[i]))) {
                                 if(method.getReturnType().equals(Boolean.class))
                                     return false;
+                                if(method.getReturnType().equals(ResponseEntity.class))
+                                    return ResponseEntity.badRequest().body("User id doesn't match to current user!");
                                 throw new ValidatorException("User id doesn't match to current user!");
                             }
                         }

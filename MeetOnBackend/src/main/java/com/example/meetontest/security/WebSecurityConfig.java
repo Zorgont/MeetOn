@@ -110,7 +110,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/api/v1/meetings").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/v1/meetings/pagesNumber").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/v1/score/**").permitAll()
-                .antMatchers("/api/v1/score/**").permitAll()
+                .antMatchers("/api/v1/score/**").authenticated()
                 .antMatchers("/api/v1/users/**").authenticated()
                 .antMatchers("/api/v1/meetings/**").authenticated()
                 .antMatchers("/api/v1/requests/**").authenticated()

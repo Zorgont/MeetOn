@@ -33,8 +33,6 @@ public class RequestValidatorImpl implements RequestValidator {
             nullFieldsList.remove("about");
         if(nullFieldsList.contains("user_id") || nullFieldsList.contains("about") || nullFieldsList.contains("meeting_id"))
             throw new ValidatorException("Some fields are empty!");
-        if(!dtoValidator.checkFieldCompliance(request,"user_id", ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId()))
-            throw new ValidatorException("User id doesn't match to current user!");
         if(request.getUser_id().equals(request.getMeeting_id()))
             throw new ValidatorException("Creator couldn't enroll twice!");
         if(meeting.getStatus() == MeetingStatus.FINISHED)

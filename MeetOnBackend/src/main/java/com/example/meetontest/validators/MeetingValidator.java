@@ -11,5 +11,4 @@ public interface MeetingValidator{
     List<String> getNullFieldsList(MeetingDTO meetingRequest) throws IllegalAccessException;
     List<String> getFieldsList() throws IllegalAccessException;
     void validate(Meeting meeting);
-    boolean validateUser(MeetingDTO meetingDTO, User user) throws NoSuchFieldException, IllegalAccessException;
 }
