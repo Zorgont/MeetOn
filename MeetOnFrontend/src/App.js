@@ -7,10 +7,8 @@ import "./App.css";
 
 import AuthService from "./services/AuthService";
 
-import Login from "./components/LoginComponent";
 import NewLoginComponent from "./components/NewLoginComponent";
 import Register from "./components/RegisterComponent";
-import Profile from "./components/ProfileComponent";
 import BoardUser from "./components/BoardUserComponent";
 import BoardModerator from "./components/BoardUserComponent";
 import BoardAdmin from "./components/BoardUserComponent";
@@ -25,7 +23,6 @@ import ProfileSettings from "./components/ProfileSettingsComponent";
 import ConfirmationCompleted from "./components/ConfirmationCompletedComponent";
 import EmailConfirmation from "./components/EmailConfirmationComponent";
 import UsernameInputComponent from "./components/UsernameInputComponent";
-import MeetingCardComponent from "./components/MeetingCardComponent";
 import UserProfileComponent from "./components/UserProfileComponent";
 import UserMenuComponent from "./components/UserMenuComponent";
 
