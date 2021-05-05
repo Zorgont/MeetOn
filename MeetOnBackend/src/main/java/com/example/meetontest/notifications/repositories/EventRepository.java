@@ -10,4 +10,5 @@ import java.util.Set;
 public interface EventRepository extends JpaRepository<EventEntity, Long> {
     List<EventEntity> findByStatus(EventStatus status);
     List<EventEntity> findByStatusAndTypeIn(EventStatus status, Set<String> types);
+
 }
