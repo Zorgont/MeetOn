@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import Chip from '@material-ui/core/Chip';
 import MailOutlineIcon from '@material-ui/icons/MailOutline';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
-import Divider from '@material-ui/core/Divider';
 import AuthService from "../services/AuthService";
 import MeetingService from "../services/MeetingService";
 import RequestService from "../services/RequestService";
@@ -12,6 +11,7 @@ import Avatar from '@material-ui/core/Avatar';
 import UserService from "../services/UserService";
 import TagGroupService from "../services/TagGroupService";
 import MeetingCardComponent from "./MeetingCardComponent";
+import ImageService from "../services/ImageService";
 
 export default class UserProfileComponent extends Component {
     constructor(props) {
@@ -24,44 +24,77 @@ export default class UserProfileComponent extends Component {
             notifications: [],
             user: null,
             tagGroups: null,
+            currentAvatar: null
         };
     }
-    
+
     componentDidMount() {
         let id = Number(this.props.match.params.userId ? this.props.match.params.userId : this.state.currentUser.id);
         console.log("dasdasdasdd")
         console.log(id)
-        UserService.getUserById(id).then(res =>{
+        UserService.getUserById(id).then(res => {
             this.setState({user: res.data})
-            TagGroupService.getTagGroups(id).then( res => {
-                this.setState({tagGroups: res.data})
-            });
-            MeetingService.getMeetingsByManager(this.state.user.username).then((res) => {
-                this.setState({meetings: res.data});
-            });
-            console.log(id)
-            console.log(this.state.currentUser.id)
-            if (id === this.state.currentUser.id)
-                RequestService.getRequestsByUserId(id).then((res)=>{
-                    let requests = []
-                    console.log(res.data)
-                    for(let index in res.data) {
-                        console.log(res.data)
-                        let request = res.data[index];
-                        MeetingService.getMeetingById(request.meeting_id).then(res => {
+            if (this.state.user.avatar) {
+                let retrievedImage = `data:image/${this.state.user.avatar.type};base64,${this.state.user.avatar.pic}`;
+                this.setState({
+                    currentAvatar: retrievedImage
+                })
+                this.updateMeetingsAvatars()
+            }
+        });
+
+        MeetingService.getMeetingsByManager(id).then((res) => {
+            this.setState({ meetings: res.data })
+            this.updateMeetingsAvatars()
+        });
+
+        TagGroupService.getTagGroups(id).then(res => {
+            this.setState({tagGroups: res.data})
+        });
+
+        if (id === this.state.currentUser.id)
+            RequestService.getRequestsByUserId(id).then((res) => {
+                let requests = []
+                let avatars = []
+                for (let index in res.data) {
+                    let request = res.data[index];
+                    MeetingService.getMeetingById(request.meeting_id).then(res => {
+                        let meeting = res.data
+                        console.log(meeting)
+                        if (avatars[meeting.managerId]) {
+                            console.log("avatar exists")
+                            meeting.managerAvatar = avatars[meeting.managerId]
                             requests.push({
                                 request: request,
-                                meeting: res.data
+                                meeting: meeting
                             })
                             this.setState({requests: requests})
-                        })
-                    }
-                })
-        });
-        
+                        } else {
+                            console.log("avatar doesn't exist")
+                            ImageService.getAvatar(meeting.managerId).then(res => {
+                                let retrievedImage = `data:image/${res.data.type};base64,${res.data.pic}`;
+                                avatars[meeting.managerId] = retrievedImage
+                                meeting.managerAvatar = retrievedImage
+                                requests.push({
+                                    request: request,
+                                    meeting: meeting
+                                })
+                                this.setState({requests: requests})
+                            })
+                        }
+                    })
+                }
+            })
+
         NotificationService.getNotificationsByUser(this.state.currentUser.id).then((res) => {
             this.setState({notifications: res.data});
         });
+    }
+    updateMeetingsAvatars() {
+        if((this.state.meetings.length !== 0) && this.state.currentAvatar) {
+            this.state.meetings.forEach(meeting => {meeting.managerAvatar = this.state.currentAvatar})
+            this.setState({meetings:  this.state.meetings});
+        }
     }
 
     componentDidUpdate(prevProps) {
@@ -86,7 +119,7 @@ export default class UserProfileComponent extends Component {
                                 <div className="row">
                                     <div className="col d-flex justify-content-center">
                                         <div style={{position: "relative"}}>
-                                            <Avatar style={{width: "130px", height: "130px"}}/>
+                                            <Avatar style={{width: "130px", height: "130px"}} src={this.state.currentAvatar}/>
                                             {user?.id === this.state.currentUser?.id && <div onClick={this.editProfileClicked.bind(this)} style={{position: "absolute", right: "12px", width: "30px", height: "30px", bottom: "-5px", backgroundColor: "white", borderRadius: "50px", cursor: "pointer"}} className="gradient-gray-border">
                                                 <EditOutlinedIcon style={{margin: "0 0 0 3px"}} />
                                             </div>}

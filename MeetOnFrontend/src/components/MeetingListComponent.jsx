@@ -8,6 +8,7 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import {Pagination} from "@material-ui/lab";
 import MeetingGroupComponent from "./MeetingGroupComponent";
+import ImageService from "../services/ImageService";
 
 class MeetingList extends Component {
     constructor(props) {
@@ -18,7 +19,8 @@ class MeetingList extends Component {
             selectedTags: [],
             currentUser: AuthService.getCurrentUser(),
             page: 1,
-            pagesNumber: 5
+            pagesNumber: 5,
+            managerAvatar: []
         }
     }
     
@@ -69,11 +71,28 @@ class MeetingList extends Component {
             MeetingService.getRecommendedMeetingsByTags(this.state.selectedTags, this.state.page).then((res) => {
                 this.setState({meetings: res.data});
                 console.log(this.state.meetings);
+                let meetingsList = this.state.meetings;
+                let uniqUsers = this.state.meetings.map(meeting => meeting.managerId).filter((x, i, a) => a.indexOf(x) === i);
+                uniqUsers.forEach(function(item) {
+                    ImageService.getAvatar(item).then(res => {
+                        meetingsList.filter(meeting => meeting.managerId === item).forEach(function(meeting) {
+                            meeting.managerAvatar = `data:image/${res.data.type};base64,${res.data.pic}`;
+                        })
+                    });
+                });
             });
         else
             MeetingService.getMeetingsByTags(this.state.selectedTags,  this.state.page).then((res) => {
                 this.setState({meetings: res.data});
                 console.log(this.state.meetings);
+                let uniqUsers = this.state.meetings.map(meeting => meeting.managerId).filter((x, i, a) => a.indexOf(x) === i);
+                uniqUsers.forEach(function(item) {
+                    ImageService.getAvatar(item).then(res => {
+                        this.state.meetings.filter(meeting => meeting.managerId === item).forEach(function(item) {
+                            item.managerAvatar = `data:image/${res.data.type};base64,${res.data.pic}`;
+                        })
+                    });
+                });
             });
 
     }

@@ -19,9 +19,9 @@ class MeetingService {
         console.log(MEETING_API_BASE_URL + '/' + meetingId);
         return axios.get(MEETING_API_BASE_URL + '/' + meetingId, { headers: authHeader() });
     }
-    getMeetingsByManager(manager) {
+    getMeetingsByManager(managerId) {
         console.log(MEETING_API_BASE_URL);
-        return axios.get(MEETING_API_BASE_URL + '/byManager/' + manager, { headers: authHeader() });
+        return axios.get(MEETING_API_BASE_URL + '/byManager/' + managerId, { headers: authHeader() });
     }
 
     updateMeeting(meeting, meetingId) {
