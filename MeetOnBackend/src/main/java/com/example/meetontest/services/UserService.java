@@ -2,6 +2,9 @@ package com.example.meetontest.services;
 
 import com.example.meetontest.dto.UserSettingDTO;
 import com.example.meetontest.entities.User;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 public interface UserService {
     Iterable<User> getUsers();

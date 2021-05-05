@@ -3,7 +3,11 @@ import React, {Component} from "react";
 import AuthService from "../services/AuthService";
 import UserService from "../services/UserService";
 import TagGroupService from "../services/TagGroupService";
+import ImageService from "../services/ImageService";
+import Avatar from "@material-ui/core/Avatar";
+import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
 export default class ProfileSettingsComponent extends Component{
+
 
     constructor(props) {
         super(props);
@@ -17,7 +21,9 @@ export default class ProfileSettingsComponent extends Component{
             tags: [],
             isNotifiable: false,
             tagsNotifiable: [],
-            errorMsg: null
+            errorMsg: null,
+            selectedFile: null,
+            currentAvatar: null
         };
     }
     updateUser = (event) => {
@@ -58,6 +64,35 @@ export default class ProfileSettingsComponent extends Component{
             tagsNotifiable: this.state.tagGroups.map(tag => tag.isNotifiable)
         })
     }
+    changeAvatarFile = (event) => {
+        console.log(event.target);
+        let file = event.target.files[0];
+        this.setState({
+            selectedFile: file
+        })
+    }
+    uploadAvatar = () => {
+        console.log(this.state.selectedFile)
+        const uploadImageData = new FormData();
+        uploadImageData.append('imageFile', this.state.selectedFile, this.state.selectedFile.name);
+        console.log(uploadImageData);
+        ImageService.uploadAvatar(this.state.currentUser.id, uploadImageData).then((res) => {
+            let retrievedImage = `data:image/${res.data.type};base64,${res.data.pic}`;
+            this.setState({
+                currentAvatar: retrievedImage
+            })
+        })
+
+    }
+    getAvatar = (userId) => {
+        ImageService.getAvatar(userId).then((res) => {
+            let retrievedImage = `data:image/${res.data.type};base64,${res.data.pic}`;
+            this.setState({
+                currentAvatar: retrievedImage
+            })
+        })
+    }
+
     cancel() {
         this.props.history.push('/profile');
     }
@@ -110,7 +145,8 @@ export default class ProfileSettingsComponent extends Component{
                     secondName: user.secondName,
                     about: user.about
                 })
-            })
+            this.getAvatar(this.state.currentUser.id);
+        })
         TagGroupService.getTagGroups(this.state.currentUser.id).then( res => {
             this.setState({
                 tagGroups: res.data,
@@ -128,9 +164,24 @@ export default class ProfileSettingsComponent extends Component{
                     <div className="row">
                         <div className="card col-md-6 offset-md-3 offset-md-3">
                             <h3 className="text-center">Profile settings</h3>
+                            <div className="row">
+                                <div className="col d-flex justify-content-center">
+                                    <div style={{position: "relative"}}>
+                                        <Avatar style={{width: "130px", height: "130px"}} src={this.state.currentAvatar}/>
+                                    </div>
+                                </div>
                             <h4 className="text-center">{this.state.currentUser.username}</h4>
                             <div className="card-body">
                                 <form>
+                                    <div className = "row">
+                                        <label htmlFor="changeAvatar">Change avatar: </label>
+                                    </div>
+                                    <div className = "row">
+                                        <input name="changeAvatar" type="file" onChange={this.changeAvatarFile.bind(this)}/>
+                                    </div>
+                                    <div className = "row">
+                                        <button className="btn btn-success" onClick={this.uploadAvatar.bind(this)}>Save</button>
+                                    </div>
                                     <div className="form-group row">
                                         <label htmlFor="firstName"> Firstname: </label>
                                         <input type="text" name="firstName" className="form-control" value={this.state.firstName} onChange={this.changeFirstNameHandler.bind(this)} required />
@@ -200,6 +251,7 @@ export default class ProfileSettingsComponent extends Component{
                     </div>
 
                 </div>
+            </div>
             </div>
         );
     }

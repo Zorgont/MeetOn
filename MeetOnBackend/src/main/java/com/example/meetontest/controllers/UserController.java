@@ -4,13 +4,19 @@ import com.example.meetontest.converters.TagGroupConverter;
 import com.example.meetontest.dto.MessageResponse;
 import com.example.meetontest.dto.TagGroupDTO;
 import com.example.meetontest.dto.UserSettingDTO;
+import com.example.meetontest.entities.ImageModel;
 import com.example.meetontest.entities.User;
+import com.example.meetontest.services.ImageModelService;
 import com.example.meetontest.services.TagGroupService;
 import com.example.meetontest.services.UserService;
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.util.codec.binary.Base64;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,7 +29,7 @@ public class UserController {
     private final UserService userService;
     private final TagGroupService tagGroupService;
     private final TagGroupConverter tagGroupConverter;
-
+    private final ImageModelService imageModelService;
 
     @GetMapping
     public Iterable<User> getUsers() {
@@ -82,5 +88,13 @@ public class UserController {
     @DeleteMapping("/{userId}/tagGroups/{id}")
     public void deleteTagGroup(@PathVariable Long userId, @PathVariable Long id) {
         tagGroupService.deleteByGroupId(id);
+    }
+    @PostMapping(value = "/{userId}/avatar")
+    public ResponseEntity<?> createOrUpdateUserAvatar(@PathVariable Long userId, @RequestParam("imageFile") MultipartFile avatarFile) throws IOException {
+        return ResponseEntity.ok(imageModelService.updateOrCreateUserAvatar(userId, new ImageModel(avatarFile.getOriginalFilename(), avatarFile.getContentType(), avatarFile.getBytes())));
+    }
+    @GetMapping(value = "/{userId}/avatar")
+    public ImageModel getUserAvatar(@PathVariable Long userId){
+        return  imageModelService.getUserAvatar(userId);
     }
 }

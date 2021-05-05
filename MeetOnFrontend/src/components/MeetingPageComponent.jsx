@@ -145,7 +145,7 @@ export default class MeetingPage extends Component{
     sendEnrollment() {
         let request = {
             user_id: this.state.currentUser.id,
-            meeting_id: this.state.meeting.meetingId
+            meeting_id:     this.state.meeting.meetingId
         };
         console.log(request)
         RequestService.createRequest(request).then(res => {

@@ -54,6 +54,10 @@ public class User {
     @JsonIgnore
     private Set<TagGroup> prefs;
 
+    @OneToOne
+    @JoinColumn(name = "avatar_id", referencedColumnName = "id")
+    private ImageModel avatar;
+
     public User(String username, String password, String email, Boolean isEnabled, String about, String firstName, String secondName, double karma, String status, Set<Role> roles, Set<TagGroup> prefs) {
         this.username = username;
         this.about = about;

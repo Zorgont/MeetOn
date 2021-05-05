@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashSet;
@@ -67,9 +68,9 @@ public class MeetingController {
         return meetingValidator.getFieldsList();
     }
 
-    @GetMapping("/byManager/{name}")
-    public Iterable<MeetingDTO> getMeetingsByManager(@PathVariable String name) {
-        return meetingService.getMeetingsByManager(userService.getUserByName(name)).stream().map(meetingConverter::convertBack).collect(Collectors.toList());
+    @GetMapping("/byManager/{userId}")
+    public Iterable<MeetingDTO> getMeetingsByManager(@PathVariable Long userId) {
+        return meetingService.getMeetingsByManager(userService.getUserById(userId)).stream().map(meetingConverter::convertBack).collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
