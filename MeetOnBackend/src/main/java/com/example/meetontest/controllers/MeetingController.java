@@ -44,18 +44,20 @@ public class MeetingController {
     private MeetingController meetingController;
 
     @GetMapping
-    public Iterable<MeetingDTO> getMeetings(@RequestParam @Nullable List<String> tags, @RequestParam int page ) {
-        return  meetingRecommendationsService.getRecommendations(meetingService.getMeetingsByTags(tags),null, page).get(0)
-                .stream().map(meetingConverter::convertBack).collect(Collectors.toList());
+    public List<MeetingDTO> getMeetings(@RequestParam @Nullable List<String> tags, @RequestParam int page) {
+        return meetingRecommendationsService.getRecommendations(meetingService.getMeetingsByTags(tags), null, page).stream()
+            .flatMap((list) -> list.stream().map(meetingConverter::convertBack)).collect(Collectors.toList());
     }
 
     @GetMapping("/recommended")
-    public Iterable<MeetingDTO> getRecommendedMeetings(@RequestParam @Nullable List<String> tags, @RequestParam int page) {
+    public List<List<MeetingDTO>> getRecommendedMeetings(@RequestParam @Nullable List<String> tags, @RequestParam int page) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUserName = authentication.getName();
 
-        return meetingRecommendationsService.getRecommendations(meetingService.getMeetingsByTags(tags), userService.getUserByName(currentUserName), page).get(0)
-                .stream().map(meetingConverter::convertBack).collect(Collectors.toList());//Ограничения по времени создания
+        return meetingRecommendationsService.getRecommendations(meetingService.getMeetingsByTags(tags), userService.getUserByName(currentUserName), page)
+                .stream().map((list) -> list.stream().map(meetingConverter::convertBack).collect(Collectors.toList())).collect(Collectors.toList());
+
+               //Ограничения по времени создания
     }
 
     @GetMapping("/pagesNumber")

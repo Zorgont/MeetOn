@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function UserMenuComponent() {
+export default function UserMenuComponent(props) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
@@ -66,7 +66,7 @@ export default function UserMenuComponent() {
           aria-controls={open ? 'menu-list-grow' : undefined}
           aria-haspopup="true"
           onClick={handleToggle}>
-          <Avatar/>
+          <Avatar src={props.avatar}/>
         </Button>
         <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
           {({ TransitionProps, placement }) => (

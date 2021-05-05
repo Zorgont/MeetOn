@@ -6,6 +6,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
 import AuthService from "./services/AuthService";
+import ImageService from "./services/ImageService";
 
 import NewLoginComponent from "./components/NewLoginComponent";
 import Register from "./components/RegisterComponent";
@@ -13,7 +14,7 @@ import BoardUser from "./components/BoardUserComponent";
 import BoardModerator from "./components/BoardUserComponent";
 import BoardAdmin from "./components/BoardUserComponent";
 import CreateMeeting from "./components/CreateMeetingComponent";
-import MeetingList from "./components/MeetingListComponent";
+import MeetingList from "./components/MeetingsComponent";
 import MeetingPage from "./components/MeetingPageComponent";
 import UpdateMeeting from "./components/ChangeMeetingComponent";
 import CreateRequest from "./components/CreateRequestComponent";
@@ -35,6 +36,7 @@ class App extends Component {
             showModeratorBoard: false,
             showAdminBoard: false,
             currentUser: undefined,
+            avatar: null
         };
     }
 
@@ -45,8 +47,9 @@ class App extends Component {
             this.setState({
                 currentUser: user,
                 showModeratorBoard: user.roles.includes("ROLE_MODERATOR"),
-                showAdminBoard: user.roles.includes("ROLE_ADMIN"),
+                showAdminBoard: user.roles.includes("ROLE_ADMIN")
             });
+            ImageService.getAvatar(user.id).then(res => this.setState({ avatar: `data:image/${res.data.type};base64,${res.data.pic}` }))
         }
     }
 
@@ -82,7 +85,7 @@ class App extends Component {
                                 <NotificationBar></NotificationBar>
                             </li>
                             <li className="nav-item">
-                                <UserMenuComponent/>
+                                <UserMenuComponent avatar={this.state.avatar}/>
                             </li>
 
                         </div>
