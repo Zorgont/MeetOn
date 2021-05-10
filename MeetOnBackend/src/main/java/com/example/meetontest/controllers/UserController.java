@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*")
@@ -91,10 +92,25 @@ public class UserController {
     }
     @PostMapping(value = "/{userId}/avatar")
     public ResponseEntity<?> createOrUpdateUserAvatar(@PathVariable Long userId, @RequestParam("imageFile") MultipartFile avatarFile) throws IOException {
-        return ResponseEntity.ok(imageModelService.updateOrCreateUserAvatar(userId, new ImageModel(avatarFile.getOriginalFilename(), avatarFile.getContentType(), avatarFile.getBytes())));
+        try {
+            imageModelService.updateOrCreateUserAvatar(userId, new ImageModel(avatarFile.getOriginalFilename(), avatarFile.getContentType(), avatarFile.getBytes()));
+            return ResponseEntity.ok("Uploaded");
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(new MessageResponse("Error while uploading image!"));
+        }
+
     }
     @GetMapping(value = "/{userId}/avatar")
-    public ImageModel getUserAvatar(@PathVariable Long userId){
-        return  imageModelService.getUserAvatar(userId);
+    public ResponseEntity<?> getUserAvatar(@PathVariable Long userId) {
+        try {
+            ImageModel userAvatar = imageModelService.getUserAvatar(userId);
+            return ResponseEntity.ok().contentType(MediaType.valueOf(userAvatar.getType())).contentLength(userAvatar.getPic().length).body(imageModelService.getUserAvatar(userId).getPic());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
+        }
     }
 }

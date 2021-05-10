@@ -3,12 +3,11 @@ import React, {Component} from "react";
 import AuthService from "../services/AuthService";
 import UserService from "../services/UserService";
 import TagGroupService from "../services/TagGroupService";
-import ImageService from "../services/ImageService";
 import Avatar from "@material-ui/core/Avatar";
 import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
-export default class ProfileSettingsComponent extends Component{
+import ImageService from "../services/ImageService";
 
-
+export default class ProfileSettingsComponent extends Component {
     constructor(props) {
         super(props);
 
@@ -22,8 +21,7 @@ export default class ProfileSettingsComponent extends Component{
             isNotifiable: false,
             tagsNotifiable: [],
             errorMsg: null,
-            selectedFile: null,
-            currentAvatar: null
+            selectedFile: null
         };
     }
     updateUser = (event) => {
@@ -71,25 +69,15 @@ export default class ProfileSettingsComponent extends Component{
             selectedFile: file
         })
     }
-    uploadAvatar = () => {
+    uploadAvatar(e) {
+        e.preventDefault();
         console.log(this.state.selectedFile)
         const uploadImageData = new FormData();
         uploadImageData.append('imageFile', this.state.selectedFile, this.state.selectedFile.name);
         console.log(uploadImageData);
         ImageService.uploadAvatar(this.state.currentUser.id, uploadImageData).then((res) => {
-            let retrievedImage = `data:image/${res.data.type};base64,${res.data.pic}`;
-            this.setState({
-                currentAvatar: retrievedImage
-            })
-        })
-
-    }
-    getAvatar = (userId) => {
-        ImageService.getAvatar(userId).then((res) => {
-            let retrievedImage = `data:image/${res.data.type};base64,${res.data.pic}`;
-            this.setState({
-                currentAvatar: retrievedImage
-            })
+            this.setState({currentUser: this.state.currentUser})
+            window.location.reload();
         })
     }
 
@@ -145,7 +133,6 @@ export default class ProfileSettingsComponent extends Component{
                     secondName: user.secondName,
                     about: user.about
                 })
-            this.getAvatar(this.state.currentUser.id);
         })
         TagGroupService.getTagGroups(this.state.currentUser.id).then( res => {
             this.setState({
@@ -167,7 +154,7 @@ export default class ProfileSettingsComponent extends Component{
                             <div className="row">
                                 <div className="col d-flex justify-content-center">
                                     <div style={{position: "relative"}}>
-                                        <Avatar style={{width: "130px", height: "130px"}} src={this.state.currentAvatar}/>
+                                        <Avatar style={{width: "130px", height: "130px"}} src={`https://meetonapi.herokuapp.com/api/v1/users/${this.state.currentUser?.id}/avatar`}/>
                                     </div>
                                 </div>
                             <h4 className="text-center">{this.state.currentUser.username}</h4>
@@ -184,15 +171,15 @@ export default class ProfileSettingsComponent extends Component{
                                     </div>
                                     <div className="form-group row">
                                         <label htmlFor="firstName"> Firstname: </label>
-                                        <input type="text" name="firstName" className="form-control" value={this.state.firstName} onChange={this.changeFirstNameHandler.bind(this)} required />
+                                        <input type="text" name="firstName" className="form-control" value={this.state.firstName} onChange={this.changeFirstNameHandler.bind(this)}  />
                                     </div>
                                     <div className="form-group row">
                                         <label htmlFor="secondName"> Lastname: </label>
-                                        <input type="text" name="secondName" className="form-control" value={this.state.secondName} onChange={this.changeSecondNameHandler.bind(this)} required/>
+                                        <input type="text" name="secondName" className="form-control" value={this.state.secondName} onChange={this.changeSecondNameHandler.bind(this)} />
                                     </div>
                                     <div className="form-group row">
                                         <label htmlFor="about"> About: </label>
-                                        <input type="text"  name="about" className="form-control" value={this.state.about} onChange={this.changeAboutHandler.bind(this)} required />
+                                        <input type="text"  name="about" className="form-control" value={this.state.about} onChange={this.changeAboutHandler.bind(this)}  />
                                     </div>
                                     <div className="form-group row">
                                         <label htmlFor="tags"> Preferred tags: </label>
@@ -232,7 +219,7 @@ export default class ProfileSettingsComponent extends Component{
                                     </div>
                                     <div className="form-group row">
                                         <label htmlFor="isNotifiable"> Is group Notifiable? </label>
-                                        <input type="checkbox" name="isNotifiable" className="form-control-sm" checked={this.state.isNotifiable} onChange={this.changeIsNotifiableHandler.bind(this)} required/>
+                                        <input type="checkbox" name="isNotifiable" className="form-control-sm" checked={this.state.isNotifiable} onChange={this.changeIsNotifiableHandler.bind(this)}/>
                                     </div>
                                     <div className="row">
                                         <button className="btn btn-success" onClick={this.addTagGroup.bind(this,this.state.tags,this.state.isNotifiable)}>Save tag group</button>

@@ -1,14 +1,11 @@
 import axios from 'axios'
 import authHeader from "./AuthHeader";
 
-const IMAGE_API_BASE_URL = "http://localhost:8080/api/v1/users";
+const IMAGE_API_BASE_URL = "https://meetonapi.herokuapp.com/api/v1/users";
 class ImageService {
 
     uploadAvatar(userId, imageFile) {
         return axios.post(IMAGE_API_BASE_URL + '/' + userId + '/avatar', imageFile  , { headers: authHeader() });
-    }
-    getAvatar(userId) {
-        return axios.get(IMAGE_API_BASE_URL + '/' + userId + '/avatar', { headers: authHeader() });
     }
 }
 

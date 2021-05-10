@@ -8,7 +8,6 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import {Pagination} from "@material-ui/lab";
 import MeetingGroupComponent from "./MeetingGroupComponent";
-import ImageService from "../services/ImageService";
 import {List, ListItem, ListItemText} from "@material-ui/core";
 import MeetingCardComponent from "./MeetingCardComponent";
 
@@ -72,18 +71,6 @@ class MeetingList extends Component {
             MeetingService.getMeetingsByTags(this.state.selectedTags, this.state.page).then((res) => {
                 this.setState({meetings: res.data});
                 console.log(this.state.meetings);
-                let meetingsList = this.state.meetings;
-                let uniqUsers = this.state.meetings.map(meeting => meeting.managerId).filter((x, i, a) => a.indexOf(x) === i);
-                let lol = this;
-                uniqUsers.forEach(function(item) {
-                    ImageService.getAvatar(item).then(res => {
-                        meetingsList.filter(meeting => meeting.managerId === item).forEach(function(meeting) {
-                            console.log(res.data)
-                            meeting.managerAvatar = `data:image/${res.data.type};base64,${res.data.pic}`;
-                            lol.setState({meetings: lol.state.meetings})
-                        })
-                    });
-                });
             });
         })
     }
@@ -129,18 +116,6 @@ class MeetingList extends Component {
                 console.log(favouriteCarousel)
                 this.setState({favoriteMeetings: favouriteCarousel});
                 console.log(this.state.favoriteMeetings);
-                let meetingsList = this.state.favoriteMeetings;
-                let uniqUsers = this.state.favoriteMeetings.map(meeting => meeting.managerId).filter((x, i, a) => a.indexOf(x) === i);
-                let lol = this;
-                uniqUsers.forEach(function(item) {
-                    ImageService.getAvatar(item).then(res => {
-                        meetingsList.filter(meeting => meeting.managerId === item).forEach(function(meeting) {
-                            console.log(res.data)
-                            meeting.managerAvatar = `data:image/${res.data.type};base64,${res.data.pic}`;
-                            lol.setState({favoriteMeetings: lol.state.favoriteMeetings})
-                        })
-                    });
-                });
             });
     }
 

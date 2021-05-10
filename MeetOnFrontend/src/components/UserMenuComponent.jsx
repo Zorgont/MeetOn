@@ -66,7 +66,7 @@ export default function UserMenuComponent(props) {
           aria-controls={open ? 'menu-list-grow' : undefined}
           aria-haspopup="true"
           onClick={handleToggle}>
-          <Avatar src={props.avatar}/>
+          <Avatar src={`https://meetonapi.herokuapp.com/api/v1/users/${props.user?.id}/avatar`}/>
         </Button>
         <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
           {({ TransitionProps, placement }) => (

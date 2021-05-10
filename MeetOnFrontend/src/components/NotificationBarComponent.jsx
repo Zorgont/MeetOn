@@ -132,7 +132,7 @@ export default class TemporaryDrawer extends React.Component{
           </Snackbar>
         </div>
           <SockJsClient
-              url={`http://localhost:8080/ws`}
+              url={`https://meetonapi.herokuapp.com/ws`}
               topics={[`/user/${this.state.currentUser.id}/queue/notify`]}
               onMessage={(notification) => this.handleNotification(notification)} />
       </div>

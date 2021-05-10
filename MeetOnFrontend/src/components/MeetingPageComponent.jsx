@@ -86,7 +86,7 @@ export default class MeetingPage extends Component{
             return <div>
                 <CommentsList comments={this.state.comments} onCommentChange={this.addComment.bind(this)}/>
                 <SockJsClient
-                    url={`http://localhost:8080/ws`}
+                    url={`https://meetonapi.herokuapp.com/ws`}
                     topics={[`/meeting/${this.state.meeting.meetingId}/queue/comments`]}
                     onMessage={(comment) => this.handleComment(comment)}
                     ref={ (client) => { this.clientRef = client }}/>

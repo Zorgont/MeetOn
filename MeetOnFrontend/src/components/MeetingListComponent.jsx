@@ -8,7 +8,6 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import {Pagination} from "@material-ui/lab";
 import MeetingGroupComponent from "./MeetingGroupComponent";
-import ImageService from "../services/ImageService";
 
 class MeetingList extends Component {
     constructor(props) {
@@ -71,35 +70,11 @@ class MeetingList extends Component {
             MeetingService.getRecommendedMeetingsByTags(this.state.selectedTags, this.state.page).then((res) => {
                 this.setState({meetings: res.data});
                 console.log(this.state.meetings);
-                let meetingsList = this.state.meetings;
-                let uniqUsers = this.state.meetings.map(meeting => meeting.managerId).filter((x, i, a) => a.indexOf(x) === i);
-                let lol = this;
-                uniqUsers.forEach(function(item) {
-                    ImageService.getAvatar(item).then(res => {
-                        meetingsList.filter(meeting => meeting.managerId === item).forEach(function(meeting) {
-                            console.log(res.data)
-                            meeting.managerAvatar = `data:image/${res.data.type};base64,${res.data.pic}`;
-                            lol.setState({meetings: lol.state.meetings})
-                        })
-                    });
-                });
             });
         else
             MeetingService.getMeetingsByTags(this.state.selectedTags,  this.state.page).then((res) => {
                 this.setState({meetings: res.data});
                 console.log(this.state.meetings);
-                let meetingsList = this.state.meetings;
-                let uniqUsers = this.state.meetings.map(meeting => meeting.managerId).filter((x, i, a) => a.indexOf(x) === i);
-                let lol = this;
-                uniqUsers.forEach(function(item) {
-                    ImageService.getAvatar(item).then(res => {
-                        meetingsList.filter(meeting => meeting.managerId === item).forEach(function(meeting) {
-                            console.log(res.data)
-                            meeting.managerAvatar = `data:image/${res.data.type};base64,${res.data.pic}`;
-                            lol.setState({meetings: lol.state.meetings})
-                        })
-                    });
-                });
             });
 
     }

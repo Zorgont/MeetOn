@@ -1,7 +1,7 @@
 import axios from 'axios'
 import authHeader from "./AuthHeader";
 
-const SCORE_API_BASE_URL = "http://localhost:8080/api/v1/score";
+const SCORE_API_BASE_URL = "https://meetonapi.herokuapp.com/api/v1/score";
 class ScoreService {
     getAggregatedScore(meetingId) {
         return axios.get(SCORE_API_BASE_URL + '/' + meetingId + '/aggregated', { headers: authHeader() });

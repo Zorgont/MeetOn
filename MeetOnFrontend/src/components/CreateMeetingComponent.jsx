@@ -60,7 +60,8 @@ export default class CreateMeeting extends Component{
         })
     }
     initFields = () => {
-        this.state.fields.map( field =>
+        console.log(this.state.fields)
+        this.state.fields?.map( field =>
             this.state.errors[field] = false)
         this.setState({
             errors: this.state.errors

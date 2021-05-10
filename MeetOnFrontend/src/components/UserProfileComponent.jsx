@@ -11,7 +11,6 @@ import Avatar from '@material-ui/core/Avatar';
 import UserService from "../services/UserService";
 import TagGroupService from "../services/TagGroupService";
 import MeetingCardComponent from "./MeetingCardComponent";
-import ImageService from "../services/ImageService";
 
 export default class UserProfileComponent extends Component {
     constructor(props) {
@@ -23,8 +22,7 @@ export default class UserProfileComponent extends Component {
             requests: null,
             notifications: [],
             user: null,
-            tagGroups: null,
-            currentAvatar: null
+            tagGroups: null
         };
     }
 
@@ -34,67 +32,37 @@ export default class UserProfileComponent extends Component {
         console.log(id)
         UserService.getUserById(id).then(res => {
             this.setState({user: res.data})
-            if (this.state.user.avatar) {
-                let retrievedImage = `data:image/${this.state.user.avatar.type};base64,${this.state.user.avatar.pic}`;
-                this.setState({
-                    currentAvatar: retrievedImage
-                })
-                this.updateMeetingsAvatars()
-            }
         });
 
         MeetingService.getMeetingsByManager(id).then((res) => {
             this.setState({ meetings: res.data })
-            this.updateMeetingsAvatars()
+            console.log(res.data)
         });
 
         TagGroupService.getTagGroups(id).then(res => {
             this.setState({tagGroups: res.data})
         });
 
-        if (id === this.state.currentUser.id)
+        if (this.state.currentUser !== null && id === this.state.currentUser.id)
             RequestService.getRequestsByUserId(id).then((res) => {
                 let requests = []
-                let avatars = []
                 for (let index in res.data) {
                     let request = res.data[index];
                     MeetingService.getMeetingById(request.meeting_id).then(res => {
                         let meeting = res.data
                         console.log(meeting)
-                        if (avatars[meeting.managerId]) {
-                            console.log("avatar exists")
-                            meeting.managerAvatar = avatars[meeting.managerId]
-                            requests.push({
-                                request: request,
-                                meeting: meeting
-                            })
-                            this.setState({requests: requests})
-                        } else {
-                            console.log("avatar doesn't exist")
-                            ImageService.getAvatar(meeting.managerId).then(res => {
-                                let retrievedImage = `data:image/${res.data.type};base64,${res.data.pic}`;
-                                avatars[meeting.managerId] = retrievedImage
-                                meeting.managerAvatar = retrievedImage
-                                requests.push({
-                                    request: request,
-                                    meeting: meeting
-                                })
-                                this.setState({requests: requests})
-                            })
-                        }
+                        requests.push({
+                            request: request,
+                            meeting: meeting
+                        })
+                        this.setState({requests: requests})
                     })
                 }
             })
 
-        NotificationService.getNotificationsByUser(this.state.currentUser.id).then((res) => {
+        NotificationService.getNotificationsByUser(this.state.currentUser?.id).then((res) => {
             this.setState({notifications: res.data});
         });
-    }
-    updateMeetingsAvatars() {
-        if((this.state.meetings.length !== 0) && this.state.currentAvatar) {
-            this.state.meetings.forEach(meeting => {meeting.managerAvatar = this.state.currentAvatar})
-            this.setState({meetings:  this.state.meetings});
-        }
     }
 
     componentDidUpdate(prevProps) {
@@ -119,7 +87,7 @@ export default class UserProfileComponent extends Component {
                                 <div className="row">
                                     <div className="col d-flex justify-content-center">
                                         <div style={{position: "relative"}}>
-                                            <Avatar style={{width: "130px", height: "130px"}} src={this.state.currentAvatar}/>
+                                            <Avatar style={{width: "130px", height: "130px"}} src={`https://meetonapi.herokuapp.com/api/v1/users/${this.state.user?.id}/avatar`}/>
                                             {user?.id === this.state.currentUser?.id && <div onClick={this.editProfileClicked.bind(this)} style={{position: "absolute", right: "12px", width: "30px", height: "30px", bottom: "-5px", backgroundColor: "white", borderRadius: "50px", cursor: "pointer"}} className="gradient-gray-border">
                                                 <EditOutlinedIcon style={{margin: "0 0 0 3px"}} />
                                             </div>}
@@ -146,7 +114,7 @@ export default class UserProfileComponent extends Component {
                                     </div>
                                     <div className="col text-right">
                                         <p>{user?.username}</p>
-                                        <p>{user?.karma}</p>
+                                        <p>{Math.round(parseFloat(user?.karma))}</p>
                                     </div>
                                 </div>
                             </div>

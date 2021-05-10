@@ -35,7 +35,7 @@ public class EmailServiceImpl implements EmailService {
         helper.setTo(user.getEmail());
         helper.setSubject("Complete Registration!");
         helper.setFrom("noreply@meeton.com");
-        message.setText("<p>To confirm your account, please click here</p><br><a href='http://localhost:3030/confirm?token=" + confirmationToken + "'>Click here!</a>","UTF-8", "html");
+        message.setText("<p>To confirm your account, please click here</p><br><a href='https://meeton-web.herokuapp.com/confirm?token=" + confirmationToken + "'>Click here!</a>","UTF-8", "html");
         emailSender.send(message);
     }
 }
