@@ -55,6 +55,7 @@ public class User {
     private Set<TagGroup> prefs;
 
     @OneToOne
+    @JsonIgnore
     @JoinColumn(name = "avatar_id", referencedColumnName = "id")
     private ImageModel avatar;
 

@@ -11,6 +11,7 @@ import com.example.meetontest.services.TagGroupService;
 import com.example.meetontest.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.codec.binary.Base64;
+import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*")
@@ -106,7 +108,7 @@ public class UserController {
     public ResponseEntity<?> getUserAvatar(@PathVariable Long userId) {
         try {
             ImageModel userAvatar = imageModelService.getUserAvatar(userId);
-            return ResponseEntity.ok().contentType(MediaType.valueOf(userAvatar.getType())).contentLength(userAvatar.getPic().length).body(imageModelService.getUserAvatar(userId).getPic());
+            return ResponseEntity.ok().cacheControl(CacheControl.maxAge(10, TimeUnit.MINUTES)).contentType(MediaType.valueOf(userAvatar.getType())).contentLength(userAvatar.getPic().length).body(imageModelService.getUserAvatar(userId).getPic());
         }
         catch (Exception e) {
             e.printStackTrace();
