@@ -130,18 +130,20 @@ class MeetingList extends Component {
     render() {
         return (
             <div className="container">
-                <div className="row">
-                    <div className="col">
-                        <h2 className="text-center">Favorite meetings</h2>
+                {(this.state.currentUser) && <div>
+                    <div className="row">
+                        <div className="col">
+                            <h2 className="text-center">Favorite meetings</h2>
+                        </div>
                     </div>
-                </div>
-                <div className="row">
-                    <div className="col"/>
-                    <div className="col">
-                        <MeetingGroupComponent meetings={this.state.favoriteMeetings}/>
+                    <div className="row">
+                        <div className="col"/>
+                        <div className="col">
+                            <MeetingGroupComponent meetings={this.state.favoriteMeetings}/>
+                        </div>
+                        <div className="col"/>
                     </div>
-                    <div className="col"/>
-                </div>
+                </div>}
                 <div className="row mt-4">
                     <div className="col-2">
                         <List className="shadow-container">

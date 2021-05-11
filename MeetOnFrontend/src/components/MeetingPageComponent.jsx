@@ -168,6 +168,16 @@ export default class MeetingPage extends Component{
                     </div>
         }
     }
+     buttonRequests() {
+        if((this.state.meeting.managerId === AuthService.getCurrentUser()?.id) && (this.state.meeting.status!=="FINISHED")){
+            return <div>
+                <Link to={`/meetings/${this.props.match.params.id}/requests`}>
+                    <button className="btn btn-primary">Requests</button>
+                </Link>
+            </div>
+        }
+     }
+
 
     platformList() {
         if (this.state.request?.status === "APPROVED") {
@@ -201,7 +211,7 @@ export default class MeetingPage extends Component{
 
     meetingRating = () => {
         console.log(this.state.currentUser);
-        if(!(this.state.meeting.managerId === this.state.currentUser?.id )) {
+        if(!(this.state.meeting.managerId === this.state.currentUser?.id ) && (this.state.meeting.status === "FINISHED") && (this.state.request?.status === "APPROVED" )) {
             return <MeetingRating onRatingChange={this.handleRatingChange.bind(this)} rating={this.state.userRating}/>
         }
 
@@ -216,9 +226,12 @@ export default class MeetingPage extends Component{
                             <div className="card-body">
                                 <div className="row">
                                     <h2>{this.state.meeting.name}</h2>
+                                    {(this.state.meeting.status === "FINISHED") &&
                                     <Box component="fieldset" mb={3} borderColor="transparent">
-                                        <Rating name="read-only" size="large" value={this.state.currentRating} precision={0.1} readOnly />
+                                        <Rating name="read-only" size="large" value={this.state.currentRating}
+                                                precision={0.1} readOnly/>
                                     </Box>
+                                    }
                                 </div>
                                 {this.meetingRating()}
                                 <div className="row">
@@ -260,6 +273,7 @@ export default class MeetingPage extends Component{
                                     {this.buttonUpdate()}
                                     {this.buttonDelete()}
                                     {this.buttonEnroll()}
+                                    {this.buttonRequests()}
                                 </div>
                                 {this.commentsList()}
                             </div>
