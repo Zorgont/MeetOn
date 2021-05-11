@@ -1,12 +1,10 @@
 import React, { Component } from "react";
-import { Link } from 'react-router-dom';
 import Chip from '@material-ui/core/Chip';
 import MailOutlineIcon from '@material-ui/icons/MailOutline';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import AuthService from "../services/AuthService";
 import MeetingService from "../services/MeetingService";
 import RequestService from "../services/RequestService";
-import NotificationService from "../services/NotificationService";
 import Avatar from '@material-ui/core/Avatar';
 import UserService from "../services/UserService";
 import TagGroupService from "../services/TagGroupService";
@@ -48,6 +46,8 @@ export default class UserProfileComponent extends Component {
                 let requests = []
                 for (let index in res.data) {
                     let request = res.data[index];
+                    if (request.role === "MANAGER")
+                        continue;
                     MeetingService.getMeetingById(request.meeting_id).then(res => {
                         let meeting = res.data
                         console.log(meeting)
@@ -59,10 +59,6 @@ export default class UserProfileComponent extends Component {
                     })
                 }
             })
-
-        NotificationService.getNotificationsByUser(this.state.currentUser?.id).then((res) => {
-            this.setState({notifications: res.data});
-        });
     }
 
     componentDidUpdate(prevProps) {
@@ -78,6 +74,7 @@ export default class UserProfileComponent extends Component {
         const { classes } = this.props;
         const { user, tagGroups, meetings, requests } = this.state;
         console.log(requests)
+        console.log(user?.id)
         return (
             <div className="container">
                 <div className="row mt-5">
@@ -87,7 +84,7 @@ export default class UserProfileComponent extends Component {
                                 <div className="row">
                                     <div className="col d-flex justify-content-center">
                                         <div style={{position: "relative"}}>
-                                            <Avatar style={{width: "130px", height: "130px"}} src={`https://meetonapi.herokuapp.com/api/v1/users/${this.state.user?.id}/avatar`}/>
+                                            <Avatar style={{width: "130px", height: "130px"}} src={this.state.user !== null ? `https://meetonapi.herokuapp.com/api/v1/users/${this.state.user?.id}/avatar` : ""}/>
                                             {user?.id === this.state.currentUser?.id && <div onClick={this.editProfileClicked.bind(this)} style={{position: "absolute", right: "12px", width: "30px", height: "30px", bottom: "-5px", backgroundColor: "white", borderRadius: "50px", cursor: "pointer"}} className="gradient-gray-border">
                                                 <EditOutlinedIcon style={{margin: "0 0 0 3px"}} />
                                             </div>}
