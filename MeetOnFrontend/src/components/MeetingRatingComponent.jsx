@@ -35,7 +35,7 @@ export default function MeetingRating(props) {
     return (
         <div>
             <Button aria-describedby={id} variant="contained" color="primary" onClick={handleClick}>
-                Estimate meeting
+                Rate
             </Button>
             <Popover
                 id={id}
@@ -52,7 +52,7 @@ export default function MeetingRating(props) {
                 }}
             >
                 <Box component="fieldset" mb={3} borderColor="transparent">
-                    <Typography component="legend">Controlled</Typography>
+                    <Typography component="legend">Your score</Typography>
                     <Rating
                         name="simple-controlled"
                         value={value}

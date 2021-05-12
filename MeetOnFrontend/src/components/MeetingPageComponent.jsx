@@ -12,8 +12,14 @@ import MeetingRating from "./MeetingRatingComponent";
 import ScoreService from "../services/ScoreService";
 import {Box} from "@material-ui/core";
 import {Rating} from "@material-ui/lab";
+import Badge from '@material-ui/core/Badge';
+import Typography from '@material-ui/core/Typography';
+import Chip from '@material-ui/core/Chip';
+import DoneOutlinedIcon from '@material-ui/icons/DoneOutlined';
+import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined';
+import Avatar from '@material-ui/core/Avatar';
 
-export default class MeetingPage extends Component{
+export default class NewMeetingPage extends Component{
     constructor(props) {
         super(props);
 
@@ -25,7 +31,10 @@ export default class MeetingPage extends Component{
             requestsAmount: 0,
             platforms: [],
             currentRating: 0,
-            userRating: 0
+            currentRatingCount: 0,
+            userRating: 0, 
+            loaded: false,
+            participants: []
         };
     }
 
@@ -34,7 +43,8 @@ export default class MeetingPage extends Component{
             this.setState({ meeting: res.data});
 
             CommentService.getCommentsByMeetingId(this.state.meeting.meetingId).then((res) => {
-                this.setState({ comments: res.data});
+                this.setState({ comments: res.data.reverse()});
+                console.log(this.state.comments)
             });
 
             RequestService.getAprovedRequestsAmount(this.state.meeting.meetingId).then((res) => {
@@ -42,8 +52,13 @@ export default class MeetingPage extends Component{
             });
 
             RequestService.getRequestByMeetingAndUser(this.state.meeting.meetingId, this.state.currentUser?.id).then((res) => {
-                this.setState({ request: res.data});
+                this.setState({ request: res.data, loaded: true});
                 console.log(this.state.request)
+            });
+
+            RequestService.getRequestsByMeetingId(this.state.meeting.meetingId).then((res) => {
+                this.setState({ participants: res.data.filter(request => request.status === "APPROVED" && request.role !== "MANAGER")});
+                console.log(this.state.participants)
             });
 
             PlatformService.getAllPlatforms().then(res => {
@@ -59,10 +74,9 @@ export default class MeetingPage extends Component{
 
             this.updateMeetingRating();
             ScoreService.getUserScore(this.state.meeting.meetingId, this.state.currentUser?.id).then( (res) => {
-
-                    this.setState({
-                        userRating: res.data.score ? res.data.score : 0
-                    })
+                this.setState({
+                    userRating: res.data.score ? res.data.score : 0
+                })
                 console.log(this.state.userRating)
                 }
             )
@@ -75,7 +89,8 @@ export default class MeetingPage extends Component{
     updateMeetingRating = () => {
         ScoreService.getAggregatedScore(this.state.meeting.meetingId).then( (res) => {
                 this.setState({
-                    currentRating: res.data.score ? res.data.score : 0
+                    currentRating: res.data.score ? res.data.score : 0,
+                    currentRatingCount: res.data.count ? res.data.count : 0
                 })
             }
         )
@@ -107,7 +122,8 @@ export default class MeetingPage extends Component{
 
     handleComment(comment){
         console.log(comment)
-        this.state.comments.push(comment)
+        console.log(comment.date)
+        this.state.comments.unshift(comment)
         this.setState({
             comments: this.state.comments
         })
@@ -121,18 +137,16 @@ export default class MeetingPage extends Component{
 
     buttonDelete() {
         if ((this.state.meeting.managerId === AuthService.getCurrentUser()?.id)&&(this.state.meeting.status!=="FINISHED"))
-            return  <div>
-                        <button className="btn btn-danger" style={{marginLeft:"5px"}} onClick={this.deleteMeeting.bind(this)}>Delete</button>
-                    </div>
+            return  <button className="btn btn-danger" style={{marginLeft:"5px"}} onClick={this.deleteMeeting.bind(this)}>Delete</button>
+                    
     }
 
     buttonUpdate() {
         if ((this.state.meeting.managerId === AuthService.getCurrentUser()?.id)&&(this.state.meeting.status!=="FINISHED"))
-            return <div>
-                        <Link to={`/update/${this.props.match.params.id}`}>
-                            <button className="btn btn-primary">Update</button>
-                        </Link>
-                    </div>
+            return <Link to={`/update/${this.props.match.params.id}`}>
+                        <button className="btn btn-primary">Update</button>
+                    </Link>
+                    
     }
 
     handleEnroll() {
@@ -156,25 +170,20 @@ export default class MeetingPage extends Component{
     buttonEnroll() {
         if (AuthService.getCurrentUser()&&(this.state.meeting.managerId !== AuthService.getCurrentUser()?.id)&&(this.state.meeting.status!=="FINISHED")){
             if(this.state.request)
-                return  <div>
-                            <p>You have already enrolled to the meeting!</p>
-                            <p>Status: {this.state.request.status}</p>
-                        </div>
+                return  ;
             if(this.state.meeting.isParticipantAmountRestricted && this.state.requestsAmount >= this.state.meeting.participantAmount)
                 return <div><p>No available places!</p></div>
 
-            return  <div>
-                            <button className="btn btn-primary" style={{marginLeft:"5px"}} onClick={this.handleEnroll.bind(this)}>Enroll</button>
-                    </div>
+            if (this.state.loaded)
+            return  <button className="btn btn-primary" style={{marginLeft:"5px"}} onClick={this.handleEnroll.bind(this)}>Enroll</button>
+                   
         }
     }
      buttonRequests() {
         if((this.state.meeting.managerId === AuthService.getCurrentUser()?.id) && (this.state.meeting.status!=="FINISHED")){
-            return <div>
-                <Link to={`/meetings/${this.props.match.params.id}/requests`}>
-                    <button className="btn btn-primary">Requests</button>
+            return <Link to={`/meetings/${this.props.match.params.id}/requests`}>
+                    <button className="btn btn-primary" style={{marginLeft:"5px"}}>Requests</button>
                 </Link>
-            </div>
         }
      }
 
@@ -218,69 +227,188 @@ export default class MeetingPage extends Component{
     }
 
     render() {
+        const { meeting, request, participants, currentRating, currentRatingCount } = this.state;
+        console.log(meeting.date)
+        let date = meeting.date !== undefined ? new Date(Date.parse(meeting.date + ':00+0000')).toUTCString().split(',')[1].split(' GMT')[0].slice(0, -3) : null
+        let endDate = meeting.endDate !== undefined ? new Date(Date.parse(meeting.endDate + ':00+0000')).toUTCString().split(',')[1].split(' GMT')[0].slice(0, -3) : null
         return (
-            <div>
                 <div className="container">
                     <div className="row">
-                        <div className="card col-md-8 offset-md-2 offset-md-2">
-                            <div className="card-body">
-                                <div className="row">
-                                    <h2>{this.state.meeting.name}</h2>
-                                    {(this.state.meeting.status === "FINISHED") &&
-                                    <Box component="fieldset" mb={3} borderColor="transparent">
-                                        <Rating name="read-only" size="large" value={this.state.currentRating}
-                                                precision={0.1} readOnly/>
-                                    </Box>
+                        <div className="col shadow-container">
+                            <div className="row">
+                                <div className="col text-center mt-4">
+                                    {meeting !== null && meeting.isPrivate ?
+                                        <Badge color="error" badgeContent="Private">
+                                            <Typography><h1>{meeting.name}</h1></Typography>
+                                        </Badge>
+                                        : 
+                                        <Badge color="primary" badgeContent="Public">
+                                            <Typography><h1>{meeting.name}</h1></Typography>
+                                        </Badge>
                                     }
                                 </div>
-                                {this.meetingRating()}
-                                <div className="row">
-                                    <p>About meeting:</p>
-                                    <p>{this.state.meeting.about}</p>
+                            </div>
+                            {(meeting.status === "FINISHED") &&
+                            <div className="row">
+                                <div className="col-2 offset-5 text-center">
+                                    <Box component="fieldset" mb={3} borderColor="transparent">
+                                        <Rating name="read-only" size="large" value={currentRating}
+                                                precision={0.1} readOnly/>
+                                    </Box>
                                 </div>
-                                <div className="row">
-                                    <p> Beginning Date: </p>
-                                    <p> {this.state.meeting.date} </p>
+                                <div className="col-1">
+                                    {currentRating.toFixed(1)} ({currentRatingCount})
                                 </div>
-                                <div className="row">
-                                    <p> End Date: </p>
-                                    <p> {this.state.meeting.endDate} </p>
+                                <div className="col">
+                                    {this.meetingRating()}
                                 </div>
-                                <div className="row">
-                                    <p> Participant amount: {this.state.meeting.participantAmount}</p>
+                            </div>
+                            }
+                            <div className="row">
+                                <div className="col-4">
+                                    <div className="row">
+                                        <div className="col offset-2">
+                                            <p>About meeting</p>
+                                            <p>{meeting.about}</p>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className="row">
-                                    <p> Participant amount restricted? {this.state.meeting.isParticipantAmountRestricted? "true" : "false"}</p>
+                                <div className="col-4 offset-2">
+                                    <div className="row">
+                                        <div className="col">
+                                            <p>Beginning date</p>
+                                            <p>{date}</p>
+                                        </div>
+                                        <div className="col">
+                                            <p>End date</p>
+                                            <p>{endDate}</p>
+                                        </div>
+                                    </div>
+                                    <div className="row mt-2">
+                                        <div className="col">
+                                            <p>Manager</p>
+                                        </div>
+                                    </div>
+                                    <Link to={`/users/${meeting.managerId}`} style={{textDecoration: "none", color: "black"}}>
+                                        <div className="row">
+                                            <div className="col-2"><Avatar src={`https://meetonapi.herokuapp.com/api/v1/users/${meeting.managerId}/avatar`}/></div>
+                                            <div className="col-9 mt-2" style={{marginLeft: "5px"}}>
+                                                <div>
+                                                    <p>{meeting.managerUsername}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </Link>
                                 </div>
-                                <div className="row">
-                                    <p> Is private?: {this.state.meeting.isPrivate? "true" : "false"} </p>
-                                </div>
-                                <div className="row">
-                                    <p> Details: </p>
-                                    <p>{this.state.meeting.details}</p>
-                                </div>
-                                <div className="row">
+                            </div>
+                            <div className="row mt-1">
+                                <div className="col text-center">
                                 {
-                                    this.state.meeting?.tags?.map(
-                                        tag =>
-                                            <div style={{marginRight: "10px", marginBottom: "10px",background: "#ddd", padding: 3, borderRadius: "10px"}}> {tag} </div>
+                                    meeting?.tags?.map(tag => 
+                                        <Chip style={{backgroundColor: "#636363", color: "#fff"}} className="mt-1 ml-1 mr-1" label={tag}/>
                                     )
-                                }
-                                </div>
-                                {this.platformList()}
-
-                                <div className="row"> 
+                                }</div>
+                            </div> 
+                            <div className="row">
+                                <div className="col text-center mt-2">
                                     {this.buttonUpdate()}
                                     {this.buttonDelete()}
-                                    {this.buttonEnroll()}
                                     {this.buttonRequests()}
+                                    {this.buttonEnroll()}
                                 </div>
-                                {this.commentsList()}
+                            </div>
+                            
+                            <div className="row">
+                                <div className="col-4">
+                                    <div className="row">
+                                        <div className="col offset-2 mb-2">
+                                        {request?.status === "APPROVED" &&
+                                        this.state.meeting.meetingPlatforms?.map(
+                                            platform =>  <div className="row mt-1">
+                                                <div className="col">
+                                                    {/* <div style={{backgroundColor: "#ccc", width: "50px", height: "50px", borderRadius: "5px", display: "inline-block"}}>
+                                                    <img style={{marginLeft: "5px", marginTop: "5px", height: "40px", width: "40px"}} src="https://e7.pngegg.com/pngimages/364/717/png-clipart-zoom-video-communications-apptrailers-mobile-phones-android-blue-cloud-computing.png"/>
+                                                    </div> */}
+                                                    <a className="platform-link" href={platform.address}>{platform.name}</a>
+                                                </div>
+                                                </div>
+                                        )
+                                    }
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="col offset-2 mt-4 mb-2">
+                                    {(AuthService.getCurrentUser()&&(this.state.meeting.managerId !== AuthService.getCurrentUser()?.id) && request) &&
+                                        <div className="row">
+                                            <div className="col">
+                                                <span style={{marginRight: "10px"}}>Request status</span>
+                                                {request.status === "APPROVED" &&
+                                                <Chip icon={<DoneOutlinedIcon style={{color: "#569E68"}}/>} style={{backgroundColor: "#C1E6CD", color: "#569E68"}} label="Approved"/>
+                                            }
+                                            {request.status === "PENDING" &&
+                                                <Chip style={{backgroundColor: "#F9DDAB", color: "#111"}} label="Under consideration"/>
+                                            }
+                                            {request.status === "CANCELED" &&
+                                                <Chip icon={<CloseOutlinedIcon style={{color: "#fff"}}/>} style={{backgroundColor: "#D36347", color: "#fff"}} label="Rejected"/>
+                                            }
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="row">
+                        {/* comments */}{(this.state.meeting.status === "FINISHED" || this.state.meeting.status === "IN_PROGRESS") &&
+                        <div className="col-9 shadow-container mt-2 mb-4">
+                            <div className="row">
+                                
+                                <div className="col">
+                                    <div className="row">
+                                        <div className="col text-center mt-2">
+                                            <h2>Comments</h2>
+                                        </div>
+                                    </div>
+                                    <div className="row">
+                                        <div className="col mb-2">
+                                            {this.commentsList()}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                                
+                        </div>}
+                        {/* participants */}
+                        <div className="col shadow-container mt-2 mb-4">
+                            <div className="row">
+                                <div className="col">
+                                <div className="row">
+                                    <div className="col text-center mt-2">
+                                        <h2>Participants</h2>
+                                    </div>
+                                    </div>
+                                    <div className="row">
+                                        <div className="col mb-2">
+                                            {participants?.map(participant => 
+                                                <Link to={`/users/${participant.user_id}`} style={{textDecoration: "none", color: "black"}}>
+                                                <div className="row">
+                                                    <div className="col-2"><Avatar src={`https://meetonapi.herokuapp.com/api/v1/users/${participant.user_id}/avatar`}/></div>
+                                                    <div className="col-9 mt-2" style={{marginLeft: "5px"}}>
+                                                        <div>
+                                                            <p>{participant.username}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </Link>
+                                            )
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
         );
     }
 }

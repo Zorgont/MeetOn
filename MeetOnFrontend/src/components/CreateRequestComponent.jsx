@@ -10,7 +10,8 @@ export default class CreateMeeting extends Component{
         this.state = {
             currentUserId: AuthService.getCurrentUser().id,
             about: "",
-            meeting: null
+            meeting: null,
+            loaded: false
         };  
         
     }
@@ -20,11 +21,14 @@ export default class CreateMeeting extends Component{
     }
     componentDidMount(){
         MeetingService.getMeetingById(this.props.match.params.id).then(res => {
-            this.setState({meeting: res.data});
+            this.setState({meeting: res.data, loaded: true});
         });
     }
 
     sendEnrollment() {
+        if (!this.state.loaded)
+            return;
+
         let request = {
             user_id: this.state.currentUserId,
             about: this.state.about,

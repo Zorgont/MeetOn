@@ -167,3 +167,19 @@ label {
   font-size: 20px;
   
 }
+
+.platform-link {
+  font-family: "Raleway";
+  font-style: normal;
+  font-weight: 300;
+  font-size: 24px;
+  line-height: 28px;
+  text-align: center;
+  text-decoration: none;
+  color: #23170D;
+  z-index: 100;
+}
+
+.platform-link:hover {
+  text-decoration: none;
+}
