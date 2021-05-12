@@ -17,7 +17,7 @@ import java.util.Date;
 public class CommentConverter implements Converter<Comment, CommentDTO> {
     private final UserService userService;
     private final MeetingService meetingService;
-    private final DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+    private final DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     @Override
     public Comment convert(CommentDTO entity) throws ParseException {
@@ -33,6 +33,6 @@ public class CommentConverter implements Converter<Comment, CommentDTO> {
     @Override
     public CommentDTO convertBack(Comment entity) {
         return new CommentDTO(entity.getComment_id(), entity.getMeeting().getId(), entity.getMeeting().getName(), entity.getUser().getId(),
-                entity.getUser().getUsername(), entity.getContent(), entity.getDate().toString());
+                entity.getUser().getUsername(), entity.getContent(), df.format(entity.getDate()));
     }
 }
