@@ -1,7 +1,7 @@
 import axios from 'axios'
 import authHeader from "./AuthHeader";
 
-const REQUEST_API_BASE_URL = "https://meetonapi.herokuapp.com/api/v1/comments";
+const REQUEST_API_BASE_URL = "http://localhost:8080/api/v1/comments";
 
 class CommentService{
     createComment(comment) {

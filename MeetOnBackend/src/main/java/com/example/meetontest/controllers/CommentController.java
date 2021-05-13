@@ -48,6 +48,7 @@ public class CommentController {
 
     }
 
+
     @GetMapping("/byUser/{id}")
     public List<CommentDTO> getCommentsByUserId(@PathVariable Long id) {
         return commentService.getByUser(userService.getUserById(id)).stream().

@@ -111,7 +111,7 @@ public class UserController {
             return ResponseEntity.ok().cacheControl(CacheControl.maxAge(10, TimeUnit.MINUTES)).contentType(MediaType.valueOf(userAvatar.getType())).contentLength(userAvatar.getPic().length).body(imageModelService.getUserAvatar(userId).getPic());
         }
         catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Cannot get avatar for user " + userId);
             return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
         }
     }

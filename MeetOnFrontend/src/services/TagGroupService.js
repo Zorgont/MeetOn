@@ -1,7 +1,7 @@
 import axios from 'axios'
 import authHeader from "./AuthHeader";
 
-const TAGS_API_BASE_URL = "https://meetonapi.herokuapp.com/api/v1/users";
+const TAGS_API_BASE_URL = "http://localhost:8080/api/v1/users";
 class TagGroupService {
     getTagGroups(userId) {
         return axios.get(TAGS_API_BASE_URL + '/' + userId + '/tagGroups' , { headers: authHeader() });

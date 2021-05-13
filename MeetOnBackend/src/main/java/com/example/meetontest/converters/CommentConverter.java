@@ -33,6 +33,6 @@ public class CommentConverter implements Converter<Comment, CommentDTO> {
     @Override
     public CommentDTO convertBack(Comment entity) {
         return new CommentDTO(entity.getComment_id(), entity.getMeeting().getId(), entity.getMeeting().getName(), entity.getUser().getId(),
-                entity.getUser().getUsername(), entity.getContent(), df.format(entity.getDate()));
+                entity.getUser().getUsername(), entity.getContent(),df.format(entity.getDate()));
     }
 }
