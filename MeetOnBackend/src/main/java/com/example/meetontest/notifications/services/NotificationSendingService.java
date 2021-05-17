@@ -26,7 +26,7 @@ public class NotificationSendingService {
     @Qualifier("notificationMultipleEventMap")
     Map<String, AbstractMultipleEvent> notificationMultipleEventMap;
 
-    @Scheduled(fixedRate = 10000)
+    @Scheduled(fixedDelay = 10000)
     public void checkEvents() {
         eventStoringService.getUnhandledEventsByTypes(notificationSingleEventMap.keySet()).forEach(notificationEvent -> {
             try {
@@ -38,7 +38,7 @@ public class NotificationSendingService {
     }
 
     // once per 1 min.
-    @Scheduled(fixedRate = 60000)
+    @Scheduled(fixedDelay = 60000)
     public void checkUnsentRequestCreatedEvents() {
         eventStoringService.getUnhandledEventsByTypes(notificationMultipleEventMap.keySet()).stream()
             .collect(Collectors.groupingBy(EventEntity::getType)).forEach((eventType, events) -> {

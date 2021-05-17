@@ -63,7 +63,7 @@ class MeetingList extends Component {
     }
 
     getListByTags() {
-        MeetingService.getPagesNumberByTags().then((res) => {
+        MeetingService.getPagesNumberByTags(this.state.selectedTags).then((res) => {
             this.setState({
                 pagesNumber: res.data
             })
@@ -78,10 +78,13 @@ class MeetingList extends Component {
     getRecommendations(){
         if(this.state.currentUser)
             MeetingService.getRecommendedMeetingsByTags(null, this.state.page).then((res) => {
+                console.log(res.data)
                 let favouriteCarousel = []
                 for(var index = 0; index < res.data[0].length; index++) {
                     for (let i in res.data) {
                         let list = res.data[i]
+                        if (list[index] === null || list[index] === undefined)
+                            continue
                         if(favouriteCarousel.filter(meeting => meeting.meetingId === list[index].meetingId).length === 0) {
                             favouriteCarousel.push(list[index])
                         }
@@ -130,7 +133,7 @@ class MeetingList extends Component {
     render() {
         return (
             <div className="container">
-                {(this.state.currentUser) && <div>
+                {(this.state.currentUser && this.state.favoriteMeetings?.length > 0) && <div>
                     <div className="row">
                         <div className="col">
                             <h2 className="text-center">Favorite meetings</h2>

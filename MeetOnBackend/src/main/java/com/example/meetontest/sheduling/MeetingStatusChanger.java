@@ -21,7 +21,7 @@ public class MeetingStatusChanger {
     private final MeetingService meetingService;
     private final MeetingPlatformsService meetingPlatformsService;
 
-    @Scheduled(fixedRate = 60000)
+    @Scheduled(fixedDelay = 60000)
     public void changeStatus() {
         meetingService.getMeetingsByTags(null).forEach(meeting -> {
             if (new Date().after(meeting.getDate()) && (meeting.getStatus() == MeetingStatus.PLANNING)) {

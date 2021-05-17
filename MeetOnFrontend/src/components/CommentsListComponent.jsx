@@ -1,11 +1,13 @@
 import React, {Component} from "react";
 import Avatar from '@material-ui/core/Avatar';
 import { Link } from 'react-router-dom';
+import AuthService from "../services/AuthService";
 
 export default class CommentsList extends Component{
     constructor(props) {
         super(props);
         this.state={
+            currentUser: AuthService.getCurrentUser(),
             content:""
         }
     }
@@ -23,17 +25,21 @@ export default class CommentsList extends Component{
     render(){
         return (
             <div className="container">
+                {this.state.currentUser &&
                 <div className="row">
                     <div className="col">
                         <label htmlFor="add_comment"> Add comment </label>
                         <input type="text"  name="add_comment" className="form-control" value={this.state.content} onChange={this.ChangeContent.bind(this)} />
                     </div>
                 </div>
+                }
+                {this.state.currentUser &&
                 <div className="row mt-1">
                     <div className="col">
                         <button className="btn btn-success" onClick={this.SaveComment.bind(this,this.state.content)}>Post</button>
                     </div>
                 </div>
+                }
                 {!this.props.comments.isEmpty?this.props.comments.map(
                 comment =>
                     <div className="container mt-4" style={{border: "1px solid #ddd", borderRadius: "10px"}}>

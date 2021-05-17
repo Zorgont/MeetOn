@@ -23,10 +23,12 @@ public class Meeting {
     private String name;
     private Date date;
     private Date endDate;
+    @Column(length = 1000)
     private String about;
     private Boolean isParticipantAmountRestricted;
     private int participantAmount;
     private Boolean isPrivate;
+    @Column(length = 1000)
     private String details;
 
     @Enumerated(EnumType.STRING)

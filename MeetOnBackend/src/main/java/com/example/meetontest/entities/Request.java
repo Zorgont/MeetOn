@@ -25,6 +25,7 @@ public class Request {
     @NonNull
     private User user;
 
+    @Column(length = 1000)
     private String about;
 
     @Enumerated(EnumType.STRING)

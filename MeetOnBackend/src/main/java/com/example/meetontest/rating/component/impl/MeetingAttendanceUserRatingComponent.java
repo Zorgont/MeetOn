@@ -2,12 +2,17 @@ package com.example.meetontest.rating.component.impl;
 
 import com.example.meetontest.entities.MeetingRole;
 import com.example.meetontest.entities.RatingWeightType;
+import com.example.meetontest.entities.Request;
 import com.example.meetontest.entities.User;
 import com.example.meetontest.rating.component.UserRatingComponent;
 import com.example.meetontest.services.MeetingService;
 import com.example.meetontest.services.RatingWeightService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -19,7 +24,7 @@ public class MeetingAttendanceUserRatingComponent implements UserRatingComponent
     public double getUserRating(User user) {
         try {
             double result = meetingService.getMeetingsByManager(user).stream()
-                    .flatMap(meeting -> meeting.getRequests().stream())
+                    .flatMap(meeting -> meeting.getRequests().stream()).distinct()
                     .filter(request -> request.getRole().equals(MeetingRole.PARTICIPANT))
                     .count() * weightService.getValueByType(RatingWeightType.MEETING_ATTENDANCE);
 

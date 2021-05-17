@@ -38,11 +38,6 @@ class MeetontestApplicationTests {
     }
     @Test
     void getBytesFromImage() throws IOException {
-        File file = new File("C:\\Users\\kiril\\OneDrive\\java_final_new\\MeetOn\\MeetOnBackend\\image\\Alone_Ranger.jpg");
-        byte[] byteFile = new byte[(int) file.length()];
-        new FileInputStream(file).read(byteFile);
-
-        String base64String = Base64.encodeBase64String(byteFile);
     }
     @Test
     void saveImageFromDb() throws IOException {

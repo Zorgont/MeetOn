@@ -68,10 +68,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         }
 
         if (tagRepository.count() == 0) {
-            tagRepository.save(new Tag("Образование"));
-            tagRepository.save(new Tag("Программирование"));
+            tagRepository.save(new Tag("Education"));
+            tagRepository.save(new Tag("Programming"));
             tagRepository.save(new Tag("Java"));
             tagRepository.save(new Tag("Spring"));
+            tagRepository.save(new Tag("Database"));
+            tagRepository.save(new Tag("Cooking"));
+            tagRepository.save(new Tag("Italian food"));
+            tagRepository.save(new Tag("Investing"));
+            tagRepository.save(new Tag("Money"));
+            tagRepository.save(new Tag("Music"));
+            tagRepository.save(new Tag("Guitar"));
         }
 
         if (platformService.getAll().size() == 0) {

@@ -30,12 +30,12 @@ public class MeetingRecommendationsServiceImpl implements MeetingRecommendations
         List<List<Meeting>> list = new ArrayList<>();
         List<TagGroup> tagGroups = target != null ? tagGroupService.getByUser(target) : null;
         if(tagGroups == null || tagGroups.isEmpty()) {
-             list.add(getRecommendationsByRating(meetings).stream().limit(10L * (page)).skip(10L * (page - 1)).collect(Collectors.toList()));
+             list.add(getRecommendationsByRating(meetings).stream().filter(meeting -> target == null || !meetingService.getManager(meeting).getId().equals(target.getId())).limit(10L * (page)).skip(10L * (page - 1)).collect(Collectors.toList()));
         }
         else {
             tagGroups.forEach((tagGroup -> {
                 list.add(getRecommendationsByTags(new ArrayList<>(meetings), new ArrayList<>(tagGroup.getTags()), 10 * page)
-                        .stream().map(this::getRecommendationsByRating).flatMap(Collection::stream).limit(10L * (page)).skip(10L * (page - 1)).collect(Collectors.toList()));
+                        .stream().map(this::getRecommendationsByRating).flatMap(Collection::stream).filter(meeting -> !meetingService.getManager(meeting).getId().equals(target.getId())).limit(10L * (page)).skip(10L * (page - 1)).collect(Collectors.toList()));
             }));
         }
         return list;
@@ -43,7 +43,7 @@ public class MeetingRecommendationsServiceImpl implements MeetingRecommendations
     }
 
     private List<Meeting> getRecommendationsByRating(List<Meeting> meetings) {
-        meetings.sort(Comparator.comparingDouble(meeting -> userRatingProvider.getUserRating(meetingService.getManager(meeting))));
+        meetings.sort(Comparator.comparing(meeting -> userRatingProvider.getUserRating(meetingService.getManager((Meeting) meeting))).reversed());
         return meetings;
     }
 

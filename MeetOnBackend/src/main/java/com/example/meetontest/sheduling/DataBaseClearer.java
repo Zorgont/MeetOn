@@ -23,7 +23,7 @@ public class DataBaseClearer {
     private final EventRepository eventRepository;
     private final NotificationRepository notificationRepository;
 
-    @Scheduled(fixedRate = 60000)
+    @Scheduled(fixedDelay = 60000)
     private void clearEntity(){
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());

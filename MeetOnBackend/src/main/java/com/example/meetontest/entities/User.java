@@ -22,6 +22,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String username;
+    @Column(length = 1000)
     private String about;
     @JsonIgnore
     private String password;
