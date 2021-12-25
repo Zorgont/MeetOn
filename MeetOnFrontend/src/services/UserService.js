@@ -1,8 +1,8 @@
 import axios from 'axios'
 import authHeader from "./AuthHeader";
 
-const USER_API_BASE_URL = "http://localhost:8080/api/v1/users";
-const API_URL = 'http://localhost:8080/api/v1/test/';
+const USER_API_BASE_URL = "http://app:8080/api/v1/users";
+const API_URL = 'http://app:8080/api/v1/test/';
 class UserService {
     getUsers() {
         return axios.get(USER_API_BASE_URL,{ headers: authHeader() });

@@ -154,7 +154,7 @@ export default class ProfileSettingsComponent extends Component {
                             <div className="row">
                                 <div className="col d-flex justify-content-center">
                                     <div style={{position: "relative"}}>
-                                        <Avatar style={{width: "130px", height: "130px"}} src={`http://localhost:8080/api/v1/users/${this.state.currentUser?.id}/avatar`}/>
+                                        <Avatar style={{width: "130px", height: "130px"}} src={`http://app:8080/api/v1/users/${this.state.currentUser?.id}/avatar`}/>
                                     </div>
                                 </div>
                             <h4 className="text-center">{this.state.currentUser.username}</h4>

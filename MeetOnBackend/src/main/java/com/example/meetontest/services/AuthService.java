@@ -8,6 +8,6 @@ import com.example.meetontest.dto.SignupRequest;
 public interface AuthService {
     JwtResponse authenticateUser(LoginRequest loginRequest);
     JwtResponse authenticateUserViaGoogle(GoogleLoginRequest loginRequest);
-    public void confirmUser(String token);
+    void confirmUser(String token);
     void registerUser(SignupRequest signUpRequest);
 }

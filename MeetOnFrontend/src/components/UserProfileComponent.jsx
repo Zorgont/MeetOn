@@ -84,7 +84,7 @@ export default class UserProfileComponent extends Component {
                                 <div className="row">
                                     <div className="col d-flex justify-content-center">
                                         <div style={{position: "relative"}}>
-                                            <Avatar style={{width: "130px", height: "130px"}} src={this.state.user !== null ? `http://localhost:8080/api/v1/users/${this.state.user?.id}/avatar` : ""}/>
+                                            <Avatar style={{width: "130px", height: "130px"}} src={this.state.user !== null ? `http://app:8080/api/v1/users/${this.state.user?.id}/avatar` : ""}/>
                                             {user?.id === this.state.currentUser?.id && <div onClick={this.editProfileClicked.bind(this)} style={{position: "absolute", right: "12px", width: "30px", height: "30px", bottom: "-5px", backgroundColor: "white", borderRadius: "50px", cursor: "pointer"}} className="gradient-gray-border">
                                                 <EditOutlinedIcon style={{margin: "0 0 0 3px"}} />
                                             </div>}

@@ -25,25 +25,13 @@ class MeetontestApplicationTests {
     @Autowired
     private UserService userService;
 
-
-
     @Test
     void contextLoads() {
     }
 
     @Test
     void getRecommendations() {
-//        List<Meeting> meetings = meetingRecommendationsService.getRecommendations(meetingService.getMeetingsByTags(new ArrayList<String>()), userService.getUserById(1L), 5);
+//        List<Meeting> meetings = meetingRecommendationsService.getRecommendations();
 //        return;
-    }
-    @Test
-    void getBytesFromImage() throws IOException {
-    }
-    @Test
-    void saveImageFromDb() throws IOException {
-//        byte[] byteFile = userService.getUserAvatar(1L);
-//        FileOutputStream fos = new FileOutputStream("C:\\Users\\kiril\\OneDrive\\java_final_new\\MeetOn\\MeetOnBackend\\image\\output.jpg");
-//        fos.write(byteFile);
-//        fos.close();
     }
 }

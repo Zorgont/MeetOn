@@ -1,7 +1,7 @@
 import axios from 'axios'
 import authHeader from "./AuthHeader";
 
-const MEETING_API_BASE_URL = "http://localhost:8080/api/v1/meetings";
+const MEETING_API_BASE_URL = "http://app:8080/api/v1/meetings";
 class MeetingService {
     getMeetings() {
         return axios.get(MEETING_API_BASE_URL);

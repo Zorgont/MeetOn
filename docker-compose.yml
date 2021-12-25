@@ -1,0 +1,41 @@
+version: '2'
+
+services:
+  ui:
+    image: 'meeton-ui:0.4'
+    container_name: ui
+    build:
+      context: MeetOnFrontend/
+      dockerfile: Dockerfile
+    volumes:
+      - '.:/MeetOnFrontend/app'
+      - '/MeetOnFrontend/app/node_modules'
+    ports:
+      - 3001:3000
+    depends_on:
+      - app
+      
+  app:
+    image: 'meetontest:latest'
+    build:
+      context: MeetOnBackend/src/main/docker
+      dockerfile: Dockerfile
+    container_name: app
+    ports:
+      - "9781:8080"
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/meeton
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+
+  db:
+    image: 'postgres:13.1-alpine'
+    container_name: db
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root

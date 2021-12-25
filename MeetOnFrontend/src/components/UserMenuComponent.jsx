@@ -66,7 +66,7 @@ export default function UserMenuComponent(props) {
           aria-controls={open ? 'menu-list-grow' : undefined}
           aria-haspopup="true"
           onClick={handleToggle}>
-          <Avatar src={`http://localhost:8080/api/v1/users/${props.user?.id}/avatar`}/>
+          <Avatar src={`http://app:8080/api/v1/users/${props.user?.id}/avatar`}/>
         </Button>
         <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
           {({ TransitionProps, placement }) => (

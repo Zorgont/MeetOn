@@ -101,7 +101,7 @@ export default class NewMeetingPage extends Component{
             return <div>
                 <CommentsList comments={this.state.comments} onCommentChange={this.addComment.bind(this)}/>
                 <SockJsClient
-                    url={`http://localhost:8080/ws`}
+                    url={`http://app:8080/ws`}
                     topics={[`/meeting/${this.state.meeting.meetingId}/queue/comments`]}
                     onMessage={(comment) => this.handleComment(comment)}
                     ref={ (client) => { this.clientRef = client }}/>
@@ -291,7 +291,7 @@ export default class NewMeetingPage extends Component{
                                     </div>
                                     <Link to={`/users/${meeting.managerId}`} style={{textDecoration: "none", color: "black"}}>
                                         <div className="row">
-                                            <div className="col-2"><Avatar src={`http://localhost:8080/api/v1/users/${meeting.managerId}/avatar`}/></div>
+                                            <div className="col-2"><Avatar src={`http://app:8080/api/v1/users/${meeting.managerId}/avatar`}/></div>
                                             <div className="col-9 mt-2" style={{marginLeft: "5px"}}>
                                                 <div>
                                                     <p>{meeting.managerUsername}</p>
@@ -392,7 +392,7 @@ export default class NewMeetingPage extends Component{
                                             {participants?.map(participant => 
                                                 <Link to={`/users/${participant.user_id}`} style={{textDecoration: "none", color: "black"}}>
                                                 <div className="row">
-                                                    <div className="col-2"><Avatar src={`http://localhost:8080/api/v1/users/${participant.user_id}/avatar`}/></div>
+                                                    <div className="col-2"><Avatar src={`http://app:8080/api/v1/users/${participant.user_id}/avatar`}/></div>
                                                     <div className="col-9 mt-2" style={{marginLeft: "5px"}}>
                                                         <div>
                                                             <p>{participant.username}</p>
